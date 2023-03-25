@@ -1,0 +1,15 @@
+.player-turn-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10rem;
+  justify-content: space-between;
+}
+
+.player-turn {
+  height: 6rem;
+  width: 6rem;
+}
+
+.current {
+  opacity: 0.4;
+}
