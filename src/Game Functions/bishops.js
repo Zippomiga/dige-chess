@@ -33,9 +33,9 @@ class Bishop {
   setNewCoords() {
     const pos = this.moves[1]
 
-    if (isInCoords(this.coords, pos)) {
-      this.coords = up(pos)
-    }
+    // if (isInCoords(this.coords, pos)) {
+    this.coords = up(pos)
+    // }
 
     this.resetMoves()
     console.log(this.coords)
@@ -44,10 +44,10 @@ class Bishop {
 
 
 const borders = [
-  [0, 1, 2, 3, 4, 5, 6, 7],             //Top
-  [0, 8, 16, 24, 32, 40, 48, 56],       //Left
-  [7, 15, 23, 31, 39, 47, 55, 63],      //Right
-  [56, 57, 58, 59, 60, 61, 62, 63]      //Bottom
+  [0, 1, 2, 3, 4, 5, 6, 7],                   //Top
+  [8, 16, 24, 32, 40, 48],       //Left
+  [15, 23, 31, 39, 47, 55],      //Right
+  [56, 57, 58, 59, 60, 61, 62, 63], //Bottom
 ]
 
 function up(pos) {
@@ -55,13 +55,16 @@ function up(pos) {
 
   switch (range) {
     case 0:
-      return calcRange([7, 9], pos, 0)
+      const rangeee = calcRange([7, 9], pos, 0)
+      // const lala = pos === 0 ? range
+      return pos === 0 ? rangeee.slice(8) : pos === 7 ? rangeee.slice(0, 7) : rangeee
     case 1:
       return calcRange([-7, 9], pos, 1)
     case 2:
       return calcRange([-9, 7], pos, 2)
     case 3:
       return calcRange([-7, -9], pos, 3)
+
     default:
       return calcRange([-9, -7, 7, 9], pos, borders)
   }
