@@ -33,9 +33,9 @@ class Bishop {
   setNewCoords() {
     const pos = this.moves[1]
 
-    // if (isInCoords(this.coords, pos)) {
-    this.coords = up(pos)
-    // }
+    if (isInCoords(this.coords, pos)) {
+      this.coords = updateBishopCoords(pos)
+    }
 
     this.resetMoves()
     console.log(this.coords)
@@ -44,47 +44,51 @@ class Bishop {
 
 
 const borders = [
-  [0, 1, 2, 3, 4, 5, 6, 7],                   //Top
-  [8, 16, 24, 32, 40, 48],       //Left
-  [15, 23, 31, 39, 47, 55],      //Right
+  [0, 1, 2, 3, 4, 5, 6, 7],         //Top
+  [8, 16, 24, 32, 40, 48],          //Left
+  [15, 23, 31, 39, 47, 55],         //Right
   [56, 57, 58, 59, 60, 61, 62, 63], //Bottom
 ]
 
-function up(pos) {
-  const range = borders.findIndex(border => isInCoords(border, pos))
 
-  switch (range) {
-    case 0:
-      const rangeee = calcRange([7, 9], pos, 0)
-      // const lala = pos === 0 ? range
-      return pos === 0 ? rangeee.slice(8) : pos === 7 ? rangeee.slice(0, 7) : rangeee
-    case 1:
-      return calcRange([-7, 9], pos, 1)
-    case 2:
-      return calcRange([-9, 7], pos, 2)
-    case 3:
-      return calcRange([-7, -9], pos, 3)
+function updateBishopCoords(pos) {
+  const brd = borders.findIndex(b => isInCoords(b, pos))
 
-    default:
-      return calcRange([-9, -7, 7, 9], pos, borders)
-  }
-}
+  const ranges = [
+    setRange([7, 9], 0),
+    setRange([-7, 9], 1),
+    setRange([-9, 7], 2),
+    setRange([-7, -9], 3)
+  ]
 
+  return ranges[brd] || setRange([-9, -7, 7, 9], borders)
 
-function calcRange(refs, pos, range) {
-  const filteredBorders = borders.filter((_, i) => i !== range).flat()
-  const ranges = []
+  //------------------------------------------------------------//
 
-  refs.forEach(ref => {
-    let copy = pos
+  function setRange(refs, brd) {
+    const coords = []
+    const f_br = borders.filter((_, i) => i !== brd).flat()
 
-    while (!isInCoords(filteredBorders, copy)) {
-      copy += ref
-      ranges.push(copy)
+    refs.forEach(ref => {
+      let coord = pos
+
+      while (!isInCoords(f_br, coord)) {
+        coord += ref
+        coords.push(coord)
+      }
+    })
+
+    switch (pos) {
+      case 0:
+      case 63:
+        return coords.slice(8)
+      case 7:
+      case 56:
+        return coords.slice(0, 7)
+      default:
+        return coords
     }
-  })
-
-  return ranges
+  }
 }
 
 
