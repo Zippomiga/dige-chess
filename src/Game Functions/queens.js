@@ -15,6 +15,12 @@ const edges = [
   [56, 57, 58, 59, 60, 61, 62, 63], //Bottom
 ]
 
+const opp = edg => edges.filter((_, i) => i !== edg).flat()
+
+const innerQuadrant =
+  Array(64).fill(null)
+    .map((_, i) => i)
+    .filter(qC => !edges.flat().includes(qC))
 
 
 class Queen {
@@ -40,37 +46,32 @@ class Queen {
   setNewCoords() {
     const pos = this.moves[1]
 
-    const borders = [
+    const coords = [
 
       [[0], [7, 56, 63], [1, 8, 9]],
       [[7], [0, 56, 63], [-1, 7, 8]],
       [[56], [0, 7, 63], [-8, -7, 1]],
       [[63], [0, 7, 56], [-9, -8, -1]],
-      
-      [edges[0], f_b(0), [-1, 1, 7, 8, 9]],
-      [edges[1], f_b(1), [-8, -7, 1, 8, 9]],
-      [edges[2], f_b(2), [-9, -8, -1, 7, 8 ]],
-      [edges[3], f_b(3), [-9, -8, -7, -1, 1]],
-      
+
+      [edges[0], opp(0), [-1, 1, 7, 8, 9]],
+      [edges[1], opp(1), [-8, -7, 1, 8, 9]],
+      [edges[2], opp(2), [-9, -8, -1, 7, 8]],
+      [edges[3], opp(3), [-9, -8, -7, -1, 1]],
+
+      [innerQuadrant, edges.flat(), [-9, -8, -7, -1, 1, 7, 8, 9]]
+
     ]
 
-    const e = borders.findIndex(b => b[0].includes(pos))
-    
-    console.log(borders[e])
+    const idx = coords.findIndex(coord => coord[0].includes(pos))
+
     // if (isInCoords(this.coords, pos)) {
-    this.coords = updateQueenCoords(pos, borders[e])
+    this.coords = updateQueenCoords(pos, coords[idx])
     // }
 
     this.resetMoves()
     console.log(this.coords)
   }
 }
-
-
-
-
-
-const f_b = (pos) => edges.filter(b => !b.includes(pos)).flat()
 
 
 function updateQueenCoords(pos, refs) {
@@ -87,61 +88,6 @@ function updateQueenCoords(pos, refs) {
 
   return coords
 }
-
-
-
-
-
-// const borders = [
-//   [0, 1, 2, 3, 4, 5, 6, 7],         //Top
-//   [0, 8, 16, 24, 32, 40, 48, 56],          //Left
-//   [7, 15, 23, 31, 39, 47, 55, 63],         //Right
-//   [56, 57, 58, 59, 60, 61, 62, 63], //Bottom
-// ]
-
-
-// function updateQueenCoords(pos) {
-//   const brd = borders.findIndex(b => isInCoords(b, pos))
-
-//   const ranges = {
-//     0: setRange([-1, 1, 8], 0),
-//     1: setRange([-7, 9], 1),
-//     2: setRange([-9, 7], 2),
-//     3: setRange([-7, -9], 3)
-//   }
-
-//   console.log(ranges)
-
-//   return ranges[brd] || setRange([-9, -8, -7, -1, 1, 7, 8, 9], borders)
-
-//   //------------------------------------------------------------//
-
-//   function setRange(refs, brd) {
-//     const coords = []
-//     const f_brd = borders.filter((_, i) => i !== brd).flat()
-
-//     refs.forEach(ref => {
-//       let coord = pos
-
-//       while (!isInCoords(f_brd, coord)) {
-//         coord += ref
-//         coords.push(coord)
-//       }
-//     })
-
-//     switch (pos) {
-//       case 0:
-//       case 63:
-//         return coords.slice(8)
-//       case 7:
-//       case 56:
-//         return coords.slice(0, 7)
-//       default:
-//         return coords
-//     }
-//   }
-// }
-
 
 
 export const QUEENS = {
