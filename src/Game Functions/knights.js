@@ -54,43 +54,47 @@ const borders = [
 function updateKinghtCoords(pos) {
   const [x, y] = [2, 16]
 
-  const x_b_l = pos - x + 8
-  const x_a_l = pos - x - 8
-  const x_a_r = pos + x - 8
-  const x_b_r = pos + x + 8
+  const X = {
+    b_l: pos - x + 8,
+    a_l: pos - x - 8,
+    a_r: pos + x - 8,
+    b_r: pos + x + 8
+  }
 
-  const y_b_l = pos + y - 1
-  const y_a_l = pos - y - 1
-  const y_a_r = pos - y + 1
-  const y_b_r = pos + y + 1
+  const Y = {
+    b_l: pos + y - 1,
+    a_l: pos - y - 1,
+    a_r: pos - y + 1,
+    b_r: pos + y + 1
+  }
 
   const range = borders.findIndex(border => isInCoords(border, pos))
 
   switch (range) {
     case 0:   //kinght is on the far left
       return {
-        X: [x_a_r, x_b_r],
-        Y: [y_a_r, y_b_r]
+        X: [X.a_r, X.b_r],
+        Y: [Y.a_r, Y.b_r]
       }
     case 1:
       return {
-        X: [x_a_r, x_b_r],
-        Y: [y_a_l, y_a_r, y_b_r, y_b_l]
+        X: [X.a_r, X.b_r],
+        Y: [Y.a_l, Y.a_r, Y.b_r, Y.b_l]
       }
     case 2:   //kinght is on the far right
       return {
-        X: [x_a_l, x_b_l],
-        Y: [y_a_l, y_b_l]
+        X: [X.a_l, X.b_l],
+        Y: [Y.a_l, Y.b_l]
       }
     case 3:
       return {
-        X: [x_a_l, x_b_l],
-        Y: [y_a_l, y_a_r, y_b_r, y_b_l]
+        X: [X.a_l, X.b_l],
+        Y: [Y.a_l, Y.a_r, Y.b_r, Y.b_l]
       }
     default:  //kinght is on the inner quadrant
       return {
-        X: [x_a_l, x_a_r, x_b_r, x_b_l],
-        Y: [y_a_l, y_a_r, y_b_r, y_b_l]
+        X: [X.a_l, X.a_r, X.b_r, X.b_l],
+        Y: [Y.a_l, Y.a_r, Y.b_r, Y.b_l]
       }
   }
 }
