@@ -2,14 +2,14 @@ import b_pawn from '../assets/chess-pieces/b-pawn.png'
 // import b_rook from '../assets/chess-pieces/b-rook.png'
 // import b_knight from '../assets/chess-pieces/b-knight.png'
 // import b_bishop from '../assets/chess-pieces/b-bishop.png'
-import b_queen from '../assets/chess-pieces/b-queen.png'
+// import b_queen from '../assets/chess-pieces/b-queen.png'
 import b_king from '../assets/chess-pieces/b-king.png'
 
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
 // import w_rook from '../assets/chess-pieces/w-rook.png'
 // import w_knight from '../assets/chess-pieces/w-knight.png'
 // import w_bishop from '../assets/chess-pieces/w-bishop.png'
-import w_queen from '../assets/chess-pieces/w-queen.png'
+// import w_queen from '../assets/chess-pieces/w-queen.png'
 import w_king from '../assets/chess-pieces/w-king.png'
 
 
@@ -60,7 +60,7 @@ export const PIECES = {
   // B_BISHOP_1: new Piece('B_BISHOP_1', b_bishop),
   // B_BISHOP_2: new Piece('B_BISHOP_2', b_bishop),
 
-  B_QUEEN: new Piece('B_QUEEN', b_queen),
+  // B_QUEEN: new Piece('B_QUEEN', b_queen),
   B_KING: new Piece('B_KING', b_king),
 
   W_PAWN_1: new Piece('W_PAWN_1', w_pawn),
@@ -81,7 +81,7 @@ export const PIECES = {
   // W_BISHOP_1: new Piece('W_BISHOP_1', w_bishop),
   // W_BISHOP_2: new Piece('W_BISHOP_2', w_bishop),
 
-  W_QUEEN: new Piece('W_QUEEN', w_queen),
+  // W_QUEEN: new Piece('W_QUEEN', w_queen),
   W_KING: new Piece('W_KING', w_king),
 }
 

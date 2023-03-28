@@ -1,5 +1,5 @@
-import { useContext } from 'react'
 import './square.css'
+import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 import { fillSquare } from '../../Game Functions/auxiliar-functions'
 
@@ -52,7 +52,7 @@ export default function Square({ piece, currentPosition }) {
       id={currentPosition}
       onClick={handleSquare}
     >
-      {piece?.name.includes('QUEEN') &&
+      {piece?.name.includes('QUE') &&
         <img
           className={piece?.name.includes('PAWN') ? 'pawn' : 'piece'}
           src={piece?.pic}

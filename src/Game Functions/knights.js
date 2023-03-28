@@ -1,12 +1,13 @@
 import b_knight_png from '../assets/chess-pieces/b-knight.png'
 import w_knight_png from '../assets/chess-pieces/w-knight.png'
-import { isInCoords } from './auxiliar-functions'
+import { coords } from './auxiliar-functions'
+
 
 const INIT_COORDS = {
-  b_knight1: { X: [11], Y: [16, 18] },
-  b_knight2: { X: [12], Y: [21, 23] },
-  w_knight1: { X: [51], Y: [40, 42] },
-  w_knight2: { X: [52], Y: [45, 47] }
+  b_knight1: [11, 16, 18],
+  b_knight2: [12, 21, 23],
+  w_knight1: [51, 40, 42],
+  w_knight2: [52, 45, 47]
 }
 
 
@@ -32,26 +33,25 @@ class Knight {
 
   setNewCoords() {
     const pos = this.moves[1]
-    const { X, Y } = this.coords
+    const { idx } = coords
 
-    if (isInCoords(X, pos) || isInCoords(Y, pos)) {
-      this.coords = updateKinghtCoords(pos)
-    }
+    const columns = [
+      [[0, 8, 16, 24, 32, 40, 48, 56]],   //column A
+      [[1, 9, 17, 25, 33, 41, 49, 57]],   //column B
+      [[7, 15, 23, 31, 39, 47, 55, 63]],  //column H
+      [[6, 14, 22, 30, 38, 46, 54, 62]]   //column G
+    ]
+
+    const i = idx(columns, pos)
+    this.coords = updateCoords(pos, i)
 
     this.resetMoves()
-    console.log(this.coords)
+    console.log(this.coords.sort((a, b) => a - b))
   }
 }
 
 
-const borders = [
-  [0, 8, 16, 24, 32, 40, 48, 56],   //extreme   Left
-  [1, 9, 17, 25, 33, 41, 49, 57],   //interior  Left
-  [7, 15, 23, 31, 39, 47, 55, 63],  //extreme   Right
-  [6, 14, 22, 30, 38, 46, 54, 62]   //inteior   Right
-]
-
-function updateKinghtCoords(pos) {
+function updateCoords(pos, i) {
   const [x, y] = [2, 16]
 
   const X = {
@@ -68,34 +68,33 @@ function updateKinghtCoords(pos) {
     b_r: pos + y + 1
   }
 
-  const range = borders.findIndex(border => isInCoords(border, pos))
 
-  switch (range) {
-    case 0:   //kinght is on the far left
-      return {
-        X: [X.a_r, X.b_r],
-        Y: [Y.a_r, Y.b_r]
-      }
-    case 1:
-      return {
-        X: [X.a_r, X.b_r],
-        Y: [Y.a_l, Y.a_r, Y.b_r, Y.b_l]
-      }
-    case 2:   //kinght is on the far right
-      return {
-        X: [X.a_l, X.b_l],
-        Y: [Y.a_l, Y.b_l]
-      }
-    case 3:
-      return {
-        X: [X.a_l, X.b_l],
-        Y: [Y.a_l, Y.a_r, Y.b_r, Y.b_l]
-      }
-    default:  //kinght is on the inner quadrant
-      return {
-        X: [X.a_l, X.a_r, X.b_r, X.b_l],
-        Y: [Y.a_l, Y.a_r, Y.b_r, Y.b_l]
-      }
+  switch (i) {
+    case 0:         //kinght at column A
+      return [
+        X.a_r, X.b_r,
+        Y.a_r, Y.b_r
+      ]
+    case 1:         //kinght at column B
+      return [
+        X.a_r, X.b_r,
+        Y.a_l, Y.a_r, Y.b_r, Y.b_l
+      ]
+    case 2:         //kinght iat column H
+      return [
+        X.a_l, X.b_l,
+        Y.a_l, Y.b_l
+      ]
+    case 3:         //kinght at column G
+      return [
+        X.a_l, X.b_l,
+        Y.a_l, Y.a_r, Y.b_r, Y.b_l
+      ]
+    default:        //kinght at inner Quadrant
+      return [
+        X.a_l, X.a_r, X.b_r, X.b_l,
+        Y.a_l, Y.a_r, Y.b_r, Y.b_l
+      ]
   }
 }
 

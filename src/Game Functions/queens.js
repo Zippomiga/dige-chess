@@ -1,26 +1,16 @@
 import b_queen from '../assets/chess-pieces/b-queen.png'
 import w_queen from '../assets/chess-pieces/w-queen.png'
-import { isInCoords } from './auxiliar-functions'
+import { idxEdges, coords, updateCoords } from './auxiliar-functions'
+
 
 const INIT_COORDS = {
-  b_queen: null,
-  w_queen: null,
+  b_queen: [
+    2, 1, 0, 4, 5, 6, 7, 10, 17, 24, 11, 19, 27, 35, 43, 51, 59, 12, 21, 30, 39
+  ],
+  w_queen: [
+    50, 41, 32, 51, 43, 35, 27, 19, 11, 3, 52, 45, 38, 31, 58, 57, 56, 60, 61, 62, 63
+  ],
 }
-
-
-const edges = [
-  [0, 1, 2, 3, 4, 5, 6, 7],         //Top
-  [0, 8, 16, 24, 32, 40, 48, 56],          //Left
-  [7, 15, 23, 31, 39, 47, 55, 63],         //Right
-  [56, 57, 58, 59, 60, 61, 62, 63], //Bottom
-]
-
-const opp = edg => edges.filter((_, i) => i !== edg).flat()
-
-const innerQuadrant =
-  Array(64).fill(null)
-    .map((_, i) => i)
-    .filter(qC => !edges.flat().includes(qC))
 
 
 class Queen {
@@ -45,28 +35,33 @@ class Queen {
 
   setNewCoords() {
     const pos = this.moves[1]
+    const [top, left, right, bottom] = idxEdges
+    const { corner, edge, innerQuadrant, idx } = coords
 
-    const coords = [
+    const ranges = [
 
-      [[0], [7, 56, 63], [1, 8, 9]],
-      [[7], [0, 56, 63], [-1, 7, 8]],
-      [[56], [0, 7, 63], [-8, -7, 1]],
-      [[63], [0, 7, 56], [-9, -8, -1]],
+      // [[0], [7, 56, 63], [1, 8, 9]],
+      // [[7], [0, 56, 63], [-1, 7, 8]],
+      // [[56], [0, 7, 63], [-8, -7, 1]],
+      // [[63], [0, 7, 56], [-9, -8, -1]],
 
-      [edges[0], opp(0), [-1, 1, 7, 8, 9]],
-      [edges[1], opp(1), [-8, -7, 1, 8, 9]],
-      [edges[2], opp(2), [-9, -8, -1, 7, 8]],
-      [edges[3], opp(3), [-9, -8, -7, -1, 1]],
+      corner(0, [1, 8, 9]),
+      corner(7, [-1, 7, 8]),
+      corner(56, [-8, -7, 1]),
+      corner(63, [-9, -8, -1]),
 
-      [innerQuadrant, edges.flat(), [-9, -8, -7, -1, 1, 7, 8, 9]]
+      edge(top, [-1, 1, 7, 8, 9]),
+      edge(left, [-8, -7, 1, 8, 9]),
+      edge(right, [-9, -8, -1, 7, 8]),
+      edge(bottom, [-9, -8, -7, -1, 1]),
 
+      innerQuadrant([-9, -8, -7, -1, 1, 7, 8, 9])
     ]
 
-    const idx = coords.findIndex(coord => coord[0].includes(pos))
+    const i = idx(ranges, pos)
+    this.coords = updateCoords(pos, ranges[i])
 
-    // if (isInCoords(this.coords, pos)) {
-    this.coords = updateQueenCoords(pos, coords[idx])
-    // }
+    console.log(ranges[i], i)
 
     this.resetMoves()
     console.log(this.coords)
@@ -74,23 +69,7 @@ class Queen {
 }
 
 
-function updateQueenCoords(pos, refs) {
-  const coords = []
-
-  refs[2].forEach(ref => {
-    let coord = pos
-
-    while (!refs[1].includes(coord)) {
-      coord += ref
-      coords.push(coord)
-    }
-  })
-
-  return coords
-}
-
-
 export const QUEENS = {
-  B_QUEEN: new Queen('B_QUEEN', b_queen),
-  W_QUEEN: new Queen('W_QUEEN', w_queen)
+  B_QUEEN: new Queen('B_QUEEN', b_queen, INIT_COORDS.b_queen),
+  W_QUEEN: new Queen('W_QUEEN', w_queen, INIT_COORDS.w_queen)
 }

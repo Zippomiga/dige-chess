@@ -1,24 +1,25 @@
 import b_rook_png from '../assets/chess-pieces/b-rook.png'
 import w_rook_png from '../assets/chess-pieces/w-rook.png'
-import { isInCoords } from './auxiliar-functions'
+import { idxEdges, coords, updateCoords } from './auxiliar-functions'
+
 
 const INIT_COORDS = {
-  b_rook1: {
-    X: [0, 1, 2, 3, 4, 5, 6, 7],
-    Y: [0, 8, 16, 24, 32, 40, 48, 56]
-  },
-  b_rook2: {
-    X: [7, 6, 5, 4, 3, 2, 1, 0],
-    Y: [7, 15, 23, 31, 39, 47, 55, 63]
-  },
-  w_rook1: {
-    X: [56, 57, 58, 59, 60, 61, 62, 63],
-    Y: [56, 48, 40, 32, 24, 16, 8, 0]
-  },
-  w_rook2: {
-    X: [63, 62, 61, 60, 59, 58, 57, 56],
-    Y: [63, 55, 47, 39, 31, 23, 15, 7]
-  }
+  b_rook1: [
+    0, 1, 2, 3, 4, 5, 6, 7,
+    8, 16, 24, 32, 40, 48, 56
+  ],
+  b_rook2: [
+    7, 6, 5, 4, 3, 2, 1, 0,
+    15, 23, 31, 39, 47, 55, 63
+  ],
+  w_rook1: [
+    56, 57, 58, 59, 60, 61, 62,
+    63, 48, 40, 32, 24, 16, 8, 0
+  ],
+  w_rook2: [
+    63, 62, 61, 60, 59, 58, 57,
+    56, 55, 47, 39, 31, 23, 15, 7
+  ]
 }
 
 
@@ -43,33 +44,31 @@ class Rook {
   }
 
   setNewCoords() {
-    const [pos1, pos2] = this.moves
+    const pos = this.moves[1]
+    const [top, left, right, bottom] = idxEdges
+    const { edge, innerQuadrant, idx } = coords
 
-    const max = Math.max(...this.moves)
-    const min = Math.min(...this.moves)
-    const diff = max - min
+    const ranges = [
 
-    const { X, Y } = this.coords
+      [[0], [7, 56], [1, 8]],
+      [[7], [0, 63], [-1, 8]],
+      [[56], [0, 63], [-8, 1]],
+      [[63], [7, 56], [-1, -8]],
 
-    if (isInCoords(X, pos2)) {
-      this.coords.Y = updateRookCoords(Y, pos1, pos2, diff)
-    }
+      edge(top, [-1, 1, 8]),
+      edge(left, [-8, 1, 8]),
+      edge(right, [-8, -1, 8]),
+      edge(bottom, [-1, 1, -8]),
 
-    if (isInCoords(Y, pos2)) {
-      this.coords.X = updateRookCoords(X, pos1, pos2, diff)
-    }
+      innerQuadrant([-8, -1, 1, 8])
+    ]
+
+    const i = idx(ranges, pos)
+    this.coords = updateCoords(pos, ranges[i])
 
     this.resetMoves()
     console.log(this.coords)
   }
-}
-
-
-function updateRookCoords(coords, pos1, pos2, diff) {
-  return coords.map(coord => {
-    if (pos1 < pos2) { return coord + diff }
-    if (pos1 > pos2) { return coord - diff }
-  })
 }
 
 

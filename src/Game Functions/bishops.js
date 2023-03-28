@@ -1,6 +1,7 @@
 import b_bishop from '../assets/chess-pieces/b-bishop.png'
 import w_bishop from '../assets/chess-pieces/w-bishop.png'
-import { isInCoords } from './auxiliar-functions'
+import { idxEdges, coords, updateCoords } from './auxiliar-functions'
+
 
 const INIT_COORDS = {
   b_bishop1: [9, 16, 11, 20, 29, 38, 47],
@@ -32,62 +33,29 @@ class Bishop {
 
   setNewCoords() {
     const pos = this.moves[1]
+    const [top, left, right, bottom] = idxEdges
+    const { edge, innerQuadrant, idx } = coords
+    
+    const ranges = [
 
-    if (isInCoords(this.coords, pos)) {
-      this.coords = updateBishopCoords(pos)
-    }
+      [[0], [63], [9]],
+      [[7], [56], [7]],
+      [[56], [7], [-7]],
+      [[63], [0], [-9]],
+
+      edge(top, [7, 9]),
+      edge(left, [-7, 9]),
+      edge(right, [-9, 7]),
+      edge(bottom, [-9, -7]),
+
+      innerQuadrant([-9, -7, 7, 9])
+    ]
+
+    const i = idx(ranges, pos)
+    this.coords = updateCoords(pos, ranges[i])
 
     this.resetMoves()
     console.log(this.coords)
-  }
-}
-
-
-const borders = [
-  [0, 1, 2, 3, 4, 5, 6, 7],         //Top
-  [8, 16, 24, 32, 40, 48],          //Left
-  [15, 23, 31, 39, 47, 55],         //Right
-  [56, 57, 58, 59, 60, 61, 62, 63], //Bottom
-]
-
-
-function updateBishopCoords(pos) {
-  const brd = borders.findIndex(b => isInCoords(b, pos))
-
-  const ranges = [
-    setRange([7, 9], 0),
-    setRange([-7, 9], 1),
-    setRange([-9, 7], 2),
-    setRange([-7, -9], 3)
-  ]
-
-  return ranges[brd] || setRange([-9, -7, 7, 9], borders)
-
-  //------------------------------------------------------------//
-
-  function setRange(refs, brd) {
-    const coords = []
-    const f_br = borders.filter((_, i) => i !== brd).flat()
-
-    refs.forEach(ref => {
-      let coord = pos
-
-      while (!isInCoords(f_br, coord)) {
-        coord += ref
-        coords.push(coord)
-      }
-    })
-
-    switch (pos) {
-      case 0:
-      case 63:
-        return coords.slice(8)
-      case 7:
-      case 56:
-        return coords.slice(0, 7)
-      default:
-        return coords
-    }
   }
 }
 
