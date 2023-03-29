@@ -1,4 +1,4 @@
-import { CHESS_BOARD } from "../Game Functions/game-functions";
+import { CHESS_BOARD } from "../Game Functions/board";
 import { createContext, useRef, useState } from "react";
 
 export const ChessContext = createContext()

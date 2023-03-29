@@ -52,7 +52,7 @@ export default function Square({ piece, currentPosition }) {
       id={currentPosition}
       onClick={handleSquare}
     >
-      {piece?.name.includes('KN') &&
+      {piece?.name.includes('') &&
         <img
           className={piece?.name.includes('PAWN') ? 'pawn' : 'piece'}
           src={piece?.pic}
