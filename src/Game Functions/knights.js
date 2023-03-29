@@ -1,6 +1,5 @@
 import b_knight_png from '../assets/chess-pieces/b-knight.png'
 import w_knight_png from '../assets/chess-pieces/w-knight.png'
-import { coords } from './auxiliar-functions'
 
 
 const INIT_COORDS = {
@@ -33,17 +32,16 @@ class Knight {
 
   setNewCoords() {
     const pos = this.moves[1]
-    const { idx } = coords
 
     const columns = [
-      [[0, 8, 16, 24, 32, 40, 48, 56]],   //column A
-      [[1, 9, 17, 25, 33, 41, 49, 57]],   //column B
-      [[7, 15, 23, 31, 39, 47, 55, 63]],  //column H
-      [[6, 14, 22, 30, 38, 46, 54, 62]]   //column G
+      [0, 8, 16, 24, 32, 40, 48, 56],   //column A
+      [1, 9, 17, 25, 33, 41, 49, 57],   //column B
+      [7, 15, 23, 31, 39, 47, 55, 63],  //column H
+      [6, 14, 22, 30, 38, 46, 54, 62]   //column G
     ]
 
-    const i = idx(columns, pos)
-    this.coords = updateCoords(pos, i)
+    const range = columns.findIndex(co => co.includes(pos))
+    this.coords = updateCoords(pos, range)
 
     this.resetMoves()
     console.log(this.coords.sort((a, b) => a - b))
@@ -51,7 +49,7 @@ class Knight {
 }
 
 
-function updateCoords(pos, i) {
+function updateCoords(pos, range) {
   const [x, y] = [2, 16]
 
   const X = {
@@ -69,7 +67,7 @@ function updateCoords(pos, i) {
   }
 
 
-  switch (i) {
+  switch (range) {
     case 0:         //kinght at column A
       return [
         X.a_r, X.b_r,
