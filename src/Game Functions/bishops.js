@@ -1,6 +1,6 @@
 import b_bishop from '../assets/chess-pieces/b-bishop.png'
 import w_bishop from '../assets/chess-pieces/w-bishop.png'
-import { idxEdges, coords, updateCoords } from './auxiliar-functions'
+import { coords, updateCoords } from './auxiliar-functions'
 
 
 const INIT_COORDS = {
@@ -33,26 +33,24 @@ class Bishop {
 
   setNewCoords() {
     const pos = this.moves[1]
-    const [top, left, right, bottom] = idxEdges
-    const { edge, innerQuadrant, idx } = coords
+    const { corner, edge, innerQuadrant, idx } = coords
     
     const ranges = [
+      corner(0, [9]),
+      corner(7, [7]),
+      corner(56, [-7]),
+      corner(63, [-9]),
 
-      [[0], [63], [9]],
-      [[7], [56], [7]],
-      [[56], [7], [-7]],
-      [[63], [0], [-9]],
-
-      edge(top, [7, 9]),
-      edge(left, [-7, 9]),
-      edge(right, [-9, 7]),
-      edge(bottom, [-9, -7]),
+      edge(0, [7, 9]),
+      edge(1, [-7, 9]),
+      edge(2, [-9, 7]),
+      edge(3, [-9, -7]),
 
       innerQuadrant([-9, -7, 7, 9])
     ]
 
-    const i = idx(ranges, pos)
-    this.coords = updateCoords(pos, ranges[i])
+    const range = idx(ranges, pos)
+    this.coords = updateCoords(...range)
 
     this.resetMoves()
     console.log(this.coords)

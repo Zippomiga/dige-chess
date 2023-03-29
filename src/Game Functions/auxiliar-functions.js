@@ -3,8 +3,7 @@ export const fillSquare = (toFill, item, index) => (
 )
 
 
-export const idxEdges = [0, 1, 2, 3] //Top, Left, Right, Bottom
-
+const corners = [0, 7, 56, 63]
 
 const edges = [
   [0, 1, 2, 3, 4, 5, 6, 7],         //Top
@@ -13,27 +12,23 @@ const edges = [
   [56, 57, 58, 59, 60, 61, 62, 63]  //Bottom
 ]
 
-
 const allEdges = edges.flat()
 
 
-const corners = [0, 7, 53, 63]
-
-
 export const coords = {
-  corner: (pos, moves) => {
-    const cornerLimits = corners.filter(co => co !== pos)
-
-    console.log(cornerLimits)
-
-    return [pos, cornerLimits, moves]
+  corner: (ext, moves) => {
+    const cornerLimits = corners.filter(co => co !== ext)
+    
+    return [[ext], cornerLimits, moves]
   },
+
 
   edge: (edg, moves) => {
     const edgeLimits = edges.filter((_, i) => i !== edg).flat()
-
+    
     return [edges[edg], edgeLimits, moves]
   },
+
 
   innerQuadrant: (moves) => {
     const innerQ = Array(64)
@@ -44,13 +39,16 @@ export const coords = {
     return [innerQ, allEdges, moves]
   },
 
+  
   idx: (ranges, pos) => {
-    return ranges.findIndex(range => range[0].includes(pos))
+    const refs = ranges.find(ra => ra[0].includes(pos))
+    
+    return [refs, pos]
   }
 }
 
 
-export function updateCoords(pos, refs) {
+export function updateCoords(refs, pos) {
   const [, limits, moves] = refs
   const coords = []
 

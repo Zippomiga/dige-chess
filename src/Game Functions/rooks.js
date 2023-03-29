@@ -1,6 +1,6 @@
 import b_rook_png from '../assets/chess-pieces/b-rook.png'
 import w_rook_png from '../assets/chess-pieces/w-rook.png'
-import { idxEdges, coords, updateCoords } from './auxiliar-functions'
+import { coords, updateCoords } from './auxiliar-functions'
 
 
 const INIT_COORDS = {
@@ -45,26 +45,24 @@ class Rook {
 
   setNewCoords() {
     const pos = this.moves[1]
-    const [top, left, right, bottom] = idxEdges
-    const { edge, innerQuadrant, idx } = coords
+    const { corner, edge, innerQuadrant, idx } = coords
 
     const ranges = [
+      corner(0, [1, 8]),
+      corner(7, [-1, 8]),
+      corner(56, [-8, 1]),
+      corner(63, [-1, -8],),
 
-      [[0], [7, 56], [1, 8]],
-      [[7], [0, 63], [-1, 8]],
-      [[56], [0, 63], [-8, 1]],
-      [[63], [7, 56], [-1, -8]],
-
-      edge(top, [-1, 1, 8]),
-      edge(left, [-8, 1, 8]),
-      edge(right, [-8, -1, 8]),
-      edge(bottom, [-1, 1, -8]),
+      edge(0, [-1, 1, 8]),
+      edge(1, [-8, 1, 8]),
+      edge(2, [-8, -1, 8]),
+      edge(3, [-1, 1, -8]),
 
       innerQuadrant([-8, -1, 1, 8])
     ]
 
-    const i = idx(ranges, pos)
-    this.coords = updateCoords(pos, ranges[i])
+    const range = idx(ranges, pos)
+    this.coords = updateCoords(...range)
 
     this.resetMoves()
     console.log(this.coords)

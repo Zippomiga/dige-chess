@@ -1,19 +1,17 @@
-import b_queen from '../assets/chess-pieces/b-queen.png'
-import w_queen from '../assets/chess-pieces/w-queen.png'
-import { coords, updateCoords } from './auxiliar-functions'
+import b_king from '../assets/chess-pieces/b-king.png'
+import w_king from '../assets/chess-pieces/w-king.png'
+
+import { coords } from './auxiliar-functions'
+
 
 
 const INIT_COORDS = {
-  b_queen: [
-    2, 1, 0, 4, 5, 6, 7, 10, 17, 24, 11, 19, 27, 35, 43, 51, 59, 12, 21, 30, 39
-  ],
-  w_queen: [
-    50, 41, 32, 51, 43, 35, 27, 19, 11, 3, 52, 45, 38, 31, 58, 57, 56, 60, 61, 62, 63
-  ],
+  b_queen: [],
+  w_queen: [],
 }
 
 
-class Queen {
+class King {
   constructor(name, pic, initCoords) {
     this.name = name
     this.pic = pic
@@ -59,8 +57,14 @@ class Queen {
   }
 }
 
+export function updateCoords(refs, pos) {
+  const [, , moves] = refs
 
-export const QUEENS = {
-  B_QUEEN: new Queen('B_QUEEN', b_queen, INIT_COORDS.b_queen),
-  W_QUEEN: new Queen('W_QUEEN', w_queen, INIT_COORDS.w_queen)
+  return moves.map(move => move + pos)
+}
+
+
+export const KINGS = {
+  B_KING: new King('B_KING', b_king, INIT_COORDS.b_king),
+  W_KING: new King('W_KING', w_king, INIT_COORDS.w_king)
 }
