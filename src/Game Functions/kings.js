@@ -1,13 +1,10 @@
 import b_king from '../assets/chess-pieces/b-king.png'
 import w_king from '../assets/chess-pieces/w-king.png'
-
 import { coords } from './auxiliar-functions'
 
-
-
 const INIT_COORDS = {
-  b_queen: [],
-  w_queen: [],
+  b_king: [3, 5, 11, 12, 13],
+  w_king: [51, 52, 53, 59, 61],
 }
 
 
