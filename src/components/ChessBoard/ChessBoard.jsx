@@ -6,7 +6,12 @@ import { ChessContext } from '../../context/ChessContext'
 export default function ChessBoard() {
   const { chessBoard } = useContext(ChessContext)
 
-  // console.log(chessBoard)
+  const filledSquares = chessBoard
+    .map((piece, position) => piece ? position : null)
+    .filter(pos => pos !== null)
+
+
+  // console.log(filledSquares)
 
   return (
     <section className='chess-board'>
@@ -16,7 +21,8 @@ export default function ChessBoard() {
             <Square
               key={index}
               piece={square}
-              currentPosition={index}
+              currPosit={index}
+              filledSquares={filledSquares}
             />
           )
         })

@@ -4,7 +4,7 @@ import { ChessContext } from '../../context/ChessContext'
 import { fillSquare } from '../../Game Functions/auxiliar-functions'
 
 
-export default function Square({ piece, currentPosition }) {
+export default function Square({ piece, currPosit, filledSquares }) {
   const {
     chessBoard,
     setChessBoard,
@@ -13,34 +13,46 @@ export default function Square({ piece, currentPosition }) {
   } = useContext(ChessContext)
 
 
+  function reset(piece, log) {
+    pieces.current = []
+    piece?.resetPositions()
+    console.log(log)
+  }
+
 
   function handleSquare() {
     pieces.current.push(piece)
     const [currentPiece, newPiece] = pieces.current
 
     if (currentPiece === null) {
-      pieces.current = []
-      console.log('NOPE')
+      reset(currentPiece, 'No piece in square')
       return
     }
 
-    currentPiece.setMoves(currentPosition)
+    currentPiece.setPositions(currPosit)
+    currentPiece.setCoords(filledSquares)
 
-    if (pieces.current.length === 2) { // has it been clicked twice ?
-      const [oldPosit, newPosit] = currentPiece.getMoves()
+    const [oldPosit, newPosit] = currentPiece.getPositions()
 
-      if (oldPosit === newPosit) {
-        pieces.current = []
-        currentPiece.resetMoves()
+    const sameSquare = oldPosit === newPosit
+    const samePlayer = currentPiece?.name[0] === newPiece?.name[0]
+    const outOfCoords = !currentPiece.isInCoords()
+
+    if (oldPosit && newPosit) { //if both !== null, it means it has been clicked twice
+      if (
+        sameSquare ||
+        samePlayer ||
+        outOfCoords
+      ) {
+        reset(currentPiece, 'Same square || Same player piece || Out of coords')
+        return // this disallows to the piece to eat another
       } else {
-        currentPiece.setNewCoords()
-
         const oldBoard = fillSquare(chessBoard, null, oldPosit)
         const newBoard = fillSquare(oldBoard, currentPiece, newPosit)
 
         setTurn(turn => !turn)
         setChessBoard(newBoard)
-        pieces.current = []
+        reset(currentPiece, 'Allowed')
       }
     }
   }
@@ -49,7 +61,7 @@ export default function Square({ piece, currentPosition }) {
   return (
     <div
       className='square'
-      id={currentPosition}
+      id={currPosit}
       onClick={handleSquare}
     >
       {piece?.name.includes('') &&
@@ -59,7 +71,7 @@ export default function Square({ piece, currentPosition }) {
           alt={piece?.name}
         />}
       <span className='square-index'>
-        {currentPosition}
+        {currPosit}
       </span>
     </div>
   )

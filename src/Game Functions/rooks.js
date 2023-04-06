@@ -1,6 +1,6 @@
 import b_rook_png from '../assets/chess-pieces/b-rook.png'
 import w_rook_png from '../assets/chess-pieces/w-rook.png'
-import { coords, updateCoords } from './auxiliar-functions'
+import { coords } from './auxiliar-functions'
 
 
 const INIT_COORDS = {
@@ -45,7 +45,7 @@ class Rook {
 
   setNewCoords() {
     const pos = this.moves[1]
-    const { corner, edge, innerQuadrant, idx } = coords
+    const { corner, edge, innerQuadrant, idx, updateCoords } = coords
 
     const ranges = [
       corner(0, [1, 8]),

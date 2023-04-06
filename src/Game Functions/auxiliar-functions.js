@@ -3,6 +3,9 @@ export const fillSquare = (toFill, item, index) => (
 )
 
 
+export const isIn = (arr, item) => arr.includes(item)
+
+
 const corners = [0, 7, 56, 63]
 
 const edges = [
@@ -18,14 +21,14 @@ const allEdges = edges.flat()
 export const coords = {
   corner: (ext, moves) => {
     const cornerLimits = corners.filter(co => co !== ext)
-    
+
     return [[ext], cornerLimits, moves]
   },
 
 
   edge: (edg, moves) => {
     const edgeLimits = edges.filter((_, i) => i !== edg).flat()
-    
+
     return [edges[edg], edgeLimits, moves]
   },
 
@@ -34,32 +37,35 @@ export const coords = {
     const innerQ = Array(64)
       .fill(null)
       .map((_, i) => i)
-      .filter(qC => !allEdges.includes(qC))
+      .filter(qC => !isIn(allEdges, qC))
 
     return [innerQ, allEdges, moves]
   },
 
-  
+
   idx: (ranges, pos) => {
-    const refs = ranges.find(ra => ra[0].includes(pos))
-    
+    const refs = ranges.find(ra => isIn(ra[0], pos))
+
     return [refs, pos]
+  },
+
+  updateCoords(refs, pos, filledSquares) {
+    const [, limits, moves] = refs
+    const coords = []
+    const fixedFilled = filledSquares.filter(sq => sq !== pos)
+
+    moves.forEach(move => {
+      let coord = pos
+
+      while (
+        !isIn(limits, coord) &&
+        !isIn(fixedFilled, coord)
+      ) {
+        coord += move
+        coords.push(coord)
+      }
+    })
+
+    return coords
   }
-}
-
-
-export function updateCoords(refs, pos) {
-  const [, limits, moves] = refs
-  const coords = []
-
-  moves.forEach(move => {
-    let coord = pos
-
-    while (!limits.includes(coord)) {
-      coord += move
-      coords.push(coord)
-    }
-  })
-
-  return coords
 }

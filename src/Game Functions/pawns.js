@@ -52,7 +52,7 @@ class Pawn {
   }
 }
 
-export function updateCoords(name, pos) {
+function updateCoords(name, pos) {
   const black = name.includes('B')
 
   return black ? pos + 8 : pos - 8
