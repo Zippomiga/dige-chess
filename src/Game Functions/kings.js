@@ -1,37 +1,34 @@
 import b_king from '../assets/chess-pieces/b-king.png'
 import w_king from '../assets/chess-pieces/w-king.png'
-import { coords } from './auxiliar-functions'
-
-
-const INIT_COORDS = {
-  b_king: [3, 5, 11, 12, 13],
-  w_king: [51, 52, 53, 59, 61],
-}
+import { corner, edge, innerQuadrant, isIn } from './auxiliar-functions'
 
 
 class King {
-  constructor(name, pic, initCoords) {
+  constructor(name, pic) {
     this.name = name
     this.pic = pic
-    this.coords = initCoords
-    this.moves = []
+    this.positions = []
+    this.coords = null
   }
 
-  setMoves(pos) {
-    this.moves.push(pos)
+  setPositions(pos) {
+    this.positions.push(pos)
   }
 
-  getMoves() {
-    return this.moves
+  getPositions() {
+    return this.positions
   }
 
-  resetMoves() {
-    this.moves = []
+  resetPositions() {
+    this.positions = []
   }
 
-  setNewCoords() {
-    const pos = this.moves[1]
-    const { corner, edge, innerQuadrant, idx } = coords
+  illegalMove() {
+    return !isIn(this.coords, this.positions[1])
+  }
+
+  setCoords() {
+    if (this.positions[1]) return // this makes the function runs once, only when player clicks for first time
 
     const ranges = [
       corner(0, [1, 8, 9]),         //TopLeft
@@ -47,22 +44,20 @@ class King {
       innerQuadrant([-9, -8, -7, -1, 1, 7, 8, 9])
     ]
 
-    const range = idx(ranges, pos)
-    this.coords = updateCoords(...range)
-
-    this.resetMoves()
+    this.coords = updateCoords(ranges, this.positions[0])
     console.log(this.coords)
   }
 }
 
-export function updateCoords(refs, pos) {
-  const [, , moves] = refs
+export function updateCoords(ranges, pos) {
+  const [, , moves] = ranges
+    .find(ra => isIn(ra[0], pos))
 
   return moves.map(move => move + pos)
 }
 
 
 export const KINGS = {
-  B_KING: new King('B_KING', b_king, INIT_COORDS.b_king),
-  W_KING: new King('W_KING', w_king, INIT_COORDS.w_king)
+  B_KING: new King('B_KING', b_king),
+  W_KING: new King('W_KING', w_king)
 }

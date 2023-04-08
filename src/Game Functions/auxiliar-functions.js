@@ -1,12 +1,14 @@
-export const fillSquare = (toFill, item, index) => (
-  [...toFill].fill(item, index, index + 1)
+export const fillSquare = (board, piece, posit) => (
+  [...board]
+    .fill(piece, posit, posit + 1)
 )
 
 
-export const isIn = (arr, item) => arr.includes(item)
+export const isIn = (obj, item) => obj.includes(item)
 
 
 const corners = [0, 7, 56, 63]
+
 
 const edges = [
   [0, 1, 2, 3, 4, 5, 6, 7],         //Top
@@ -15,57 +17,69 @@ const edges = [
   [56, 57, 58, 59, 60, 61, 62, 63]  //Bottom
 ]
 
+
 const allEdges = edges.flat()
 
 
-export const coords = {
-  corner: (ext, moves) => {
-    const cornerLimits = corners.filter(co => co !== ext)
+export const corner = (ext, moves) => {
+  const cornerLimits = corners
+    .filter(co => co !== ext)
 
-    return [[ext], cornerLimits, moves]
-  },
-
-
-  edge: (edg, moves) => {
-    const edgeLimits = edges.filter((_, i) => i !== edg).flat()
-
-    return [edges[edg], edgeLimits, moves]
-  },
+  return [
+    [ext],
+    cornerLimits,
+    moves
+  ]
+}
 
 
-  innerQuadrant: (moves) => {
-    const innerQ = Array(64)
-      .fill(null)
-      .map((_, i) => i)
-      .filter(qC => !isIn(allEdges, qC))
+export const edge = (edg, moves) => {
+  const edgeLimits = edges
+    .filter((_, edge) => edge !== edg)
+    .flat()
 
-    return [innerQ, allEdges, moves]
-  },
+  return [
+    edges[edg],
+    edgeLimits,
+    moves
+  ]
+}
 
 
-  idx: (ranges, pos) => {
-    const refs = ranges.find(ra => isIn(ra[0], pos))
+export const innerQuadrant = (moves) => {
+  const innerQ = Array(64)
+    .fill(null)
+    .map((_, qIdx) => qIdx)
+    .filter(qCoord => !isIn(allEdges, qCoord))
 
-    return [refs, pos]
-  },
+  return [
+    innerQ,
+    allEdges,
+    moves
+  ]
+}
 
-  updateCoords(refs, pos, filledSquares) {
-    const [, limits, moves] = refs
-    const coords = []
-    const fixedFilled = filledSquares.filter(sq => sq !== pos)
 
-    moves.forEach(move => {
-      let coord = pos
+export function updateCoords(ranges, pos, filledSquares) {
+  const [, limits, moves] = ranges
+    .find(ra => isIn(ra[0], pos))
 
-      while (
-        !isIn(limits, coord) &&
-        !isIn(fixedFilled, coord)
-      ) {
-        coord += move
-        coords.push(coord)
-      }
-    })
+  const fixedSquares = filledSquares
+    .filter(sq => sq !== pos)
 
-    return coords
-  }
+  const coords = []
+
+  moves.forEach(move => {
+    let coord = pos
+
+    while (
+      !isIn(limits, coord) &&
+      !isIn(fixedSquares, coord)
+    ) {
+      coord += move
+      coords.push(coord)
+    }
+  })
+
+  return coords
 }

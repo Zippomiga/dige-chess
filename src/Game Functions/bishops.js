@@ -1,40 +1,35 @@
 import b_bishop from '../assets/chess-pieces/b-bishop.png'
 import w_bishop from '../assets/chess-pieces/w-bishop.png'
-import { coords } from './auxiliar-functions'
-
-
-const INIT_COORDS = {
-  b_bishop1: [9, 16, 11, 20, 29, 38, 47],
-  b_bishop2: [12, 19, 26, 33, 40, 14, 23],
-  w_bishop1: [51, 44, 37, 30, 23, 49, 40],
-  w_bishop2: [54, 47, 52, 43, 34, 25, 16]
-}
+import { corner, edge, innerQuadrant, updateCoords, isIn } from './auxiliar-functions'
 
 
 class Bishop {
-  constructor(name, pic, initCoords) {
+  constructor(name, pic) {
     this.name = name
     this.pic = pic
-    this.coords = initCoords
-    this.moves = []
+    this.positions = []
+    this.coords = null
   }
 
-  setMoves(pos) {
-    this.moves.push(pos)
+  setPositions(pos) {
+    this.positions.push(pos)
   }
 
-  getMoves() {
-    return this.moves
+  getPositions() {
+    return this.positions
   }
 
-  resetMoves() {
-    this.moves = []
+  resetPositions() {
+    this.positions = []
   }
 
-  setNewCoords() {
-    const pos = this.moves[1]
-    const { corner, edge, innerQuadrant, idx, updateCoords } = coords
-    
+  illegalMove() {
+    return !isIn(this.coords, this.positions[1])
+  }
+
+  setCoords(filledSquares) {
+    if (this.positions[1]) return // this makes the function runs once, only when player clicks for first time
+
     const ranges = [
       corner(0, [9]),
       corner(7, [7]),
@@ -49,18 +44,15 @@ class Bishop {
       innerQuadrant([-9, -7, 7, 9])
     ]
 
-    const range = idx(ranges, pos)
-    this.coords = updateCoords(...range)
-
-    this.resetMoves()
+    this.coords = updateCoords(ranges, this.positions[0], filledSquares)
     console.log(this.coords)
   }
 }
 
 
 export const BISHOPS = {
-  B_BISHOP_1: new Bishop('B_BISHOP_1', b_bishop, INIT_COORDS.b_bishop1),
-  B_BISHOP_2: new Bishop('B_BISHOP_2', b_bishop, INIT_COORDS.b_bishop2),
-  W_BISHOP_1: new Bishop('W_BISHOP_1', w_bishop, INIT_COORDS.w_bishop1),
-  W_BISHOP_2: new Bishop('W_BISHOP_2', w_bishop, INIT_COORDS.w_bishop2)
+  B_BISHOP_1: new Bishop('B_BISHOP_1', b_bishop),
+  B_BISHOP_2: new Bishop('B_BISHOP_2', b_bishop),
+  W_BISHOP_1: new Bishop('W_BISHOP_1', w_bishop),
+  W_BISHOP_2: new Bishop('W_BISHOP_2', w_bishop)
 }

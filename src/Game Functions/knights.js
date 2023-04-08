@@ -1,37 +1,34 @@
 import b_knight_png from '../assets/chess-pieces/b-knight.png'
 import w_knight_png from '../assets/chess-pieces/w-knight.png'
-
-
-const INIT_COORDS = {
-  b_knight1: [11, 16, 18],
-  b_knight2: [12, 21, 23],
-  w_knight1: [51, 40, 42],
-  w_knight2: [52, 45, 47]
-}
+import { isIn } from './auxiliar-functions'
 
 
 class Knight {
-  constructor(name, pic, initCoords) {
+  constructor(name, pic) {
     this.name = name
     this.pic = pic
-    this.coords = initCoords
-    this.moves = []
+    this.positions = []
+    this.coords = null
   }
 
-  setMoves(pos) {
-    this.moves.push(pos)
+  setPositions(pos) {
+    this.positions.push(pos)
   }
 
-  getMoves() {
-    return this.moves
+  getPositions() {
+    return this.positions
   }
 
-  resetMoves() {
-    this.moves = []
+  resetPositions() {
+    this.positions = []
   }
 
-  setNewCoords() {
-    const pos = this.moves[1]
+  illegalMove() {
+    return !isIn(this.coords, this.positions[1])
+  }
+
+  setCoords() {
+    if (this.positions[1]) return // this makes the function runs once, only when player clicks for first time
 
     const columns = [
       [0, 8, 16, 24, 32, 40, 48, 56],   //column A
@@ -40,16 +37,13 @@ class Knight {
       [6, 14, 22, 30, 38, 46, 54, 62]   //column G
     ]
 
-    const range = columns.findIndex(co => co.includes(pos))
-    this.coords = updateCoords(pos, range)
-
-    this.resetMoves()
-    console.log(this.coords.sort((a, b) => a - b))
+    this.coords = updateCoords(this.positions[0], columns)
+    console.log(this.coords)
   }
 }
 
 
-function updateCoords(pos, range) {
+function updateCoords(pos, columns) {
   const [x, y] = [2, 16]
 
   const X = {
@@ -66,6 +60,8 @@ function updateCoords(pos, range) {
     b_r: pos + y + 1
   }
 
+  const range = columns
+    .findIndex(co => co.includes(pos))
 
   switch (range) {
     case 0:         //kinght at column A
@@ -78,7 +74,7 @@ function updateCoords(pos, range) {
         X.a_r, X.b_r,
         Y.a_l, Y.a_r, Y.b_r, Y.b_l
       ]
-    case 2:         //kinght iat column H
+    case 2:         //kinght at column H
       return [
         X.a_l, X.b_l,
         Y.a_l, Y.b_l
@@ -98,8 +94,8 @@ function updateCoords(pos, range) {
 
 
 export const KNIGHTS = {
-  B_KNIGHT_1: new Knight('B_KNIGHT_1', b_knight_png, INIT_COORDS.b_knight1),
-  B_KNIGHT_2: new Knight('B_KNIGHT_2', b_knight_png, INIT_COORDS.b_knight2),
-  W_KNIGHT_1: new Knight('W_KNIGHT_1', w_knight_png, INIT_COORDS.w_knight1,),
-  W_KNIGHT_2: new Knight('W_KNIGHT_2', w_knight_png, INIT_COORDS.w_knight2),
+  B_KNIGHT_1: new Knight('B_KNIGHT_1', b_knight_png),
+  B_KNIGHT_2: new Knight('B_KNIGHT_2', b_knight_png),
+  W_KNIGHT_1: new Knight('W_KNIGHT_1', w_knight_png),
+  W_KNIGHT_2: new Knight('W_KNIGHT_2', w_knight_png),
 }

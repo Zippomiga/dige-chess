@@ -1,10 +1,10 @@
 import './square.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { fillSquare } from '../../Game Functions/auxiliar-functions'
+import { fillSquare, isIn } from '../../Game Functions/auxiliar-functions'
 
 
-export default function Square({ piece, currPosit, filledSquares }) {
+export default function Square({ sqrPiece, currPosit, filledSquares }) {
   const {
     chessBoard,
     setChessBoard,
@@ -13,46 +13,40 @@ export default function Square({ piece, currPosit, filledSquares }) {
   } = useContext(ChessContext)
 
 
-  function reset(piece, log) {
+  function reset(currentPiece, log) {
     pieces.current = []
-    piece?.resetPositions()
+    currentPiece?.resetPositions()
     console.log(log)
   }
 
 
   function handleSquare() {
-    pieces.current.push(piece)
-    const [currentPiece, newPiece] = pieces.current
+    pieces.current.push(sqrPiece)
+    const [piece] = pieces.current
 
-    if (currentPiece === null) {
-      reset(currentPiece, 'No piece in square')
+    if (piece === null) {
+      reset(piece, 'No piece in square')
       return
     }
 
-    currentPiece.setPositions(currPosit)
-    currentPiece.setCoords(filledSquares)
+    piece.setPositions(currPosit)
+    piece.setCoords(filledSquares)
 
-    const [oldPosit, newPosit] = currentPiece.getPositions()
+    const [oldPosit, newPosit] = piece.getPositions()
 
-    const sameSquare = oldPosit === newPosit
-    const samePlayer = currentPiece?.name[0] === newPiece?.name[0]
-    const outOfCoords = !currentPiece.isInCoords()
-
-    if (oldPosit && newPosit) { //if both !== null, it means it has been clicked twice
+    if (newPosit !== undefined) {           // it means that the user clicked twice
       if (
-        sameSquare ||
-        samePlayer ||
-        outOfCoords
+        piece.illegalMove() ||
+        piece.name[0] === sqrPiece?.name[0] // same player ?
       ) {
-        reset(currentPiece, 'Same square || Same player piece || Out of coords')
-        return // this disallows to the piece to eat another
+        reset(piece, 'Ilegal move || Same player')
       } else {
         const oldBoard = fillSquare(chessBoard, null, oldPosit)
-        const newBoard = fillSquare(oldBoard, currentPiece, newPosit)
+        const newBoard = fillSquare(oldBoard, piece, newPosit)
 
         setTurn(turn => !turn)
         setChessBoard(newBoard)
-        reset(currentPiece, 'Allowed')
+        reset(piece, 'Allowed')
       }
     }
   }
@@ -64,11 +58,11 @@ export default function Square({ piece, currPosit, filledSquares }) {
       id={currPosit}
       onClick={handleSquare}
     >
-      {piece?.name.includes('') &&
+      {sqrPiece?.name.includes('') &&
         <img
-          className={piece?.name.includes('PAWN') ? 'pawn' : 'piece'}
-          src={piece?.pic}
-          alt={piece?.name}
+          className={sqrPiece?.name.includes('PAWN') ? 'pawn' : 'piece'}
+          src={sqrPiece?.pic}
+          alt={sqrPiece?.name}
         />}
       <span className='square-index'>
         {currPosit}

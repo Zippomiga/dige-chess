@@ -7,11 +7,8 @@ export default function ChessBoard() {
   const { chessBoard } = useContext(ChessContext)
 
   const filledSquares = chessBoard
-    .map((piece, position) => piece ? position : null)
+    .map((piece, posit) => piece ? posit : null)
     .filter(pos => pos !== null)
-
-
-  // console.log(filledSquares)
 
   return (
     <section className='chess-board'>
@@ -20,7 +17,7 @@ export default function ChessBoard() {
           return (
             <Square
               key={index}
-              piece={square}
+              sqrPiece={square}
               currPosit={index}
               filledSquares={filledSquares}
             />
