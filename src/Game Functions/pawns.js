@@ -24,39 +24,46 @@ class Pawn {
   }
 
   illegalMove() {
-    return !isIn(this.coords, this.positions[1])
+    const pos = this.positions[1]
+    const blocked = this.coords.pop()
+
+    return !isIn(this.coords, pos) || pos === blocked
   }
 
   setCoords(filledSquares) {
     if (this.positions[1]) return // this makes the function runs once, only when player clicks for first time
 
-    this.coords = updateCoords(this.name, this.positions, this.coords)
+    this.coords = updateCoords(this.name, this.positions[0], this.coords, filledSquares)
     console.log(this.coords)
   }
 }
 
-function updateCoords(name, positions, coords) {
-  const [oldPos, newPos] = positions
+function updateCoords(name, pos, coords, filledSquares) {
   const isBlack = isIn(name, 'B')
   const firstMove = coords === null
-  
-  // const canEat = () => {
-  //   const b_eatCoords = [9, 7]
-  //   const w_eatCoords = [-9, -7]
+  const diff = [7, 9]
 
-  //   const calc = oldPos + newPos
+  const b = {
+    canEat: filledSquares.filter(sq => isIn(diff, (sq - pos))),
+    blocked: filledSquares.find(sq => sq === pos + 8),
+  }
 
-  //   return isBlack && isIn(b_eatCoords, calc) || !isBlack && isIn(w_eatCoords, calc)
-  // }
+  const w = {
+    canEat: filledSquares.filter(sq => isIn(diff, (pos - sq))),
+    blocked: filledSquares.find(sq => sq === pos - 8),
+  }
+
+  const b_firstBlocked = b.blocked ?? pos + 16
+  const w_firstBlocked = w.blocked ?? pos - 16
 
   if (firstMove) {
     return isBlack ?
-      [oldPos + 8, oldPos + 16] :
-      [oldPos - 8, oldPos - 16]
+      [pos + 8, b_firstBlocked, ...b.canEat, b.blocked] :
+      [pos - 8, w_firstBlocked, ...w.canEat, w.blocked]
   } else {
     return isBlack ?
-      [oldPos + 8] :
-      [oldPos - 8]
+      [pos + 8, ...b.canEat, b.blocked] :
+      [pos - 8, ...w.canEat, w.blocked]
   }
 }
 
