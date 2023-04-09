@@ -24,47 +24,38 @@ class Pawn {
   }
 
   illegalMove() {
-    const pos = this.positions[1]
-    const blocked = this.coords.pop()
-
-    return !isIn(this.coords, pos) || pos === blocked
+    return !isIn(this.coords, this.positions[1])
   }
 
   setCoords(filledSquares) {
     if (this.positions[1]) return // this makes the function runs once, only when player clicks for first time
 
-    this.coords = updateCoords(this.name, this.positions[0], this.coords, filledSquares)
+    this.coords = updateCoords(this, filledSquares)
     console.log(this.coords)
   }
 }
 
-function updateCoords(name, pos, coords, filledSquares) {
+
+function updateCoords(pawn, filledSquares) {
+  const { name, coords, positions: [pos] } = pawn
   const isBlack = isIn(name, 'B')
-  const firstMove = coords === null
-  const diff = [7, 9]
 
-  const b = {
-    canEat: filledSquares.filter(sq => isIn(diff, (sq - pos))),
-    blocked: filledSquares.find(sq => sq === pos + 8),
-  }
+  const verticalMoves = isBlack ?
+    !coords ? [pos + 8, pos + 16] : [pos + 8] :
+    !coords ? [pos - 8, pos - 16] : [pos - 8]
+  // if coords === null it means the Pawn is at its initial position, so it can move 2 squares
 
-  const w = {
-    canEat: filledSquares.filter(sq => isIn(diff, (pos - sq))),
-    blocked: filledSquares.find(sq => sq === pos - 8),
-  }
+  const legalMoves = verticalMoves
+    .filter(move => !isIn(filledSquares, move))
+  // if another piece is on the way, this will restrict that vertical move
 
-  const b_firstBlocked = b.blocked ?? pos + 16
-  const w_firstBlocked = w.blocked ?? pos - 16
+  const eatingMoves = filledSquares
+    .filter(sq => isBlack ?
+      isIn([7, 9], (sq - pos)) :
+      isIn([7, 9], (pos - sq)))
+  // 7 && 9 are the positional difference that the Pawn can make to eat
 
-  if (firstMove) {
-    return isBlack ?
-      [pos + 8, b_firstBlocked, ...b.canEat, b.blocked] :
-      [pos - 8, w_firstBlocked, ...w.canEat, w.blocked]
-  } else {
-    return isBlack ?
-      [pos + 8, ...b.canEat, b.blocked] :
-      [pos - 8, ...w.canEat, w.blocked]
-  }
+  return [...eatingMoves, ...legalMoves]
 }
 
 
