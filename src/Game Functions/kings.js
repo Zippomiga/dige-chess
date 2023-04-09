@@ -28,7 +28,7 @@ class King {
   }
 
   setCoords() {
-    if (this.positions[1]) return // this makes the function runs once, only when player clicks for first time
+    if (this.positions[1]) return // it runs only when player selects the piece
 
     const ranges = [
       corner(0, [1, 8, 9]),         //TopLeft

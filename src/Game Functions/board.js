@@ -41,23 +41,3 @@ export const CHESS_BOARD = [
   KNIGHTS.W_KNIGHT_2,
   ROOKS.W_ROOK_2
 ]
-
-// export const CHESS_BOARD = [
-//   ROOKS.B_ROOK_1,
-//   KNIGHTS.B_KNIGHT_1,
-//   BISHOPS.B_BISHOP_1,
-//   QUEENS.B_QUEEN,
-//   KINGS.B_KING,
-//   BISHOPS.B_BISHOP_2,
-//   KNIGHTS.B_KNIGHT_2,
-//   ROOKS.B_ROOK_2,
-//   ...Array(48).fill(null),
-//   ROOKS.W_ROOK_1,
-//   KNIGHTS.W_KNIGHT_1,
-//   BISHOPS.W_BISHOP_1,
-//   QUEENS.W_QUEEN,
-//   KINGS.W_KING,
-//   BISHOPS.W_BISHOP_2,
-//   KNIGHTS.W_KNIGHT_2,
-//   ROOKS.W_ROOK_2
-// ]

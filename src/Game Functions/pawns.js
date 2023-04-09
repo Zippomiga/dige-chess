@@ -28,10 +28,10 @@ class Pawn {
   }
 
   setCoords(filledSquares) {
-    if (this.positions[1]) return // this makes the function runs once, only when player clicks for first time
+    if (this.positions[1]) return // it runs only when player selects the piece
 
     this.coords = updateCoords(this, filledSquares)
-    console.log(this.coords)
+    // console.log(this.coords)
   }
 }
 
@@ -40,9 +40,12 @@ function updateCoords(pawn, filledSquares) {
   const { name, coords, positions: [pos] } = pawn
   const isBlack = isIn(name, 'B')
 
+  const add = n => pos + n
+  const sub = n => pos - n
+
   const verticalMoves = isBlack ?
-    !coords ? [pos + 8, pos + 16] : [pos + 8] :
-    !coords ? [pos - 8, pos - 16] : [pos - 8]
+    !coords ? [add(8), add(16)] : [add(8)] :
+    !coords ? [sub(8), sub(16)] : [sub(8)]
   // if coords === null it means the Pawn is at its initial position, so it can move 2 squares
 
   const legalMoves = verticalMoves
@@ -50,12 +53,12 @@ function updateCoords(pawn, filledSquares) {
   // if another piece is on the way, this will restrict that vertical move
 
   const eatingMoves = filledSquares
-    .filter(sq => isBlack ?
-      isIn([7, 9], (sq - pos)) :
-      isIn([7, 9], (pos - sq)))
+    .filter(sq => isIn([7, 9], isBlack ? add(sq) : sub(sq)))
   // 7 && 9 are the positional difference that the Pawn can make to eat
 
-  return [...eatingMoves, ...legalMoves]
+  console.log({ legalMoves, eatingMoves })
+
+  return [...legalMoves, ...eatingMoves]
 }
 
 

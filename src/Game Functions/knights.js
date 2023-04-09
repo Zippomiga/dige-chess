@@ -28,7 +28,7 @@ class Knight {
   }
 
   setCoords() {
-    if (this.positions[1]) return // this makes the function runs once, only when player clicks for first time
+    if (this.positions[1]) return // it runs only when player selects the piece
 
     const columns = [
       [0, 8, 16, 24, 32, 40, 48, 56],   //column A
@@ -61,7 +61,7 @@ function updateCoords(pos, columns) {
   }
 
   const range = columns
-    .findIndex(co => co.includes(pos))
+    .findIndex(column => isIn(column, pos))
 
   switch (range) {
     case 0:         //kinght at column A
