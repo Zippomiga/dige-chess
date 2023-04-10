@@ -31,7 +31,7 @@ class Pawn {
     if (this.positions[1]) return // it runs only when player selects the piece
 
     this.coords = updateCoords(this, filledSquares)
-    // console.log(this.coords)
+    console.log(this.coords)
   }
 }
 
@@ -43,20 +43,38 @@ function updateCoords(pawn, filledSquares) {
   const add = n => pos + n
   const sub = n => pos - n
 
-  const verticalMoves = isBlack ?
+  const moves = isBlack ?
     !coords ? [add(8), add(16)] : [add(8)] :
     !coords ? [sub(8), sub(16)] : [sub(8)]
   // if coords === null it means the Pawn is at its initial position, so it can move 2 squares
 
-  const legalMoves = verticalMoves
+  const legalMoves = moves
     .filter(move => !isIn(filledSquares, move))
   // if another piece is on the way, this will restrict that vertical move
 
-  const eatingMoves = filledSquares
-    .filter(sq => isIn([7, 9], isBlack ? add(sq) : sub(sq)))
-  // 7 && 9 are the positional difference that the Pawn can make to eat
+  const columns = [
+    [0, 8, 16, 24, 32, 40, 48, 56],   //column A
+    [7, 15, 23, 31, 39, 47, 55, 63]   //column H
+  ]
 
-  console.log({ legalMoves, eatingMoves })
+  const column = columns
+    .findIndex(col => isIn(col, pos))
+
+  let eatingMoves;
+
+  switch (column) {
+    case 0: // column A
+      eatingMoves = filledSquares
+        .filter(sq => isBlack ? sq - pos === 9 : sub(sq) === 7)
+      break
+    case 1: // column H
+      eatingMoves = filledSquares
+        .filter(sq => isBlack ? sq - pos === 7 : sub(sq) === 9)
+      break
+    default:
+      eatingMoves = filledSquares
+        .filter(sq => isIn([7, 9], isBlack ? sq - pos : pos - sq))
+  }
 
   return [...legalMoves, ...eatingMoves]
 }

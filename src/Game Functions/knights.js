@@ -33,8 +33,8 @@ class Knight {
     const columns = [
       [0, 8, 16, 24, 32, 40, 48, 56],   //column A
       [1, 9, 17, 25, 33, 41, 49, 57],   //column B
-      [7, 15, 23, 31, 39, 47, 55, 63],  //column H
-      [6, 14, 22, 30, 38, 46, 54, 62]   //column G
+      [6, 14, 22, 30, 38, 46, 54, 62],  //column G
+      [7, 15, 23, 31, 39, 47, 55, 63]   //column H
     ]
 
     this.coords = updateCoords(this.positions[0], columns)
@@ -74,17 +74,17 @@ function updateCoords(pos, columns) {
         X.a_r, X.b_r,
         Y.a_l, Y.a_r, Y.b_r, Y.b_l
       ]
-    case 2:         //kinght at column H
-      return [
-        X.a_l, X.b_l,
-        Y.a_l, Y.b_l
-      ]
-    case 3:         //kinght at column G
+    case 2:         //kinght at column G
       return [
         X.a_l, X.b_l,
         Y.a_l, Y.a_r, Y.b_r, Y.b_l
       ]
-    default:        //kinght at inner Quadrant
+    case 3:         //kinght at column H
+      return [
+        X.a_l, X.b_l,
+        Y.a_l, Y.b_l
+      ]
+    default:        //kinght at column C || D || E || F
       return [
         X.a_l, X.a_r, X.b_r, X.b_l,
         Y.a_l, Y.a_r, Y.b_r, Y.b_l

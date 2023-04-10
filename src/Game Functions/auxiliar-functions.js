@@ -61,25 +61,25 @@ export const innerQuadrant = (moves) => {
 
 
 export function updateCoords(ranges, pos, filledSquares) {
-  const [, limits, moves] = ranges
+  const [, edges, moves] = ranges
     .find(ra => isIn(ra[0], pos))
 
-  const fixedSquares = filledSquares
-    .filter(sq => sq !== pos)
+  const limits = [
+    ...new Set([...filledSquares, ...edges])
+  ].filter(limit => limit !== pos)
+  // if another piece is on the way, this will restrict the range of movements
 
-  const coords = []
+  const newCoords = []
 
   moves.forEach(move => {
     let coord = pos
 
-    while (
-      !isIn(limits, coord) &&
-      !isIn(fixedSquares, coord)
-    ) {
+    while (!isIn(limits, coord)) {
       coord += move
-      coords.push(coord)
+      newCoords.push(coord)
     }
   })
 
-  return coords
+  console.log({ limits })
+  return newCoords
 }
