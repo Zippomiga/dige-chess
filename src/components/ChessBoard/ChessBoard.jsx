@@ -7,8 +7,8 @@ export default function ChessBoard() {
   const { chessBoard } = useContext(ChessContext)
 
   const filledSquares = chessBoard
-    .map((piece, posit) => piece ? posit : null)
-    .filter(pos => pos !== null)
+    .map((piece, pos) => piece ? pos : null)
+    .filter(posit => posit !== null)
 
   return (
     <section className='chess-board'>

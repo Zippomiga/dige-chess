@@ -33,8 +33,8 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     piece.setCoords(filledSquares)
 
     const [oldPosit, newPosit] = piece.getPositions()
-
-    if (newPosit !== undefined) {           // the user clicked twice
+    
+    if (newPosit !== undefined) { // the player clicked twice
       if (
         piece.illegalMove() ||
         piece.name[0] === sqrPiece?.name[0] // same player ?

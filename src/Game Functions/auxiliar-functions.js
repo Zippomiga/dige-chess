@@ -80,6 +80,5 @@ export function updateCoords(ranges, pos, filledSquares) {
     }
   })
 
-  console.log({ limits })
   return newCoords
 }
