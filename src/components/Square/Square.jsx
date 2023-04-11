@@ -9,7 +9,8 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     chessBoard,
     setChessBoard,
     setTurn,
-    pieces
+    pieces,
+    playerTurn,
   } = useContext(ChessContext)
 
 
@@ -24,8 +25,11 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     pieces.current.push(sqrPiece)
     const [piece] = pieces.current
 
-    if (piece === null) {
-      reset(piece, 'No piece in square')
+    if (
+      piece === null ||             // empty square ?
+      piece.name[0] !== playerTurn  // other player's turn ?
+    ) {
+      reset(piece, `No piece in square || ${playerTurn} turn`)
       return
     }
 
@@ -33,7 +37,7 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     piece.setCoords(filledSquares)
 
     const [oldPosit, newPosit] = piece.getPositions()
-    
+
     if (newPosit !== undefined) { // the player clicked twice
       if (
         piece.illegalMove() ||
@@ -58,12 +62,11 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
       id={currPosit}
       onClick={handleSquare}
     >
-      {sqrPiece?.name.includes('') &&
-        <img
-          className={sqrPiece?.name.includes('PAWN') ? 'pawn' : 'piece'}
-          src={sqrPiece?.pic}
-          alt={sqrPiece?.name}
-        />}
+      <img
+        className={sqrPiece?.name.includes('PAWN') ? 'pawn  ' : 'piece'}
+        src={sqrPiece?.pic}
+        alt={sqrPiece?.name}
+      />
       <span className='square-index'>
         {currPosit}
       </span>

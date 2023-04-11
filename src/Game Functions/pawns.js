@@ -9,7 +9,7 @@ class Pawn {
     this.pic = pic
     this.coords = null
     this.positions = []
-    this.initPos = initPos
+    this.init = initPos
   }
 
   setPositions(pos) {
@@ -38,21 +38,21 @@ class Pawn {
 
 
 function updateCoords(pawn, filledSquares) {
-  const { name, positions: [pos], initPos } = pawn
-  const isBlack = isIn(name, 'B')
+  const { name, positions: [pos], init } = pawn
+  const B = isIn(name, 'B') // black pawn?
   const add = n => pos + n
   const sub = n => pos - n
 
-  const verticalMoves = (isBlack ?
-    pos === initPos ? [add(8), add(16)] : [add(8)] :
-    pos === initPos ? [sub(8), sub(16)] : [sub(8)])
+  const verticalMoves = (B ?
+    pos === init ? [add(8), add(16)] : [add(8)] :
+    pos === init ? [sub(8), sub(16)] : [sub(8)])
     .filter(move => !isIn(filledSquares, move))
   // if another piece is on the way, this filter will restrict that vertical move
 
   const eatMoves = (atColumn, blackMov, whiteMov) => (
     filledSquares.filter(atColumn ?
-      sq => isBlack ? blackMov === -sub(sq) : whiteMov === sub(sq) :
-      sq => isIn([7, 9], isBlack ? -sub(sq) : sub(sq)))
+      sq => B ? blackMov === -sub(sq) : whiteMov === sub(sq) :
+      sq => isIn([7, 9], B ? -sub(sq) : sub(sq)))
   )
 
   const columns = [

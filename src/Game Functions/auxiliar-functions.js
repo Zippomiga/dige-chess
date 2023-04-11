@@ -67,7 +67,7 @@ export function updateCoords(ranges, pos, filledSquares) {
   const limits = [
     ...new Set([...filledSquares, ...edges])
   ].filter(limit => limit !== pos)
-  // if another piece is on the way, this will restrict the range of movements
+  // if another piece is on the way, this filter will restrict the range of movements
 
   const newCoords = []
 
