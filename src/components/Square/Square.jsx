@@ -11,12 +11,15 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     setTurn,
     pieces,
     playerTurn,
+    setMoves,
+    moves
   } = useContext(ChessContext)
 
 
-  function reset(currentPiece, log) {
+  function reset(piece, log) {
     pieces.current = []
-    currentPiece?.resetPositions()
+    piece?.resetPositions()
+    setMoves([])
     console.log(log)
   }
 
@@ -34,7 +37,7 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     }
 
     piece.setPositions(currPosit)
-    piece.setCoords(filledSquares)
+    piece.setCoords(setMoves, filledSquares)
 
     const [oldPosit, newPosit] = piece.getPositions()
 
@@ -58,12 +61,12 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
 
   return (
     <div
-      className='square'
+      className={isIn(moves, currPosit) ? 'square move' : 'square'}
       id={currPosit}
       onClick={handleSquare}
     >
       <img
-        className={sqrPiece?.name.includes('PAWN') ? 'pawn  ' : 'piece'}
+        className={isIn(sqrPiece?.name, 'PAWN') ? 'pawn  ' : 'piece'}
         src={sqrPiece?.pic}
         alt={sqrPiece?.name}
       />

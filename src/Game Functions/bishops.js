@@ -27,7 +27,7 @@ class Bishop {
     return !isIn(this.coords, this.positions[1])
   }
 
-  setCoords(filledSquares) {
+  setCoords(setMoves, filledSquares) {
     if (this.positions[1]) return // it runs only when player selects the piece
 
     const ranges = [
@@ -45,6 +45,7 @@ class Bishop {
     ]
 
     this.coords = updateCoords(ranges, this.positions[0], filledSquares)
+    setMoves(this.coords)
     console.log(this.coords)
   }
 }

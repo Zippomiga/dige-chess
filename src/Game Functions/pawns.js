@@ -28,10 +28,12 @@ class Pawn {
     return !isIn(this.coords, this.positions[1])
   }
 
-  setCoords(filledSquares) {
+
+  setCoords(setMoves, filledSquares) {
     if (this.positions[1]) return // it runs only when player selects the piece
 
     this.coords = updateCoords(this, filledSquares)
+    setMoves(this.coords)
     console.log(this.coords)
   }
 }
@@ -49,9 +51,9 @@ function updateCoords(pawn, filledSquares) {
     .filter(move => !isIn(filledSquares, move))
   // if another piece is on the way, this filter will restrict that vertical move
 
-  const eatMoves = (atColumn, blackMov, whiteMov) => (
+  const eatMoves = (atColumn, b, w) => (
     filledSquares.filter(atColumn ?
-      sq => B ? blackMov === -sub(sq) : whiteMov === sub(sq) :
+      sq => B ? b === -sub(sq) : w === sub(sq) :
       sq => isIn([7, 9], B ? -sub(sq) : sub(sq)))
   )
 

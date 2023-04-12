@@ -95,10 +95,14 @@
   width: 2.8rem;
 }
 
-
 .square-index {
   position: absolute;
   font-size: 0.8rem;
   bottom: 0;
   right: 2px;
+}
+
+.move {
+  background-color: #ffff00b3 !important;
+  transition: 0.2s;
 }

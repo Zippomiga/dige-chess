@@ -27,7 +27,7 @@ class King {
     return !isIn(this.coords, this.positions[1])
   }
 
-  setCoords() {
+  setCoords(setMoves) {
     if (this.positions[1]) return // it runs only when player selects the piece
 
     const ranges = [
@@ -45,6 +45,7 @@ class King {
     ]
 
     this.coords = updateCoords(ranges, this.positions[0])
+    setMoves(this.coords)
     console.log(this.coords)
   }
 }

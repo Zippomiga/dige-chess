@@ -4,7 +4,7 @@ export const fillSquare = (board, piece, posit) => (
 )
 
 
-export const isIn = (obj, item) => obj.includes(item)
+export const isIn = (obj, item) => obj?.includes(item)
 
 
 const corners = [0, 7, 56, 63]

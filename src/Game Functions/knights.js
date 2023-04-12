@@ -27,7 +27,7 @@ class Knight {
     return !isIn(this.coords, this.positions[1])
   }
 
-  setCoords() {
+  setCoords(setMoves) {
     if (this.positions[1]) return // it runs only when player selects the piece
 
     const columns = [
@@ -38,6 +38,7 @@ class Knight {
     ]
 
     this.coords = updateCoords(this.positions[0], columns)
+    setMoves(this.coords)
     console.log(this.coords)
   }
 }
