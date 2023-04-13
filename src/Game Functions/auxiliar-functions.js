@@ -82,3 +82,13 @@ export function updateCoords(ranges, pos, filledSquares) {
 
   return newCoords
 }
+
+
+export const filterCoords = (isBlack, move, chessBoard) => {
+  const samePlayerCoords = chessBoard
+    .map((sq, i) => sq?.name
+      .startsWith(isBlack ? 'B' : 'W') ? i : null)
+    .filter(p => p !== null)
+
+  return !isIn(samePlayerCoords, move)
+}

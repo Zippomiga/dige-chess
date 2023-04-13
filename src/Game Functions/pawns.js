@@ -1,6 +1,6 @@
 import b_pawn from '../assets/chess-pieces/b-pawn.png'
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
-import { isIn } from './auxiliar-functions'
+import { filterCoords, isIn } from './auxiliar-functions'
 
 
 class Pawn {
@@ -29,17 +29,20 @@ class Pawn {
   }
 
 
-  setCoords(setMoves, filledSquares) {
+  setCoords(setMoves, filledSquares, chessBoard) {
     if (this.positions[1]) return // it runs only when player selects the piece
+    const B = isIn(this.name, 'B') // black pawn?
 
-    this.coords = updateCoords(this, filledSquares)
+    this.coords = updateCoords(this, filledSquares, chessBoard)
+      .filter(move => filterCoords(B, move, chessBoard))
+
     setMoves(this.coords)
     console.log(this.coords)
   }
 }
 
 
-function updateCoords(pawn, filledSquares) {
+function updateCoords(pawn, filledSquares, chessBoard) {
   const { name, positions: [pos], init } = pawn
   const B = isIn(name, 'B') // black pawn?
   const add = n => pos + n

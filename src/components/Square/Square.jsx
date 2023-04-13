@@ -37,7 +37,7 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     }
 
     piece.setPositions(currPosit)
-    piece.setCoords(setMoves, filledSquares)
+    piece.setCoords(setMoves, filledSquares, chessBoard)
 
     const [oldPosit, newPosit] = piece.getPositions()
 

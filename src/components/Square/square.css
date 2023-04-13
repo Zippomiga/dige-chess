@@ -1,18 +1,27 @@
 .square {
-  box-shadow: inset 0 0 1px #000;
+  outline: 1px solid #ffffff;
   display: grid;
   height: 4.5rem;
   place-items: center;
-  width: 4.5rem;
   position: relative;
+  transition: 0.2s background;
+  width: 4.5rem;
 }
 
 .square:hover {
-  box-shadow: none;
+  outline: 1px solid #000;
   cursor: pointer;
-  outline: 2px solid #ffff00;
   z-index: 1;
 }
+
+.move {
+  background-color: #00ff0033 !important;
+}
+
+.move:hover {
+  background-color: #00ff0080 !important;
+}
+
 
 .square:nth-child(2),
 .square:nth-child(4),
@@ -100,9 +109,4 @@
   font-size: 0.8rem;
   bottom: 0;
   right: 2px;
-}
-
-.move {
-  background-color: #ffff00b3 !important;
-  transition: 0.2s;
 }

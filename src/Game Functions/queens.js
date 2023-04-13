@@ -43,7 +43,7 @@ class Queen {
 
       innerQuadrant([-9, -8, -7, -1, 1, 7, 8, 9])
     ]
-
+z
     this.coords = updateCoords(ranges, this.positions[0], filledSquares)
     setMoves(this.coords)
     console.log(this.coords)
