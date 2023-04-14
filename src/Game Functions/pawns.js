@@ -49,32 +49,44 @@ class Pawn {
 function updateCoords(isBlack, pos, init, filledSquares) {
   const add = n => pos + n
   const sub = n => pos - n
+  const diff = (sq, diff) => sq === diff // positional difference to eat
 
   const firstMove = pos === init && !filledSquares
     .find(sq => sq === (isBlack ? add(8) : sub(8)))
   // if another piece is in the way, this will prevent to the pawn from "jumping" that piece
 
-  const verticalMoves = (isBlack ?
-    firstMove ? [add(8), add(16)] : [add(8)] :
-    firstMove ? [sub(8), sub(16)] : [sub(8)])
-    .filter(move => !isIn(filledSquares, move))
+  const verticalMoves = () => {
+    const moves = isBlack ?
+      firstMove ? [add(8), add(16)] : [add(8)] :
+      firstMove ? [sub(8), sub(16)] : [sub(8)]
+
+    return moves.filter(move => !isIn(filledSquares, move))
+  }
   // if another piece is in the way, this will restrict that vertical move
 
-  const eatMoves = (atEdgeColumn, b, w) => ( // (1)* Check out the reference below of all
-    filledSquares.filter(atEdgeColumn ?
-      sq => isBlack ? b === -sub(sq) : w === sub(sq) :
-      sq => isIn([7, 9], isBlack ? -sub(sq) : sub(sq)))
-  )
+  const eatMoves = (atEdge, b, w) => { // (1)* Check out the reference below of all
+    return filledSquares.filter(sq => {
+      const bl = {
+        edge: diff(-sub(sq), b),
+        qdrt: isIn([7, 9], -sub(sq))
+      }
 
-  const columns = [
-    [0, 8, 16, 24, 32, 40, 48, 56],   //column A
-    [7, 15, 23, 31, 39, 47, 55, 63]   //column H
-  ]
+      const wh = {
+        edge: diff(sub(sq), w),
+        qdrt: isIn([7, 9], sub(sq))
+      }
 
-  switch (column(columns, pos)) {
-    case 0: return [...verticalMoves, ...eatMoves(true, 9, 7)] // column A
-    case 1: return [...verticalMoves, ...eatMoves(true, 7, 9)] // column H
-    default: return [...verticalMoves, ...eatMoves(false)]     // column B || C || D || E || F || G
+      const edge = isBlack ? bl.edge : wh.edge
+      const qdrt = isBlack ? bl.qdrt : wh.qdrt
+
+      return atEdge ? edge : qdrt
+    })
+  }
+
+  switch (column(pos)) {
+    case 0: return [...verticalMoves(), ...eatMoves(true, 9, 7)] // column A
+    case 3: return [...verticalMoves(), ...eatMoves(true, 7, 9)] // column H
+    default: return [...verticalMoves(), ...eatMoves(false)]     // column B || C || D || E || F || G
   }
 }
 

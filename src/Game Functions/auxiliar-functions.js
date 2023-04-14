@@ -17,8 +17,18 @@ const edges = [
   [56, 57, 58, 59, 60, 61, 62, 63]  //Bottom
 ]
 
-
 const allEdges = edges.flat()
+
+
+const columns = [
+  [0, 8, 16, 24, 32, 40, 48, 56],   //column A
+  [1, 9, 17, 25, 33, 41, 49, 57],   //column B
+  [6, 14, 22, 30, 38, 46, 54, 62],  //column G
+  [7, 15, 23, 31, 39, 47, 55, 63]   //column H
+]
+
+export const column = pos => columns.findIndex(col => isIn(col, pos))
+
 
 
 export const corner = (ext, moves) => {
@@ -58,10 +68,6 @@ export const innerQuadrant = (moves) => {
     moves
   ]
 }
-
-
-export const column = (columns, pos) => columns
-  .findIndex(col => isIn(col, pos))
 
 
 export function updateCoords(ranges, pos, filledSquares) {

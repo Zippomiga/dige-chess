@@ -57,15 +57,7 @@ function updateCoords(pos) {
     b_r: pos + y + 1
   }
 
-  const columns = [
-    [0, 8, 16, 24, 32, 40, 48, 56],   //column A
-    [1, 9, 17, 25, 33, 41, 49, 57],   //column B
-    [6, 14, 22, 30, 38, 46, 54, 62],  //column G
-    [7, 15, 23, 31, 39, 47, 55, 63]   //column H
-  ]
-
-
-  switch (column(columns, pos)) {
+  switch (column(pos)) {
     case 0:         //knight at column A
       return [
         X.a_r, X.b_r,
