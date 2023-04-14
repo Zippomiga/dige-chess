@@ -8,7 +8,6 @@ export default function ChessBoard() {
 
   const filledSquares = chessBoard
     .map((piece, pos) => piece ? pos : null)
-    .filter(posit => posit !== null)
 
   return (
     <section className='chess-board'>

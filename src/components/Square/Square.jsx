@@ -1,7 +1,7 @@
 import './square.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { fillSquare, isIn } from '../../Game Functions/auxiliar-functions'
+import { fillSquare, filterCoords, isIn } from '../../Game Functions/auxiliar-functions'
 
 
 export default function Square({ sqrPiece, currPosit, filledSquares }) {
@@ -37,7 +37,7 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     }
 
     piece.setPositions(currPosit)
-    piece.setCoords(setMoves, filledSquares, chessBoard)
+    piece.setCoords(setMoves, filledSquares)
 
     const [oldPosit, newPosit] = piece.getPositions()
 
@@ -58,10 +58,11 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     }
   }
 
+  const legalCoords = filterCoords(moves, chessBoard, playerTurn)
 
   return (
     <div
-      className={isIn(moves, currPosit) ? 'square move' : 'square'}
+      className={isIn(legalCoords, currPosit) ? 'square move' : 'square'}
       id={currPosit}
       onClick={handleSquare}
     >

@@ -60,14 +60,18 @@ export const innerQuadrant = (moves) => {
 }
 
 
+export const column = (columns, pos) => columns
+  .findIndex(col => isIn(col, pos))
+
+
 export function updateCoords(ranges, pos, filledSquares) {
   const [, edges, moves] = ranges
     .find(ra => isIn(ra[0], pos))
 
-  const limits = [
-    ...new Set([...filledSquares, ...edges])
-  ].filter(limit => limit !== pos)
-  // if another piece is on the way, this filter will restrict the range of movements
+  const limits = [...filledSquares, ...edges]
+    .filter((limit, i, arr) => arr.indexOf(limit) === i && limit !== pos)
+  // only keeps unique items and deletes the current position of the piece
+  // this latter is necessary because if it's not done, newCoords will return an empty array []
 
   const newCoords = []
 
@@ -84,11 +88,11 @@ export function updateCoords(ranges, pos, filledSquares) {
 }
 
 
-export const filterCoords = (isBlack, move, chessBoard) => {
-  const samePlayerCoords = chessBoard
+export const filterCoords = (moves, chessBoard, playerTurn) => {
+  const ilegalCoords = chessBoard
     .map((sq, i) => sq?.name
-      .startsWith(isBlack ? 'B' : 'W') ? i : null)
-    .filter(p => p !== null)
+      .startsWith(playerTurn) ? i : null)
+  // to colorize the legal moves it will not taken into account the coords where the player's pieces of the current color are
 
-  return !isIn(samePlayerCoords, move)
+  return moves.filter(coord => !isIn(ilegalCoords, coord))
 }

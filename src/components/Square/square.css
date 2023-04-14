@@ -1,27 +1,25 @@
 .square {
-  outline: 1px solid #ffffff;
+  outline: 1px solid #fff;
   display: grid;
   height: 4.5rem;
   place-items: center;
   position: relative;
-  transition: 0.2s background;
+  transition: 0.2s all;
   width: 4.5rem;
 }
 
 .square:hover {
-  outline: 1px solid #000;
-  cursor: pointer;
+  background-color: #ccc !important;
   z-index: 1;
 }
 
 .move {
-  background-color: #00ff0033 !important;
+  background-color: #c0c0c0 !important;
 }
 
-.move:hover {
-  background-color: #00ff0080 !important;
+.square:active {
+  transform: scale(0.9);
 }
-
 
 .square:nth-child(2),
 .square:nth-child(4),

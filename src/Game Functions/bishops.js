@@ -28,7 +28,9 @@ class Bishop {
   }
 
   setCoords(setMoves, filledSquares) {
-    if (this.positions[1]) return // it runs only when player selects the piece
+    const { positions: [oldPos, newPos] } = this
+
+    if (newPos) return // it runs only when player selects the piece
 
     const ranges = [
       corner(0, [9]),
@@ -44,7 +46,12 @@ class Bishop {
       innerQuadrant([-9, -7, 7, 9])
     ]
 
-    this.coords = updateCoords(ranges, this.positions[0], filledSquares)
+    this.coords = updateCoords(
+      ranges,
+      oldPos,
+      filledSquares
+    )
+
     setMoves(this.coords)
     console.log(this.coords)
   }

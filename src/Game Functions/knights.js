@@ -1,6 +1,6 @@
 import b_knight_png from '../assets/chess-pieces/b-knight.png'
 import w_knight_png from '../assets/chess-pieces/w-knight.png'
-import { isIn } from './auxiliar-functions'
+import { column, isIn } from './auxiliar-functions'
 
 
 class Knight {
@@ -28,23 +28,19 @@ class Knight {
   }
 
   setCoords(setMoves) {
-    if (this.positions[1]) return // it runs only when player selects the piece
+    const { positions: [oldPos, newPos] } = this
 
-    const columns = [
-      [0, 8, 16, 24, 32, 40, 48, 56],   //column A
-      [1, 9, 17, 25, 33, 41, 49, 57],   //column B
-      [6, 14, 22, 30, 38, 46, 54, 62],  //column G
-      [7, 15, 23, 31, 39, 47, 55, 63]   //column H
-    ]
+    if (newPos) return // it runs only when player selects the piece
 
-    this.coords = updateCoords(this.positions[0], columns)
+    this.coords = updateCoords(oldPos)
+
     setMoves(this.coords)
     console.log(this.coords)
   }
 }
 
 
-function updateCoords(pos, columns) {
+function updateCoords(pos) {
   const [x, y] = [2, 16]
 
   const X = {
@@ -61,31 +57,36 @@ function updateCoords(pos, columns) {
     b_r: pos + y + 1
   }
 
-  const range = columns
-    .findIndex(column => isIn(column, pos))
+  const columns = [
+    [0, 8, 16, 24, 32, 40, 48, 56],   //column A
+    [1, 9, 17, 25, 33, 41, 49, 57],   //column B
+    [6, 14, 22, 30, 38, 46, 54, 62],  //column G
+    [7, 15, 23, 31, 39, 47, 55, 63]   //column H
+  ]
 
-  switch (range) {
-    case 0:         //kinght at column A
+
+  switch (column(columns, pos)) {
+    case 0:         //knight at column A
       return [
         X.a_r, X.b_r,
         Y.a_r, Y.b_r
       ]
-    case 1:         //kinght at column B
+    case 1:         //knight at column B
       return [
         X.a_r, X.b_r,
         Y.a_l, Y.a_r, Y.b_r, Y.b_l
       ]
-    case 2:         //kinght at column G
+    case 2:         //knight at column G
       return [
         X.a_l, X.b_l,
         Y.a_l, Y.a_r, Y.b_r, Y.b_l
       ]
-    case 3:         //kinght at column H
+    case 3:         //knight at column H
       return [
         X.a_l, X.b_l,
         Y.a_l, Y.b_l
       ]
-    default:        //kinght at column C || D || E || F
+    default:        //knight at column C || D || E || F
       return [
         X.a_l, X.a_r, X.b_r, X.b_l,
         Y.a_l, Y.a_r, Y.b_r, Y.b_l

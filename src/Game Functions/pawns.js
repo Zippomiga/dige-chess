@@ -1,6 +1,6 @@
 import b_pawn from '../assets/chess-pieces/b-pawn.png'
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
-import { filterCoords, isIn } from './auxiliar-functions'
+import { column, isIn } from './auxiliar-functions'
 
 
 class Pawn {
@@ -28,13 +28,17 @@ class Pawn {
     return !isIn(this.coords, this.positions[1])
   }
 
+  setCoords(setMoves, filledSquares) {
+    const { name, positions: [oldPos, newPos], init } = this
 
-  setCoords(setMoves, filledSquares, chessBoard) {
-    if (this.positions[1]) return // it runs only when player selects the piece
-    const B = isIn(this.name, 'B') // black pawn?
+    if (newPos) return // it runs only when player selects the piece
 
-    this.coords = updateCoords(this, filledSquares, chessBoard)
-      .filter(move => filterCoords(B, move, chessBoard))
+    this.coords = updateCoords(
+      name.startsWith('B'),
+      oldPos,
+      init,
+      filledSquares,
+    )
 
     setMoves(this.coords)
     console.log(this.coords)
@@ -42,22 +46,24 @@ class Pawn {
 }
 
 
-function updateCoords(pawn, filledSquares, chessBoard) {
-  const { name, positions: [pos], init } = pawn
-  const B = isIn(name, 'B') // black pawn?
+function updateCoords(isBlack, pos, init, filledSquares) {
   const add = n => pos + n
   const sub = n => pos - n
 
-  const verticalMoves = (B ?
-    pos === init ? [add(8), add(16)] : [add(8)] :
-    pos === init ? [sub(8), sub(16)] : [sub(8)])
-    .filter(move => !isIn(filledSquares, move))
-  // if another piece is on the way, this filter will restrict that vertical move
+  const firstMove = pos === init && !filledSquares
+    .find(sq => sq === (isBlack ? add(8) : sub(8)))
+  // if another piece is in the way, this will prevent to the pawn from "jumping" that piece
 
-  const eatMoves = (atColumn, b, w) => (
-    filledSquares.filter(atColumn ?
-      sq => B ? b === -sub(sq) : w === sub(sq) :
-      sq => isIn([7, 9], B ? -sub(sq) : sub(sq)))
+  const verticalMoves = (isBlack ?
+    firstMove ? [add(8), add(16)] : [add(8)] :
+    firstMove ? [sub(8), sub(16)] : [sub(8)])
+    .filter(move => !isIn(filledSquares, move))
+  // if another piece is in the way, this will restrict that vertical move
+
+  const eatMoves = (atEdgeColumn, b, w) => ( // (1)* Check out the reference below of all
+    filledSquares.filter(atEdgeColumn ?
+      sq => isBlack ? b === -sub(sq) : w === sub(sq) :
+      sq => isIn([7, 9], isBlack ? -sub(sq) : sub(sq)))
   )
 
   const columns = [
@@ -65,12 +71,10 @@ function updateCoords(pawn, filledSquares, chessBoard) {
     [7, 15, 23, 31, 39, 47, 55, 63]   //column H
   ]
 
-  const column = columns.findIndex(col => isIn(col, pos))
-
-  switch (column) {
-    case 0: return [...verticalMoves, ...eatMoves(true, 9, 7)]
-    case 1: return [...verticalMoves, ...eatMoves(true, 7, 9)]
-    default: return [...verticalMoves, ...eatMoves(false)]
+  switch (column(columns, pos)) {
+    case 0: return [...verticalMoves, ...eatMoves(true, 9, 7)] // column A
+    case 1: return [...verticalMoves, ...eatMoves(true, 7, 9)] // column H
+    default: return [...verticalMoves, ...eatMoves(false)]     // column B || C || D || E || F || G
   }
 }
 
@@ -94,3 +98,18 @@ export const PAWNS = {
   W_PAWN_7: new Pawn('W_PAWN_7', w_pawn, 54),
   W_PAWN_8: new Pawn('W_PAWN_8', w_pawn, 55)
 }
+
+
+/* (1)*
+This filter will restrict the moves depending on what edge the pawn is, which in turn also depends of its color.
+
+COLUMN A:
+if the pawn is black, only can eat with a positional difference of 9.
+if the pawn is white, only can eat with a positional difference of 7.
+
+COLUMN H:
+if the pawn is black, only can eat with a positional difference of 7.
+if the pawn is white, only can eat with a positional difference of 9.
+
+if the pawn is not at any edge, it only will filter the moves by its color, with a positional difference of 7 or 9, or both.
+*/

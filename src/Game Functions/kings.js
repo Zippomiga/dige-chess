@@ -28,7 +28,9 @@ class King {
   }
 
   setCoords(setMoves) {
-    if (this.positions[1]) return // it runs only when player selects the piece
+    const { positions: [oldPos, newPos], name } = this
+
+    if (newPos) return // it runs only when player selects the piece
 
     const ranges = [
       corner(0, [1, 8, 9]),         //TopLeft
@@ -44,7 +46,8 @@ class King {
       innerQuadrant([-9, -8, -7, -1, 1, 7, 8, 9])
     ]
 
-    this.coords = updateCoords(ranges, this.positions[0])
+    this.coords = updateCoords(ranges, oldPos)
+
     setMoves(this.coords)
     console.log(this.coords)
   }
