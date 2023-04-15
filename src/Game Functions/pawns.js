@@ -31,7 +31,7 @@ class Pawn {
   setCoords(setMoves, filledSquares) {
     const { name, positions: [oldPos, newPos], init } = this
 
-    if (newPos) return // it runs only when player selects the piece
+    if (newPos !== undefined) return // it runs only when player selects the piece
 
     this.coords = updateCoords(
       name.startsWith('B'),
@@ -46,47 +46,44 @@ class Pawn {
 }
 
 
-function updateCoords(isBlack, pos, init, filledSquares) {
-  const add = n => pos + n
-  const sub = n => pos - n
-  const diff = (sq, diff) => sq === diff // positional difference to eat
+function updateCoords(isBlack, pos, init, filledSqrs) {
+  const diff = (po, di) => po === di // positional difference
 
-  const firstMove = pos === init && !filledSquares
-    .find(sq => sq === (isBlack ? add(8) : sub(8)))
-  // if another piece is in the way, this will prevent to the pawn from "jumping" that piece
+  console.log(filledSqrs);
 
   const verticalMoves = () => {
-    const moves = isBlack ?
-      firstMove ? [add(8), add(16)] : [add(8)] :
-      firstMove ? [sub(8), sub(16)] : [sub(8)]
+    const vertMov = vM => isBlack ? pos + vM : pos - vM
 
-    return moves.filter(move => !isIn(filledSquares, move))
+    const freeSqr = vertMov => !filledSqrs
+      .find(sq => diff(sq, vertMov)) ? vertMov : null
+    // if another piece is in the way, this will restrict the vertical moves
+
+    const initPos = diff(pos, init)
+    const oneSqr = freeSqr(vertMov(8))
+    const twoSqr = freeSqr(vertMov(16))
+
+    return initPos && oneSqr ? [oneSqr, twoSqr] : [oneSqr]
   }
-  // if another piece is in the way, this will restrict that vertical move
 
-  const eatMoves = (atEdge, b, w) => { // (1)* Check out the reference below of all
-    return filledSquares.filter(sq => {
-      const bl = {
-        edge: diff(-sub(sq), b),
-        qdrt: isIn([7, 9], -sub(sq))
-      }
+  const eatMoves = (atEdge, black, white) => { // (1)* Check out the reference below of all
+    return filledSqrs.filter(sq => {
+      const eMov = isBlack ? -(pos - sq) : pos - sq
+      const eDif = isBlack ? black : white
 
-      const wh = {
-        edge: diff(sub(sq), w),
-        qdrt: isIn([7, 9], sub(sq))
-      }
-
-      const edge = isBlack ? bl.edge : wh.edge
-      const qdrt = isBlack ? bl.qdrt : wh.qdrt
+      const edge = diff(eMov, eDif)
+      const qdrt = isIn([7, 9], eMov)
 
       return atEdge ? edge : qdrt
     })
   }
 
   switch (column(pos)) {
-    case 0: return [...verticalMoves(), ...eatMoves(true, 9, 7)] // column A
-    case 3: return [...verticalMoves(), ...eatMoves(true, 7, 9)] // column H
-    default: return [...verticalMoves(), ...eatMoves(false)]     // column B || C || D || E || F || G
+    case 0: // column A
+      return [...verticalMoves(), ...eatMoves(true, 9, 7)]
+    case 3: // column H 
+      return [...verticalMoves(), ...eatMoves(true, 7, 9)]
+    default: // column B || C || D || E || F || G
+      return [...verticalMoves(), ...eatMoves(false)]
   }
 }
 

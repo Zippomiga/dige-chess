@@ -15,6 +15,7 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     moves
   } = useContext(ChessContext)
 
+  // console.log(currPosit);
 
   function reset(piece, log) {
     pieces.current = []
@@ -29,8 +30,8 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     const [piece] = pieces.current
 
     if (
-      piece === null ||             // empty square ?
-      piece.name[0] !== playerTurn  // other player's turn ?
+      piece === null ||                   // empty square ?
+      !piece.name.startsWith(playerTurn)  // other player's turn ?
     ) {
       reset(piece, `No piece in square || ${playerTurn} turn`)
       return

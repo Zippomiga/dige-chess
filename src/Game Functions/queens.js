@@ -29,7 +29,7 @@ class Queen {
 
   setCoords(setMoves, filledSquares) {
     const { positions: [oldPos, newPos] } = this
-
+    
     if (newPos) return // it runs only when player selects the piece
 
     const ranges = [
