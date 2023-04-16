@@ -7,7 +7,7 @@ export default function ChessBoard() {
   const { chessBoard } = useContext(ChessContext)
 
   const filledSquares = chessBoard
-    .map((piece, pos) => piece ? pos : null)
+    .map((piece, pos) => piece && pos)
 
   return (
     <section className='chess-board'>
