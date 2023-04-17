@@ -1,15 +1,15 @@
 import b_pawn from '../assets/chess-pieces/b-pawn.png'
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
-import { column, isIn } from './auxiliar-functions'
+import { clickedTwice, column, isIn } from './auxiliar-functions'
 
 
 class Pawn {
-  constructor(name, pic, initPos) {
+  constructor(name, pic, init) {
     this.name = name
     this.pic = pic
     this.coords = null
     this.positions = []
-    this.init = initPos
+    this.init = init
   }
 
   setPositions(pos) {
@@ -31,13 +31,13 @@ class Pawn {
   setCoords(setMoves, filledSqrs) {
     const { name, positions: [pos, newPos], init } = this
 
-    if (newPos) return // it runs only when player selects the piece
+    if (clickedTwice(newPos)) return // it runs only when player selects the piece
 
     this.coords = updateCoords(
       name.startsWith('B'),
       pos,
       init,
-      filledSqrs,
+      filledSqrs
     )
 
     setMoves(this.coords)
@@ -47,34 +47,34 @@ class Pawn {
 
 
 function updateCoords(isBlack, pos, init, filledSqrs) {
-  const player = (bl, wh) => isBlack ? bl : wh
+  const move = (bl, wh) => isBlack ? bl : wh
   const diff = (po, di) => po === di // positional difference
 
   const vertical = () => {
-    const freeSqr = vM => { // if another piece is in the way, this will restrict the vertical moves
-      const vert = player(pos + vM, pos - vM)
-      const next = filledSqrs.find(sq => diff(sq, vert))
-      const free = typeof next === 'undefined' // this prevents errors with the 'zero' position
+    const free = vM => { // if another piece is in the way, this will restrict the vertical moves
+      const vertM = move(pos + vM, pos - vM)
+      const vertD = filledSqrs.find(vSq => diff(vSq, vertM)) // next vertical square
+      const freeWay = typeof vertD === 'undefined'         // this prevents errors with the 'zero' position
 
-      return free && vert
+      return freeWay && vertM
     }
 
-    const oneSqr = freeSqr(8)
-    const twoSqr = freeSqr(16)
-    const initial = diff(pos, init) && oneSqr
+    const oneSqr = free(8)
+    const twoSqr = free(16)
+    const firstM = diff(pos, init) && oneSqr
 
-    return initial ? [oneSqr, twoSqr] : [oneSqr]
+    return firstM ? [oneSqr, twoSqr] : [oneSqr]
   }
 
-  const diagonal = (atEdge, bl, wh) => { // (1) Read the reference below
-    return filledSqrs.filter(sq => {
-      const eMov = player(-(pos - sq), pos - sq)
-      const eDif = player(bl, wh)
+  const diagonal = (atEdge, bD, wD) => { // Read the reference below (1)
+    return filledSqrs.filter(dM => {
+      const diagM = move(-(pos - dM), pos - dM)
+      const diagD = move(bD, wD)
 
-      const edge = diff(eMov, eDif)
-      const qdrt = isIn([7, 9], eMov)
+      const edgeC = diff(diagM, diagD)  // at column A || H     
+      const restC = isIn([7, 9], diagM) // at column B || C || D || E || F || G 
 
-      return atEdge ? edge : qdrt
+      return atEdge ? edgeC : restC
     })
   }
 
@@ -110,7 +110,7 @@ export const PAWNS = {
 
 
 /* <--- (1) --->
-This filter will restrict the moves depending on what edge the pawn is, which in turn also depends of its color.
+This filter will restrict the diagonal moves depending on where the pawn is, which in turn also depends of its color.
 
 COLUMN A:
 if the pawn is black or white, only can eat with a positional difference of 9 or 7 respectively
@@ -118,5 +118,6 @@ if the pawn is black or white, only can eat with a positional difference of 9 or
 COLUMN H:
 if the pawn is black or white, only can eat with a positional difference of 7 or 9 respectively
 
-if the pawn is not at any edge, it only will filter the moves by its color, with a positional difference of 7 or 9, or both.
+COLUMN B || C || D || E || F || G:
+it only will filter the moves by its color, with a positional difference of 7 or 9, or both
 */

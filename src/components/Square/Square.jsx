@@ -1,7 +1,7 @@
 import './square.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { fillSquare, filterCoords, isIn } from '../../Game Functions/auxiliar-functions'
+import { clickedTwice, fillSquare, filterCoords, isIn } from '../../Game Functions/auxiliar-functions'
 
 
 export default function Square({ sqrPiece, currPosit, filledSquares }) {
@@ -42,7 +42,7 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
 
     const [oldPosit, newPosit] = piece.getPositions()
 
-    if (newPosit !== undefined) { // the player clicked twice
+    if (clickedTwice(newPosit)) { // the player clicked twice
       if (
         piece.illegalMove() ||
         piece.name[0] === sqrPiece?.name[0] // same player ?

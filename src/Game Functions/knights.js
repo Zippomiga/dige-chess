@@ -1,6 +1,6 @@
 import b_knight_png from '../assets/chess-pieces/b-knight.png'
 import w_knight_png from '../assets/chess-pieces/w-knight.png'
-import { column, isIn } from './auxiliar-functions'
+import { clickedTwice, column, isIn } from './auxiliar-functions'
 
 
 class Knight {
@@ -30,7 +30,7 @@ class Knight {
   setCoords(setMoves) {
     const { positions: [oldPos, newPos] } = this
 
-    if (newPos) return // it runs only when player selects the piece
+    if (clickedTwice(newPos)) return // it runs only when player selects the piece
 
     this.coords = updateCoords(oldPos)
 

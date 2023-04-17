@@ -1,6 +1,6 @@
 import b_king from '../assets/chess-pieces/b-king.png'
 import w_king from '../assets/chess-pieces/w-king.png'
-import { corner, edge, innerQuadrant, isIn } from './auxiliar-functions'
+import { clickedTwice, corner, edge, innerQuadrant, isIn } from './auxiliar-functions'
 
 
 class King {
@@ -30,7 +30,7 @@ class King {
   setCoords(setMoves) {
     const { positions: [oldPos, newPos], name } = this
 
-    if (newPos) return // it runs only when player selects the piece
+    if (clickedTwice(newPos)) return // it runs only when player selects the piece
 
     const ranges = [
       corner(0, [1, 8, 9]),         //TopLeft

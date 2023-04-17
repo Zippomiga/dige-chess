@@ -1,6 +1,6 @@
 import b_bishop from '../assets/chess-pieces/b-bishop.png'
 import w_bishop from '../assets/chess-pieces/w-bishop.png'
-import { corner, edge, innerQuadrant, updateCoords, isIn } from './auxiliar-functions'
+import { corner, edge, innerQuadrant, updateCoords, isIn, clickedTwice } from './auxiliar-functions'
 
 
 class Bishop {
@@ -30,7 +30,7 @@ class Bishop {
   setCoords(setMoves, filledSquares) {
     const { positions: [oldPos, newPos] } = this
 
-    if (newPos) return // it runs only when player selects the piece
+    if (clickedTwice(newPos)) return // it runs only when player selects the piece
 
     const ranges = [
       corner(0, [9]),

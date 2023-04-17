@@ -71,13 +71,15 @@ export const innerQuadrant = (moves) => {
 
 
 export function updateCoords(ranges, pos, filledSquares) {
-  const [, edges, moves] = ranges
-    .find(ra => isIn(ra[0], pos))
+  const [, edges, moves] = ranges.find(ra => isIn(ra[0], pos))
 
   const limits = [...filledSquares, ...edges]
-    .filter((limit, i, arr) => arr.indexOf(limit) === i && limit !== pos)
-  // only keeps unique items and deletes the current position of the piece
-  // this latter is necessary because otherwise newCoords will return an empty array []
+    .filter((limit, i, arr) => {
+      const uniq = arr.indexOf(limit) === i // this filters unique items
+      const curr = limit !== pos            // this prevents of newCoords from returning an empty array
+
+      return uniq && curr
+    })
 
   const newCoords = []
 
@@ -102,3 +104,6 @@ export const filterCoords = (moves, chessBoard, playerTurn) => {
 
   return moves.filter(coord => !isIn(ilegalCoords, coord))
 }
+
+
+export const clickedTwice = pos => typeof pos === 'number'
