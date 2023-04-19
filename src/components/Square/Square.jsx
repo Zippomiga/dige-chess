@@ -15,8 +15,6 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     moves
   } = useContext(ChessContext)
 
-  // console.log(currPosit);
-
   function reset(piece, log) {
     pieces.current = []
     piece?.resetPositions()

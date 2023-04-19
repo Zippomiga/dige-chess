@@ -1,38 +1,39 @@
+export const clickedTwice = pos => typeof pos === 'number'
+
+export const isIn = (obj, item) => obj?.includes(item)
+
 export const fillSquare = (board, piece, posit) => (
   [...board]
     .fill(piece, posit, posit + 1)
 )
 
 
-export const isIn = (obj, item) => obj?.includes(item)
+const sqrs = {
+  corners: [0, 7, 56, 63],
+
+  edges: [
+    [0, 1, 2, 3, 4, 5, 6, 7],         //Top
+    [0, 8, 16, 24, 32, 40, 48, 56],   //Left
+    [7, 15, 23, 31, 39, 47, 55, 63],  //Right
+    [56, 57, 58, 59, 60, 61, 62, 63]  //Bottom
+  ],
+
+  columns: [
+    [0, 8, 16, 24, 32, 40, 48, 56],   //column A
+    [1, 9, 17, 25, 33, 41, 49, 57],   //column B
+    [6, 14, 22, 30, 38, 46, 54, 62],  //column G
+    [7, 15, 23, 31, 39, 47, 55, 63]   //column H
+  ]
+}
 
 
-const corners = [0, 7, 56, 63]
+const allEdges = sqrs.edges.flat()
 
-
-const edges = [
-  [0, 1, 2, 3, 4, 5, 6, 7],         //Top
-  [0, 8, 16, 24, 32, 40, 48, 56],   //Left
-  [7, 15, 23, 31, 39, 47, 55, 63],  //Right
-  [56, 57, 58, 59, 60, 61, 62, 63]  //Bottom
-]
-
-const allEdges = edges.flat()
-
-
-const columns = [
-  [0, 8, 16, 24, 32, 40, 48, 56],   //column A
-  [1, 9, 17, 25, 33, 41, 49, 57],   //column B
-  [6, 14, 22, 30, 38, 46, 54, 62],  //column G
-  [7, 15, 23, 31, 39, 47, 55, 63]   //column H
-]
-
-export const column = pos => columns.findIndex(col => isIn(col, pos))
-
+export const col = pos => sqrs.columns.findIndex(co => isIn(co, pos))
 
 
 export const corner = (ext, moves) => {
-  const cornerLimits = corners
+  const cornerLimits = sqrs.corners
     .filter(co => co !== ext)
 
   return [
@@ -44,19 +45,19 @@ export const corner = (ext, moves) => {
 
 
 export const edge = (edg, moves) => {
-  const edgeLimits = edges
+  const edgeLimits = sqrs.edges
     .filter((_, edge) => edge !== edg)
     .flat()
 
   return [
-    edges[edg],
+    sqrs.edges[edg],
     edgeLimits,
     moves
   ]
 }
 
 
-export const innerQuadrant = (moves) => {
+export const innerQuadrant = moves => {
   const innerQ = Array(64)
     .fill(null)
     .map((_, qIdx) => qIdx)
@@ -104,6 +105,3 @@ export const filterCoords = (moves, chessBoard, playerTurn) => {
 
   return moves.filter(coord => !isIn(ilegalCoords, coord))
 }
-
-
-export const clickedTwice = pos => typeof pos === 'number'

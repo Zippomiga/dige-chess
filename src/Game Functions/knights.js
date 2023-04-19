@@ -1,6 +1,6 @@
 import b_knight_png from '../assets/chess-pieces/b-knight.png'
 import w_knight_png from '../assets/chess-pieces/w-knight.png'
-import { clickedTwice, column, isIn } from './auxiliar-functions'
+import { clickedTwice, col, isIn } from './auxiliar-functions'
 
 
 class Knight {
@@ -57,7 +57,7 @@ function updateCoords(pos) {
     b_r: pos + y + 1
   }
 
-  switch (column(pos)) {
+  switch (col(pos)) {
     case 0:         //knight at column A
       return [
         X.a_r, X.b_r,
