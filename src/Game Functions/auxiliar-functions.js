@@ -71,7 +71,7 @@ export const innerQuadrant = moves => {
 }
 
 
-export function updateCoords(ranges, pos, filledSquares) {
+export function updateCoords(ranges, pos, filledSquares, setCheck) {
   const [, edges, moves] = ranges.find(ra => isIn(ra[0], pos))
 
   const limits = [...filledSquares, ...edges]
@@ -104,4 +104,19 @@ export const filterCoords = (moves, chessBoard, playerTurn) => {
   // to colorize the legal moves it will not taken into account the coords where the player's pieces of the current color are
 
   return moves.filter(move => !isIn(ilegalCoords, move))
+}
+
+
+export function invalidPiece(piece, playerTurn) {
+  return (
+    piece === null ||
+    !piece.name.startsWith(playerTurn)
+  )
+}
+
+export function invalidMove(piece, sqrPiece) {
+  return (
+    piece.illegalMove() ||
+    piece.name[0] === sqrPiece?.name[0]
+  )
 }

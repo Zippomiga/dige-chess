@@ -9,7 +9,8 @@ export default function ChessContextProvider(props) {
   const pieces = useRef([])
   const playerTurn = turn ? 'W' : 'B'
   const [moves, setMoves] = useState([])
-
+  const [check, setCheck] = useState(false)
+  console.log(moves.sort())
 
   return (
     <ChessContext.Provider value={{
@@ -20,7 +21,9 @@ export default function ChessContextProvider(props) {
       pieces,
       playerTurn,
       moves,
-      setMoves
+      setMoves,
+      check,
+      setCheck
     }}>
       {props.children}
     </ChessContext.Provider>

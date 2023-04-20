@@ -35,7 +35,6 @@ class Knight {
     this.coords = updateCoords(oldPos)
 
     setMoves(this.coords)
-    console.log(this.coords)
   }
 }
 

@@ -4,10 +4,11 @@ import { clickedTwice, corner, edge, innerQuadrant, isIn } from './auxiliar-func
 
 
 class King {
-  constructor(name, pic) {
+  constructor(name, pic, initCheck) {
     this.name = name
     this.pic = pic
     this.positions = []
+    this.check = initCheck
     this.coords = null
   }
 
@@ -28,7 +29,7 @@ class King {
   }
 
   setCoords(setMoves) {
-    const { positions: [oldPos, newPos], name } = this
+    const { positions: [oldPos, newPos] } = this
 
     if (clickedTwice(newPos)) return // it runs only when player selects the piece
 
@@ -47,9 +48,8 @@ class King {
     ]
 
     this.coords = updateCoords(ranges, oldPos)
-
+    this.check = oldPos
     setMoves(this.coords)
-    console.log(this.coords)
   }
 }
 
@@ -62,6 +62,6 @@ export function updateCoords(ranges, pos) {
 
 
 export const KINGS = {
-  B_KING: new King('B_KING', b_king),
-  W_KING: new King('W_KING', w_king)
+  B_KING: new King('B_KING', b_king, 4),
+  W_KING: new King('W_KING', w_king, 60)
 }

@@ -53,7 +53,6 @@ class Rook {
     )
 
     setMoves(this.coords)
-    console.log(this.coords)
   }
 }
 

@@ -1,7 +1,7 @@
 import './square.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { clickedTwice, fillSquare, filterCoords, isIn } from '../../Game Functions/auxiliar-functions'
+import { clickedTwice, fillSquare, filterCoords, invalidMove, invalidPiece, isIn } from '../../Game Functions/auxiliar-functions'
 
 
 export default function Square({ sqrPiece, currPosit, filledSquares }) {
@@ -12,7 +12,8 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     pieces,
     playerTurn,
     setMoves,
-    moves
+    moves,
+    setCheck
   } = useContext(ChessContext)
 
   function reset(piece, log) {
@@ -21,30 +22,23 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     setMoves([])
     console.log(log)
   }
-
-
+  
   function handleSquare() {
     pieces.current.push(sqrPiece)
     const [piece] = pieces.current
-
-    if (
-      piece === null ||                   // empty square ?
-      !piece.name.startsWith(playerTurn)  // other player's turn ?
-    ) {
+    
+    if (invalidPiece(piece, playerTurn)) {
       reset(piece, `No piece in square || ${playerTurn} turn`)
       return
     }
 
     piece.setPositions(currPosit)
-    piece.setCoords(setMoves, filledSquares)
-
+    piece.setCoords(setMoves, filledSquares, setCheck)
+    
     const [oldPosit, newPosit] = piece.getPositions()
 
-    if (clickedTwice(newPosit)) { // the player clicked twice
-      if (
-        piece.illegalMove() ||
-        piece.name[0] === sqrPiece?.name[0] // same player ?
-      ) {
+    if (clickedTwice(newPosit)) {
+      if (invalidMove(piece, sqrPiece)) {
         reset(piece, 'Ilegal move || Same player')
       } else {
         const oldBoard = fillSquare(chessBoard, null, oldPosit)
