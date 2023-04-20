@@ -76,8 +76,8 @@ export function updateCoords(ranges, pos, filledSquares) {
 
   const limits = [...filledSquares, ...edges]
     .filter((limit, i, arr) => {
-      const uniq = arr.indexOf(limit) === i // this filters unique items
-      const curr = limit !== pos            // this prevents of newCoords from returning an empty array
+      const uniq = arr.indexOf(limit) === i // keeps unique items
+      const curr = limit !== pos            // prevents of newCoords from returning an empty array
 
       return uniq && curr
     })
@@ -103,5 +103,5 @@ export const filterCoords = (moves, chessBoard, playerTurn) => {
       .startsWith(playerTurn) && i)
   // to colorize the legal moves it will not taken into account the coords where the player's pieces of the current color are
 
-  return moves.filter(coord => !isIn(ilegalCoords, coord))
+  return moves.filter(move => !isIn(ilegalCoords, move))
 }

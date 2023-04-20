@@ -51,39 +51,31 @@ function updateCoords(isBlack, pos, init, filledSqrs) {
   const diff = (po, di) => po === di            // positional difference
   const filled = sqr => typeof sqr === 'number' // allow or disallow the vertical and diagonal moves
 
-  const moves = (edge = false) => {
+  const MOVES = (edge = false) => {
     return filledSqrs.map((sq, coord) => {
-      const vert = v => { // prevents the pawn from 'jumping' or eating in vertical
-        const V = move(pos + v, pos - v)
-        const next = filledSqrs.find(n => diff(n, V)) // next vertical square
+      const VERT = V => !filled(filledSqrs[V]) && V // prevents the pawn from 'jumping' or eating in vertical
+      const one = VERT(move(pos + 8, pos - 8))
+      const two = VERT(move(pos + 16, pos - 16))
 
-        return !filled(next) && V
-      }
-
-      const [one, two] = [vert(8), vert(16)]
-
-      const vertical = diff(init, pos) && one // Read the reference below (1)
-        ? isIn([one, two], coord)             // initial move
-        : isIn([one], coord)                  // normal move
-
-
-      const c = { 'A': move(9, 7), 'H': move(7, 9) }
+      const VERTICAL = diff(init, pos) && one    // Read the reference below (1)
+        ? isIn([one, two], coord)                // initial move
+        : isIn([one], coord)                     // normal move
 
       const D = move(coord - pos, pos - coord)
-      const diag = filled(sq) && D
+      const DIAG = filled(sq) && D
+      const column = { 'A': move(9, 7), 'H': move(7, 9) }[edge]
 
-      const diagonal = edge   // Read the reference below (2)
-        ? diff(c[edge], diag) // at column A || H  
-        : isIn([7, 9], diag)  // at column B || C || D || E || F || G
+      const DIAGONAL = edge   // Read the reference below (2)
+        ? diff(column, DIAG)  // at column A || H  
+        : isIn([7, 9], DIAG)  // at column B || C || D || E || F || G
 
-
-      return (vertical || diagonal) && coord
+      return (VERTICAL || DIAGONAL) && coord
     }).filter(c => filled(c))
   }
 
-  const mov = { 0: moves('A'), 3: moves('H') }
+  const newCoords = { 0: MOVES('A'), 3: MOVES('H') }
 
-  return mov[col(pos)] || moves()
+  return newCoords[col(pos)] || MOVES()
 }
 
 
@@ -111,17 +103,15 @@ export const PAWNS = {
 /* <--- (1) --->
 This will restrict the vertical moves depending of the position.
 If the pawn is at initial position, it can move two squares, otherwise, it just can move one square.
-The 'vert' function will calculate if it is possible to make that moves in case the following vertical square is free or not.
+The 'VERT' function will calculate if it is possible to make that moves in case the following vertical square is free or not.
 */
 
 /* <--- (2) --->
-This will restrict the diagonal moves depending on what column the pawn is, which in turn also depends of its color. If the pawn is black or white...
+This will restrict the diagonal moves depending on what column the pawn is, which in turn also depends of its color. If the pawn is black or white only can eat with a positional difference of...
 
-COLUMN A:
-...only can eat with a positional difference of 9 or 7 respectively
+COLUMN A: ... 9 or 7 respectively
 
-COLUMN H:
-...only can eat with a positional difference of 7 or 9 respectively
+COLUMN H: ... 7 or 9 respectively
 
 COLUMN B || C || D || E || F || G:
 it only will filter the moves by its color, with a positional difference of 7 or 9, or both, or none if the diagonal squares are not allowed to move
