@@ -120,3 +120,5 @@ export function invalidMove(piece, sqrPiece) {
     piece.name[0] === sqrPiece?.name[0]
   )
 }
+
+export const RET = (con, a, b, item) => isIn((con ? a : b), item)
