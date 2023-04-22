@@ -1,6 +1,6 @@
 import b_pawn from '../assets/chess-pieces/b-pawn.png'
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
-import { clickedTwice, col, isIn, RET } from './auxiliar-functions'
+import { col, isIn, FREE } from './auxiliar-functions'
 
 
 class Pawn {
@@ -35,7 +35,7 @@ class Pawn {
   setCoords(setMoves, filledSqrs) {
     const { name, positions: [pos, newPos], init } = this
 
-    if (clickedTwice(newPos)) return // it runs only when player selects the piece
+    if (FREE(newPos)) return // it runs only when player selects the piece
 
     this.coords = updateCoords(
       name.startsWith('B'),
@@ -49,27 +49,29 @@ class Pawn {
 }
 
 
-function updateCoords(isBlack, pos, initial, filledSqrs) {
-  const move = (bl, wh) => isBlack ? bl : wh
-  const filled = sqr => typeof sqr === 'number' // allow or disallow the vertical and diagonal moves
+function updateCoords(isBlack, pos, init, filled) {
+  const PL = (bl, wh) => isBlack ? bl : wh
 
-  const MOVES = atEdge => {
-    return filledSqrs.map((sq, coord) => {
-      const VERT = v => !filled(filledSqrs[v]) && v
-      const next = (n = 8) => VERT(move(pos + n, pos - n))
-      const init = initial === pos && next()
+  return filled.map((sq, coord) => { // Read the reference below
+    const V = v => PL(pos + v, pos - v)
+    const VERT = (n = 8) => !FREE(filled[V(n)]) && V(n)
 
-      const DIAG = filled(sq) && move(coord - pos, pos - coord)
-      const cols = { 'A': [9, 7], 'H': [7, 9] }
-      const edge = move(...cols[atEdge] || [])
+    const D = PL(coord - pos, pos - coord)
+    const DIAG = FREE(sq) && D
 
-      const VERTICAL = RET(init, [next(), next(16)], [next()], coord) // Read the reference below (1)
-      const DIAGONAL = RET(atEdge, [edge], [7, 9], DIAG)              // Read the reference below (2)
+    const initial = init === pos && VERT()
+    const atEdge = { 0: [9, 7], 3: [7, 9] }[col(pos)]
 
-      return (VERTICAL || DIAGONAL) && coord
-    }).filter(c => filled(c))
-  }
-  return { 0: MOVES('A'), 3: MOVES('H') }[col(pos)] || MOVES()
+    const VERTICAL = initial
+      ? isIn([VERT(), VERT(16)], coord)
+      : isIn([VERT()], coord)
+
+    const DIAGONAL = atEdge
+      ? isIn([PL(...atEdge)], DIAG)
+      : isIn([7, 9], DIAG)
+
+    return (VERTICAL || DIAGONAL) && coord
+  }).filter(n => FREE(n))
 }
 
 
@@ -95,17 +97,16 @@ export const PAWNS = {
 
 
 /*
-<--- (1) --->
-This will restrict the vertical moves depending of the position.
+'VERTICAL' vertical moves depending of the position.
 If the pawn is at initial position, it can move two squares, otherwise, it just can move one square.
-The 'VERT' function will handle if it is possible to make that moves in case the following vertical square is free or not, preventing the pawn from 'jumping' or eating in vertical.
 
-<--- (2) --->
-This will restrict the diagonal moves depending on what column the pawn is, which in turn depends of its color. If the pawn is black or white, only can eat with a positional difference of...
+'DIAGONAL' restrict the diagonal moves depending on what column the pawn is, which in turn depends of its color. If the pawn is black or white, only can eat with a positional difference of...
 
 COLUMN A: ... 9 or 7 respectively
 COLUMN H: ... 7 or 9 respectively
 
 COLUMN B || C || D || E || F || G:
 It only will filter the moves by its color, with a positional difference of 7 or 9, both, or none if the diagonal squares are not allowed to move
+
+In both cases, 'VERT' && 'DIAG' will handle if it's possible to make that moves in case the square is free or not, preventing the pawn from 'jumping' or eating in a wrong way.
 */

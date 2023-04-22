@@ -1,4 +1,4 @@
-export const clickedTwice = pos => typeof pos === 'number'
+export const FREE = pos => typeof pos === 'number' // this method prevents errors with the 'zero' position
 
 export const isIn = (obj, item) => obj?.includes(item)
 
@@ -120,5 +120,3 @@ export function invalidMove(piece, sqrPiece) {
     piece.name[0] === sqrPiece?.name[0]
   )
 }
-
-export const RET = (con, a, b, item) => isIn((con ? a : b), item)

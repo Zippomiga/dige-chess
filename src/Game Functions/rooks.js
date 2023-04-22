@@ -1,6 +1,6 @@
 import b_rook_png from '../assets/chess-pieces/b-rook.png'
 import w_rook_png from '../assets/chess-pieces/w-rook.png'
-import { corner, edge, innerQuadrant, updateCoords, isIn, clickedTwice } from './auxiliar-functions'
+import { corner, edge, innerQuadrant, updateCoords, isIn, FREE } from './auxiliar-functions'
 
 
 class Rook {
@@ -30,7 +30,7 @@ class Rook {
   setCoords(setMoves, filledSquares) {
     const { positions: [oldPos, newPos] } = this
 
-    if (clickedTwice(newPos)) return // it runs only when player selects the piece
+    if (FREE(newPos)) return // it runs only when player selects the piece
 
     const ranges = [
       corner(0, [1, 8]),

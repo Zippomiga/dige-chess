@@ -1,7 +1,7 @@
 import './square.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { clickedTwice, fillSquare, filterCoords, invalidMove, invalidPiece, isIn } from '../../Game Functions/auxiliar-functions'
+import { FREE, fillSquare, filterCoords, invalidMove, invalidPiece, isIn } from '../../Game Functions/auxiliar-functions'
 
 
 export default function Square({ sqrPiece, currPosit, filledSquares }) {
@@ -22,11 +22,11 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     setMoves([])
     console.log(log)
   }
-  
+
   function handleSquare() {
     pieces.current.push(sqrPiece)
     const [piece] = pieces.current
-    
+
     if (invalidPiece(piece, playerTurn)) {
       reset(piece, `No piece in square || ${playerTurn} turn`)
       return
@@ -34,10 +34,10 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
 
     piece.setPositions(currPosit)
     piece.setCoords(setMoves, filledSquares, setCheck)
-    
+
     const [oldPosit, newPosit] = piece.getPositions()
 
-    if (clickedTwice(newPosit)) {
+    if (FREE(newPosit)) { // here it is used to know if the player has clicked twice
       if (invalidMove(piece, sqrPiece)) {
         reset(piece, 'Ilegal move || Same player')
       } else {
