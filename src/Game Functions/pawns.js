@@ -54,9 +54,9 @@ function updateCoords(isBlack, pos, init, filled) {
 
   return filled.map((sq, coord) => { // Read the reference below
     const V = v => PL(pos + v, pos - v)
-    const VERT = (n = 8) => !FREE(filled[V(n)]) && V(n)
-
     const D = PL(coord - pos, pos - coord)
+
+    const VERT = (next = 8) => !FREE(filled.at(V(next))) && V(next)
     const DIAG = FREE(sq) && D
 
     const initial = init === pos && VERT()
@@ -97,10 +97,10 @@ export const PAWNS = {
 
 
 /*
-'VERTICAL' vertical moves depending of the position.
+'VERTICAL' will restrict the vertical moves depending of the position.
 If the pawn is at initial position, it can move two squares, otherwise, it just can move one square.
 
-'DIAGONAL' restrict the diagonal moves depending on what column the pawn is, which in turn depends of its color. If the pawn is black or white, only can eat with a positional difference of...
+'DIAGONAL' will restrict the diagonal moves depending on what column the pawn is, which in turn depends of its color. If the pawn is black or white, only can eat with a positional difference of...
 
 COLUMN A: ... 9 or 7 respectively
 COLUMN H: ... 7 or 9 respectively
