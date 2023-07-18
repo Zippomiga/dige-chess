@@ -1,7 +1,7 @@
 import './square.css'
 import { useContext, useEffect } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { fillSquare, colorizeMoves, invalidMove, invalidPiece, isIn } from '../../Game Functions/auxiliar-functions'
+import { colorizeMoves, invalidMove, invalidPiece, isIn } from '../../Game Functions/auxiliar-functions'
 
 
 export default function Square({ currPiece, currPosit }) {
@@ -17,8 +17,9 @@ export default function Square({ currPiece, currPosit }) {
     filledSquares
   } = useContext(ChessContext)
 
-  function reset(warning) {
+  function reset(warning, piece) {
     pieces.current = []
+    piece?.resetPositions()
     console.log(warning)
   }
 
@@ -38,13 +39,16 @@ export default function Square({ currPiece, currPosit }) {
 
     if (pieces.current.length === 2) { // this is used to know if the player has clicked twice
       if (invalidMove(SELECTED_PIECE, currPiece)) {
-        reset('Ilegal move || Same player')
+        reset('Illegal move || Same player', SELECTED_PIECE)
       } else {
-        const oldBoard = fillSquare(chessBoard, null, oldPosit)
-        const newBoard = fillSquare(oldBoard, SELECTED_PIECE, newPosit)
+        setChessBoard(board => {
+          const NEW_BOARD = [...board]
+          NEW_BOARD[oldPosit] = null
+          NEW_BOARD[newPosit] = SELECTED_PIECE
 
+          return NEW_BOARD
+        })
         setThreatening(SELECTED_PIECE)
-        setChessBoard(newBoard)
         setTurn(turn => !turn)
         reset('Allowed')
       }

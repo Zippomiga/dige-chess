@@ -2,12 +2,6 @@ export const FREE = pos => typeof pos === 'number' // this method prevents error
 
 export const isIn = (obj, item) => obj?.includes(item)
 
-export const fillSquare = (board, piece, posit) => (
-  [...board]
-    .fill(piece, posit, posit + 1)
-)
-
-
 const sqrs = {
   corners: [0, 7, 56, 63],
 

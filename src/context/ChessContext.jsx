@@ -6,25 +6,22 @@ export const ChessContext = createContext()
 export default function ChessContextProvider(props) {
   const [chessBoard, setChessBoard] = useState(CHESS_BOARD)
   const [turn, setTurn] = useState(true)
-  const pieces = useRef([])
-  const playerTurn = turn ? 'W' : 'B'
   const [moves, setMoves] = useState([])
   const [check, setCheck] = useState(false)
-  const [threatening, setThreatening] = useState('')
+  const [threatening, setThreatening] = useState(null)
+  const pieces = useRef([])
+
+  const playerTurn = turn ? 'W' : 'B'
 
   const filledSquares = chessBoard
     .map((piece, pos) => piece && pos)
 
   function isCheck() {
-    if (!threatening) return
-
     const contraryKing = chessBoard.findIndex(king => {
-      const contrary = playerTurn + "_KING"
-      return king?.name === contrary
+      return king?.name === playerTurn + "_KING"
     })
 
     threatening?.checkCheck(filledSquares, contraryKing)
-
     console.log({ contraryKing })
   }
 

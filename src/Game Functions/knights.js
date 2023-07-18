@@ -30,7 +30,7 @@ class Knight {
   setCoords(setMoves) {
     const { positions: [oldPos, newPos] } = this
 
-    this.coords = updateCoords(oldPos).filter(coord => coord > - 1 && coord < 64)
+    this.coords = updateCoords(oldPos)
 
     setMoves(this.coords)
   }
