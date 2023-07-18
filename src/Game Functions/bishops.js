@@ -1,6 +1,21 @@
 import b_bishop from '../assets/chess-pieces/b-bishop.png'
 import w_bishop from '../assets/chess-pieces/w-bishop.png'
-import { corner, edge, innerQuadrant, updateCoords, isIn, FREE } from './auxiliar-functions'
+import { corner, edge, innerQuadrant, updateCoords } from './auxiliar-functions'
+
+
+const RANGES = [
+  corner(0, [9]),
+  corner(7, [7]),
+  corner(56, [-7]),
+  corner(63, [-9]),
+
+  edge(0, [7, 9]),
+  edge(1, [-7, 9]),
+  edge(2, [-9, 7]),
+  edge(3, [-9, -7]),
+
+  innerQuadrant([-9, -7, 7, 9])
+]
 
 
 class Bishop {
@@ -24,29 +39,30 @@ class Bishop {
   }
 
   illegalMove() {
-    return !isIn(this.coords, this.positions[1])
+    return !this.coords.includes(this.positions[1])
+  }
+
+  checkCheck(contraryKing, filledSquares) {
+    const coordsToCheck = updateCoords(
+      RANGES,
+      this.positions[1],
+      filledSquares,
+    )
+
+    if (coordsToCheck.includes(contraryKing)) {
+      console.log('CHECK')
+    } else {
+      console.log('NOPE CHECK')
+      this.resetPositions()
+    }
+
+    console.log(coordsToCheck)
   }
 
   setCoords(setMoves, filledSquares) {
-    const { positions: [oldPos, newPos] } = this
-
-    const ranges = [
-      corner(0, [9]),
-      corner(7, [7]),
-      corner(56, [-7]),
-      corner(63, [-9]),
-
-      edge(0, [7, 9]),
-      edge(1, [-7, 9]),
-      edge(2, [-9, 7]),
-      edge(3, [-9, -7]),
-
-      innerQuadrant([-9, -7, 7, 9])
-    ]
-
     this.coords = updateCoords(
-      ranges,
-      oldPos,
+      RANGES,
+      this.positions[0],
       filledSquares
     )
 

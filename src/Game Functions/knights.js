@@ -1,6 +1,6 @@
 import b_knight_png from '../assets/chess-pieces/b-knight.png'
 import w_knight_png from '../assets/chess-pieces/w-knight.png'
-import { FREE, col, isIn } from './auxiliar-functions'
+import { col } from './auxiliar-functions'
 
 
 class Knight {
@@ -24,13 +24,24 @@ class Knight {
   }
 
   illegalMove() {
-    return !isIn(this.coords, this.positions[1])
+    return !this.coords.includes(this.positions[1])
   }
 
-  setCoords(setMoves) {
-    const { positions: [oldPos, newPos] } = this
+  checkCheck(contraryKing, filledSquares = null) {
+    const coordsToCheck = updateCoords(this.positions[1])
 
-    this.coords = updateCoords(oldPos)
+    if (coordsToCheck.includes(contraryKing)) {
+      console.log('CHECK')
+    } else {
+      console.log('NOPE CHECK')
+      this.resetPositions()
+    }
+
+    console.log(coordsToCheck)
+  }
+
+  setCoords(setMoves, filledSquares = null) {
+    this.coords = updateCoords(this.positions[0])
 
     setMoves(this.coords)
   }

@@ -1,7 +1,7 @@
 import './square.css'
 import { useContext, useEffect } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { colorizeMoves, invalidMove, invalidPiece, isIn } from '../../Game Functions/auxiliar-functions'
+import { colorizeMoves, invalidMove, invalidPiece } from '../../Game Functions/auxiliar-functions'
 
 
 export default function Square({ currPiece, currPosit }) {
@@ -17,7 +17,7 @@ export default function Square({ currPiece, currPosit }) {
     filledSquares
   } = useContext(ChessContext)
 
-  function reset(warning, piece) {
+  function reset(warning, piece = null) {
     pieces.current = []
     piece?.resetPositions()
     console.log(warning)
@@ -37,7 +37,7 @@ export default function Square({ currPiece, currPosit }) {
 
     const [oldPosit, newPosit] = SELECTED_PIECE.getPositions()
 
-    if (pieces.current.length === 2) { // this is used to know if the player has clicked twice
+    if (pieces.current.length === 2) { // this means that the player has clicked twice
       if (invalidMove(SELECTED_PIECE, currPiece)) {
         reset('Illegal move || Same player', SELECTED_PIECE)
       } else {
@@ -59,12 +59,12 @@ export default function Square({ currPiece, currPosit }) {
 
   return (
     <div
-      className={isIn(colorized, currPosit) ? 'square move' : 'square'}
+      className={colorized?.includes(currPosit) ? 'square move' : 'square'}
       id={currPosit}
       onClick={handleSquare}
     >
       <img
-        className={isIn(currPiece?.name, 'PAWN') ? 'pawn  ' : 'piece'}
+        className={currPiece?.name.includes('PAWN') ? 'pawn  ' : 'piece'}
         src={currPiece?.pic}
         alt={currPiece?.name}
       />

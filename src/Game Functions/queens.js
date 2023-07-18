@@ -1,6 +1,21 @@
 import b_queen from '../assets/chess-pieces/b-queen.png'
 import w_queen from '../assets/chess-pieces/w-queen.png'
-import { corner, edge, innerQuadrant, updateCoords, isIn, FREE } from './auxiliar-functions'
+import { corner, edge, innerQuadrant, updateCoords } from './auxiliar-functions'
+
+
+const RANGES = [
+  corner(0, [1, 8, 9]),         //TopLeft
+  corner(7, [-1, 7, 8]),        //TopRight
+  corner(56, [-8, -7, 1]),      //BottomLeft
+  corner(63, [-9, -8, -1]),     //BottomRight
+
+  edge(0, [-1, 1, 7, 8, 9]),    //Top
+  edge(1, [-8, -7, 1, 8, 9]),   //Left
+  edge(2, [-9, -8, -1, 7, 8]),  //Right
+  edge(3, [-9, -8, -7, -1, 1]), //Bottom
+
+  innerQuadrant([-9, -8, -7, -1, 1, 7, 8, 9])
+]
 
 
 class Queen {
@@ -24,33 +39,15 @@ class Queen {
   }
 
   illegalMove() {
-    return !isIn(this.coords, this.positions[1])
+    return !this.coords.includes(this.positions[1])
   }
 
-  checkCheck(filledSqrs, contraryKing) {
-    const { name, positions: [pos, newPos], init } = this
-
-    const ranges = [
-      corner(0, [1, 8, 9]),         //TopLeft
-      corner(7, [-1, 7, 8]),        //TopRight
-      corner(56, [-8, -7, 1]),      //BottomLeft
-      corner(63, [-9, -8, -1]),     //BottomRight
-
-      edge(0, [-1, 1, 7, 8, 9]),    //Top
-      edge(1, [-8, -7, 1, 8, 9]),   //Left
-      edge(2, [-9, -8, -1, 7, 8]),  //Right
-      edge(3, [-9, -8, -7, -1, 1]), //Bottom
-
-      innerQuadrant([-9, -8, -7, -1, 1, 7, 8, 9])
-    ]
-
+  checkCheck(contraryKing, filledSquares) {
     const coordsToCheck = updateCoords(
-      ranges,
-      newPos,
-      filledSqrs,
+      RANGES,
+      this.positions[1],
+      filledSquares,
     )
-
-    console.log(coordsToCheck)
 
     if (coordsToCheck.includes(contraryKing)) {
       console.log('CHECK')
@@ -58,28 +55,14 @@ class Queen {
       console.log('NOPE CHECK')
       this.resetPositions()
     }
+
+    console.log(coordsToCheck)
   }
 
   setCoords(setMoves, filledSquares) {
-    const { positions: [oldPos, newPos] } = this
-
-    const ranges = [
-      corner(0, [1, 8, 9]),         //TopLeft
-      corner(7, [-1, 7, 8]),        //TopRight
-      corner(56, [-8, -7, 1]),      //BottomLeft
-      corner(63, [-9, -8, -1]),     //BottomRight
-
-      edge(0, [-1, 1, 7, 8, 9]),    //Top
-      edge(1, [-8, -7, 1, 8, 9]),   //Left
-      edge(2, [-9, -8, -1, 7, 8]),  //Right
-      edge(3, [-9, -8, -7, -1, 1]), //Bottom
-
-      innerQuadrant([-9, -8, -7, -1, 1, 7, 8, 9])
-    ]
-
     this.coords = updateCoords(
-      ranges,
-      oldPos,
+      RANGES,
+      this.positions[0],
       filledSquares,
     )
 

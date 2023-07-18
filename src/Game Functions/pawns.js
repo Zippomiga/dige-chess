@@ -1,6 +1,6 @@
 import b_pawn from '../assets/chess-pieces/b-pawn.png'
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
-import { col, isIn, FREE } from './auxiliar-functions'
+import { col } from './auxiliar-functions'
 
 
 class Pawn {
@@ -25,17 +25,15 @@ class Pawn {
   }
 
   illegalMove() {
-    return !isIn(this.coords, this.positions[1])
+    return !this.coords.includes(this.positions[1])
   }
 
-  checkCheck(filledSqrs, contraryKing) {
-    const { name, positions: [pos, newPos], init } = this
-
+  checkCheck(contraryKing, filledSquares) {
     const coordsToCheck = updateCoords(
-      name.startsWith('B'),
-      newPos,
-      init,
-      filledSqrs
+      this.name,
+      this.positions[1],
+      this.init,
+      filledSquares
     )
 
     console.log(coordsToCheck)
@@ -48,14 +46,12 @@ class Pawn {
     }
   }
 
-  setCoords(setMoves, filledSqrs) {
-    const { name, positions: [pos, newPos], init } = this
-
+  setCoords(setMoves, filledSquares) {
     this.coords = updateCoords(
-      name.startsWith('B'),
-      pos,
-      init,
-      filledSqrs
+      this.name,
+      this.positions[0],
+      this.init,
+      filledSquares
     )
 
     setMoves(this.coords)
@@ -63,26 +59,27 @@ class Pawn {
 }
 
 
-function updateCoords(isBlack, pos, init, filled) {
-  const PL = (bl, wh) => isBlack ? bl : wh
+function updateCoords(name, pos, init, filledSquares) {
+  const PL = (bl, wh) => name.startsWith('B') ? bl : wh
+  const FREE = pos => typeof pos === 'number' // this method prevents errors with the 'zero' position
 
-  return filled.map((sq, coord) => { // Read the reference below
+  return filledSquares.map((sq, coord) => { // Read the reference below
     const V = v => PL(pos + v, pos - v)
     const D = PL(coord - pos, pos - coord)
 
-    const VERT = (next = 8) => !FREE(filled.at(V(next))) && V(next)
+    const VERT = (next = 8) => !FREE(filledSquares.at(V(next))) && V(next)
     const DIAG = FREE(sq) && D
 
     const initial = init === pos && VERT()
     const atEdge = { 0: [9, 7], 3: [7, 9] }[col(pos)]
 
     const VERTICAL = initial
-      ? isIn([VERT(), VERT(16)], coord)
-      : isIn([VERT()], coord)
+      ? [VERT(), VERT(16)].includes(coord)
+      : [VERT()].includes(coord)
 
     const DIAGONAL = atEdge
-      ? isIn([PL(...atEdge)], DIAG)
-      : isIn([7, 9], DIAG)
+      ? [PL(...atEdge)].includes(DIAG)
+      : [7, 9].includes(DIAG)
 
     return (VERTICAL || DIAGONAL) && coord
   }).filter(n => FREE(n))

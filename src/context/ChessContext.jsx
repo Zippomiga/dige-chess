@@ -21,8 +21,7 @@ export default function ChessContextProvider(props) {
       return king?.name === playerTurn + "_KING"
     })
 
-    threatening?.checkCheck(filledSquares, contraryKing)
-    console.log({ contraryKing })
+    threatening?.checkCheck(contraryKing, filledSquares)
   }
 
   useEffect(() => {

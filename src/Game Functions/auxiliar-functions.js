@@ -1,7 +1,3 @@
-export const FREE = pos => typeof pos === 'number' // this method prevents errors with the 'zero' position
-
-export const isIn = (obj, item) => obj?.includes(item)
-
 const sqrs = {
   corners: [0, 7, 56, 63],
 
@@ -23,7 +19,7 @@ const sqrs = {
 
 const allEdges = sqrs.edges.flat()
 
-export const col = pos => sqrs.columns.findIndex(co => isIn(co, pos))
+export const col = pos => sqrs.columns.findIndex(co => co.includes(pos))
 
 
 export const corner = (ext, moves) => {
@@ -55,7 +51,7 @@ export const innerQuadrant = moves => {
   const innerQ = Array(64)
     .fill(null)
     .map((_, qIdx) => qIdx)
-    .filter(qCoord => !isIn(allEdges, qCoord))
+    .filter(qCoord => !allEdges.includes(qCoord))
 
   return [
     innerQ,
@@ -66,7 +62,7 @@ export const innerQuadrant = moves => {
 
 
 export function updateCoords(ranges, pos, filledSquares) {
-  const [, edges, moves] = ranges.find(ra => isIn(ra[0], pos))
+  const [, edges, moves] = ranges.find(ra => ra[0].includes(pos))
 
   const limits = [...filledSquares, ...edges]
     .filter((limit, i, arr) => {
@@ -81,7 +77,7 @@ export function updateCoords(ranges, pos, filledSquares) {
   moves.forEach(move => {
     let coord = pos
 
-    while (!isIn(limits, coord)) {
+    while (!limits.includes(coord)) {
       coord += move
       newCoords.push(coord)
     }
@@ -99,7 +95,7 @@ export const colorizeMoves = (moves, chessBoard, playerTurn, piece) => {
       .startsWith(playerTurn) && i)
   // to colorize the legal moves it will not taken into account the coords where the player's pieces of the current color are
 
-  return moves.filter(move => !isIn(ilegalCoords, move))
+  return moves.filter(move => !ilegalCoords.includes(move))
 }
 
 

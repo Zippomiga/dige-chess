@@ -1,6 +1,21 @@
 import b_rook_png from '../assets/chess-pieces/b-rook.png'
 import w_rook_png from '../assets/chess-pieces/w-rook.png'
-import { corner, edge, innerQuadrant, updateCoords, isIn, FREE } from './auxiliar-functions'
+import { corner, edge, innerQuadrant, updateCoords } from './auxiliar-functions'
+
+
+const RANGES = [
+  corner(0, [1, 8]),
+  corner(7, [-1, 8]),
+  corner(56, [-8, 1]),
+  corner(63, [-1, -8],),
+
+  edge(0, [-1, 1, 8]),
+  edge(1, [-8, 1, 8]),
+  edge(2, [-8, -1, 8]),
+  edge(3, [-1, 1, -8]),
+
+  innerQuadrant([-8, -1, 1, 8])
+]
 
 
 class Rook {
@@ -24,29 +39,30 @@ class Rook {
   }
 
   illegalMove() {
-    return !isIn(this.coords, this.positions[1])
+    return !this.coords.includes(this.positions[1])
+  }
+
+  checkCheck(contraryKing, filledSquares) {
+    const coordsToCheck = updateCoords(
+      RANGES,
+      this.positions[1],
+      filledSquares,
+    )
+
+    if (coordsToCheck.includes(contraryKing)) {
+      console.log('CHECK')
+    } else {
+      console.log('NOPE CHECK')
+      this.resetPositions()
+    }
+
+    console.log(coordsToCheck)
   }
 
   setCoords(setMoves, filledSquares) {
-    const { positions: [oldPos, newPos] } = this
-
-    const ranges = [
-      corner(0, [1, 8]),
-      corner(7, [-1, 8]),
-      corner(56, [-8, 1]),
-      corner(63, [-1, -8],),
-
-      edge(0, [-1, 1, 8]),
-      edge(1, [-8, 1, 8]),
-      edge(2, [-8, -1, 8]),
-      edge(3, [-1, 1, -8]),
-
-      innerQuadrant([-8, -1, 1, 8])
-    ]
-
     this.coords = updateCoords(
-      ranges,
-      oldPos,
+      RANGES,
+      this.positions[0],
       filledSquares
     )
 
