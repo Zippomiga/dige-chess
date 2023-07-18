@@ -104,7 +104,8 @@
 
 .square-index {
   position: absolute;
-  font-size: 0.8rem;
+  font-size: 0.6rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   bottom: 0;
   right: 2px;
 }

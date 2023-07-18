@@ -1,10 +1,10 @@
 import './square.css'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { FREE, fillSquare, filterCoords, invalidMove, invalidPiece, isIn } from '../../Game Functions/auxiliar-functions'
+import { fillSquare, colorizeMoves, invalidMove, invalidPiece, isIn } from '../../Game Functions/auxiliar-functions'
 
 
-export default function Square({ sqrPiece, currPosit, filledSquares }) {
+export default function Square({ currPiece, currPosit }) {
   const {
     chessBoard,
     setChessBoard,
@@ -13,56 +13,56 @@ export default function Square({ sqrPiece, currPosit, filledSquares }) {
     playerTurn,
     setMoves,
     moves,
-    setCheck
+    setThreatening,
+    filledSquares
   } = useContext(ChessContext)
 
-  function reset(piece, log) {
+  function reset(warning) {
     pieces.current = []
-    piece?.resetPositions()
-    setMoves([])
-    console.log(log)
+    console.log(warning)
   }
 
   function handleSquare() {
-    pieces.current.push(sqrPiece)
-    const [piece] = pieces.current
+    pieces.current.push(currPiece) // this is used to keep the selected piece
+    const SELECTED_PIECE = pieces.current[0]
 
-    if (invalidPiece(piece, playerTurn)) {
-      reset(piece, `No piece in square || ${playerTurn} turn`)
+    if (invalidPiece(SELECTED_PIECE, playerTurn)) {
+      reset(`No piece in square || ${playerTurn} turn`)
       return
     }
 
-    piece.setPositions(currPosit)
-    piece.setCoords(setMoves, filledSquares, setCheck)
+    SELECTED_PIECE.setPositions(currPosit)
+    SELECTED_PIECE.setCoords(setMoves, filledSquares)
 
-    const [oldPosit, newPosit] = piece.getPositions()
+    const [oldPosit, newPosit] = SELECTED_PIECE.getPositions()
 
-    if (FREE(newPosit)) { // here it is used to know if the player has clicked twice
-      if (invalidMove(piece, sqrPiece)) {
-        reset(piece, 'Ilegal move || Same player')
+    if (pieces.current.length === 2) { // this is used to know if the player has clicked twice
+      if (invalidMove(SELECTED_PIECE, currPiece)) {
+        reset('Ilegal move || Same player')
       } else {
         const oldBoard = fillSquare(chessBoard, null, oldPosit)
-        const newBoard = fillSquare(oldBoard, piece, newPosit)
+        const newBoard = fillSquare(oldBoard, SELECTED_PIECE, newPosit)
 
-        setTurn(turn => !turn)
+        setThreatening(SELECTED_PIECE)
         setChessBoard(newBoard)
-        reset(piece, 'Allowed')
+        setTurn(turn => !turn)
+        reset('Allowed')
       }
     }
   }
 
-  const legalCoords = filterCoords(moves, chessBoard, playerTurn)
+  const colorized = colorizeMoves(moves, chessBoard, playerTurn, pieces.current)
 
   return (
     <div
-      className={isIn(legalCoords, currPosit) ? 'square move' : 'square'}
+      className={isIn(colorized, currPosit) ? 'square move' : 'square'}
       id={currPosit}
       onClick={handleSquare}
     >
       <img
-        className={isIn(sqrPiece?.name, 'PAWN') ? 'pawn  ' : 'piece'}
-        src={sqrPiece?.pic}
-        alt={sqrPiece?.name}
+        className={isIn(currPiece?.name, 'PAWN') ? 'pawn  ' : 'piece'}
+        src={currPiece?.pic}
+        alt={currPiece?.name}
       />
       <span className='square-index'>
         {currPosit}

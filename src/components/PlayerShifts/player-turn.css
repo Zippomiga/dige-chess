@@ -6,8 +6,12 @@
 }
 
 .player-turn {
-  height: 6rem;
-  width: 6rem;
+  background-color: gainsboro;
+  box-shadow: 0 0 8px #fffefe66;
+  border-radius: 50%;
+  height: 7rem;
+  width: 7rem;
+  padding: 1rem;
 }
 
 .current {

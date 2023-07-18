@@ -27,10 +27,41 @@ class Queen {
     return !isIn(this.coords, this.positions[1])
   }
 
+  checkCheck(filledSqrs, contraryKing) {
+    const { name, positions: [pos, newPos], init } = this
+
+    const ranges = [
+      corner(0, [1, 8, 9]),         //TopLeft
+      corner(7, [-1, 7, 8]),        //TopRight
+      corner(56, [-8, -7, 1]),      //BottomLeft
+      corner(63, [-9, -8, -1]),     //BottomRight
+
+      edge(0, [-1, 1, 7, 8, 9]),    //Top
+      edge(1, [-8, -7, 1, 8, 9]),   //Left
+      edge(2, [-9, -8, -1, 7, 8]),  //Right
+      edge(3, [-9, -8, -7, -1, 1]), //Bottom
+
+      innerQuadrant([-9, -8, -7, -1, 1, 7, 8, 9])
+    ]
+
+    const coordsToCheck = updateCoords(
+      ranges,
+      newPos,
+      filledSqrs,
+    )
+
+    console.log(coordsToCheck)
+
+    if (coordsToCheck.includes(contraryKing)) {
+      console.log('CHECK')
+    } else {
+      console.log('NOPE CHECK')
+      this.resetPositions()
+    }
+  }
+
   setCoords(setMoves, filledSquares) {
     const { positions: [oldPos, newPos] } = this
-    
-    if (FREE(newPos)) return // it runs only when player selects the piece
 
     const ranges = [
       corner(0, [1, 8, 9]),         //TopLeft
@@ -53,7 +84,6 @@ class Queen {
     )
 
     setMoves(this.coords)
-    console.log(this.coords)
   }
 }
 

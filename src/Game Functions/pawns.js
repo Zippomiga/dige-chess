@@ -28,14 +28,28 @@ class Pawn {
     return !isIn(this.coords, this.positions[1])
   }
 
-  getCoords() {
-    return this.coords
+  checkCheck(filledSqrs, contraryKing) {
+    const { name, positions: [pos, newPos], init } = this
+
+    const coordsToCheck = updateCoords(
+      name.startsWith('B'),
+      newPos,
+      init,
+      filledSqrs
+    )
+
+    console.log(coordsToCheck)
+
+    if (coordsToCheck.includes(contraryKing)) {
+      console.log('CHECK')
+    } else {
+      console.log('NOPE CHECK')
+      this.resetPositions()
+    }
   }
 
   setCoords(setMoves, filledSqrs) {
     const { name, positions: [pos, newPos], init } = this
-
-    if (FREE(newPos)) return // it runs only when player selects the piece
 
     this.coords = updateCoords(
       name.startsWith('B'),

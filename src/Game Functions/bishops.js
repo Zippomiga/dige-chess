@@ -30,8 +30,6 @@ class Bishop {
   setCoords(setMoves, filledSquares) {
     const { positions: [oldPos, newPos] } = this
 
-    if (FREE(newPos)) return // it runs only when player selects the piece
-
     const ranges = [
       corner(0, [9]),
       corner(7, [7]),

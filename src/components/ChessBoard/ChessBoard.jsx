@@ -4,10 +4,7 @@ import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
 export default function ChessBoard() {
-  const { chessBoard } = useContext(ChessContext)
-
-  const filledSquares = chessBoard
-    .map((piece, pos) => piece && pos)
+  const { chessBoard, filledSquares } = useContext(ChessContext)
 
   return (
     <section className='chess-board'>
@@ -16,7 +13,7 @@ export default function ChessBoard() {
           return (
             <Square
               key={index}
-              sqrPiece={square}
+              currPiece={square}
               currPosit={index}
               filledSquares={filledSquares}
             />

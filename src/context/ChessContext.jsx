@@ -1,5 +1,5 @@
 import { CHESS_BOARD } from "../Game Functions/board";
-import { createContext, useRef, useState } from "react";
+import { createContext, useRef, useState, useEffect } from "react";
 
 export const ChessContext = createContext()
 
@@ -10,7 +10,27 @@ export default function ChessContextProvider(props) {
   const playerTurn = turn ? 'W' : 'B'
   const [moves, setMoves] = useState([])
   const [check, setCheck] = useState(false)
-  console.log(moves.sort())
+  const [threatening, setThreatening] = useState('')
+
+  const filledSquares = chessBoard
+    .map((piece, pos) => piece && pos)
+
+  function isCheck() {
+    if (!threatening) return
+
+    const contraryKing = chessBoard.findIndex(king => {
+      const contrary = playerTurn + "_KING"
+      return king?.name === contrary
+    })
+
+    threatening?.checkCheck(filledSquares, contraryKing)
+
+    console.log({ contraryKing })
+  }
+
+  useEffect(() => {
+    isCheck()
+  }, [threatening])
 
   return (
     <ChessContext.Provider value={{
@@ -23,7 +43,10 @@ export default function ChessContextProvider(props) {
       moves,
       setMoves,
       check,
-      setCheck
+      setCheck,
+      threatening,
+      setThreatening,
+      filledSquares,
     }}>
       {props.children}
     </ChessContext.Provider>

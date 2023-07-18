@@ -1,8 +1,9 @@
 .chess-board {
-  box-shadow: 0 0 16px #00000066;
+  border: 2px solid rgb(255, 255, 255);
+  box-shadow: 0 0 12px #fffefe66;
   display: grid;
   /* place-content: center; */
   grid-template-columns: repeat(8, auto);
   grid-template-rows: repeat(8, auto);
-  padding: 0.2rem;
+  /* padding: 0.2rem; */
 }

@@ -71,7 +71,7 @@ export const innerQuadrant = moves => {
 }
 
 
-export function updateCoords(ranges, pos, filledSquares, setCheck) {
+export function updateCoords(ranges, pos, filledSquares) {
   const [, edges, moves] = ranges.find(ra => isIn(ra[0], pos))
 
   const limits = [...filledSquares, ...edges]
@@ -97,7 +97,9 @@ export function updateCoords(ranges, pos, filledSquares, setCheck) {
 }
 
 
-export const filterCoords = (moves, chessBoard, playerTurn) => {
+export const colorizeMoves = (moves, chessBoard, playerTurn, piece) => {
+  if (!piece.length) return
+
   const ilegalCoords = chessBoard
     .map((sq, i) => sq?.name
       .startsWith(playerTurn) && i)
@@ -108,15 +110,15 @@ export const filterCoords = (moves, chessBoard, playerTurn) => {
 
 
 export function invalidPiece(piece, playerTurn) {
-  return (
-    piece === null ||
-    !piece.name.startsWith(playerTurn)
-  )
+  const noPiece = piece === null
+  const invalidPlayer = !piece?.name.startsWith(playerTurn)
+
+  return noPiece || invalidPlayer
 }
 
 export function invalidMove(piece, sqrPiece) {
-  return (
-    piece.illegalMove() ||
-    piece.name[0] === sqrPiece?.name[0]
-  )
+  const illegalMove = piece?.illegalMove()
+  const samePlayer = piece?.name[0] === sqrPiece?.name[0]
+
+  return illegalMove || samePlayer
 }

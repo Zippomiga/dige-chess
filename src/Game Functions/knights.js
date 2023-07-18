@@ -30,9 +30,7 @@ class Knight {
   setCoords(setMoves) {
     const { positions: [oldPos, newPos] } = this
 
-    if (FREE(newPos)) return // it runs only when player selects the piece
-
-    this.coords = updateCoords(oldPos)
+    this.coords = updateCoords(oldPos).filter(coord => coord > - 1 && coord < 64)
 
     setMoves(this.coords)
   }

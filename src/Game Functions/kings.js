@@ -31,8 +31,6 @@ class King {
   setCoords(setMoves) {
     const { positions: [oldPos, newPos] } = this
 
-    if (FREE(newPos)) return // it runs only when player selects the piece
-
     const ranges = [
       corner(0, [1, 8, 9]),         //TopLeft
       corner(7, [-1, 7, 8]),        //TopRight
