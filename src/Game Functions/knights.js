@@ -7,43 +7,10 @@ class Knight {
   constructor(name, pic) {
     this.name = name
     this.pic = pic
-    this.positions = []
-    this.coords = null
   }
 
-  setPositions(pos) {
-    this.positions.push(pos)
-  }
-
-  getPositions() {
-    return this.positions
-  }
-
-  resetPositions() {
-    this.positions = []
-  }
-
-  illegalMove() {
-    return !this.coords.includes(this.positions[1])
-  }
-
-  checkCheck(contraryKing, filledSquares = null) {
-    const coordsToCheck = updateCoords(this.positions[1])
-
-    if (coordsToCheck.includes(contraryKing)) {
-      console.log('CHECK')
-    } else {
-      console.log('NOPE CHECK')
-      this.resetPositions()
-    }
-
-    console.log(coordsToCheck)
-  }
-
-  setCoords(setMoves, filledSquares = null) {
-    this.coords = updateCoords(this.positions[0])
-
-    setMoves(this.coords)
+  getMoves(position, filledSquares = null) {
+    return updateCoords(position)
   }
 }
 

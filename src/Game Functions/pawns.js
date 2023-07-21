@@ -7,54 +7,16 @@ class Pawn {
   constructor(name, pic, init) {
     this.name = name
     this.pic = pic
-    this.coords = null
-    this.positions = []
     this.init = init
   }
 
-  setPositions(pos) {
-    this.positions.push(pos)
-  }
-
-  getPositions() {
-    return this.positions
-  }
-
-  resetPositions() {
-    this.positions = []
-  }
-
-  illegalMove() {
-    return !this.coords.includes(this.positions[1])
-  }
-
-  checkCheck(contraryKing, filledSquares) {
-    const coordsToCheck = updateCoords(
+  getMoves(position, filledSquares) {
+    return updateCoords(
       this.name,
-      this.positions[1],
+      position,
       this.init,
       filledSquares
     )
-
-    console.log(coordsToCheck)
-
-    if (coordsToCheck.includes(contraryKing)) {
-      console.log('CHECK')
-    } else {
-      console.log('NOPE CHECK')
-      this.resetPositions()
-    }
-  }
-
-  setCoords(setMoves, filledSquares) {
-    this.coords = updateCoords(
-      this.name,
-      this.positions[0],
-      this.init,
-      filledSquares
-    )
-
-    setMoves(this.coords)
   }
 }
 

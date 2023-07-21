@@ -22,36 +22,14 @@ class King {
   constructor(name, pic) {
     this.name = name
     this.pic = pic
-    this.positions = []
-    this.coords = null
   }
 
-  setPositions(pos) {
-    this.positions.push(pos)
-  }
-
-  getPositions() {
-    return this.positions
-  }
-
-  resetPositions() {
-    this.positions = []
-  }
-
-  illegalMove() {
-    return !this.coords.includes(this.positions[1])
-  }
-
-  checkCheck() { return }
-
-  setCoords(setMoves) {
-    this.coords = updateCoords(RANGES, this.positions[0])
-
-    setMoves(this.coords)
+  getMoves(position, filledSquares = null) {
+    return updateCoords(position, RANGES)
   }
 }
 
-export function updateCoords(ranges, pos) {
+function updateCoords(pos, ranges) {
   const [, , moves] = ranges
     .find(ra => ra[0].includes(pos))
 

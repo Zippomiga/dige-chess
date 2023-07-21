@@ -87,18 +87,6 @@ export function updateCoords(ranges, pos, filledSquares) {
 }
 
 
-export const colorizeMoves = (moves, chessBoard, playerTurn, piece) => {
-  if (!piece.length) return
-
-  const ilegalCoords = chessBoard
-    .map((sq, i) => sq?.name
-      .startsWith(playerTurn) && i)
-  // to colorize the legal moves it will not taken into account the coords where the player's pieces of the current color are
-
-  return moves.filter(move => !ilegalCoords.includes(move))
-}
-
-
 export function invalidPiece(piece, playerTurn) {
   const noPiece = piece === null
   const invalidPlayer = !piece?.name.startsWith(playerTurn)

@@ -5,7 +5,7 @@ import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
 export default function PlayerTurn() {
-  const { turn } = useContext(ChessContext)
+  const { turn, check } = useContext(ChessContext)
 
   return (
     <div className='player-turn-panel'>
@@ -19,6 +19,10 @@ export default function PlayerTurn() {
         alt="white-shift"
         className={turn ? 'player-turn' : 'player-turn current'}
       />
+      {
+        check &&
+        <span>JAQUE</span>
+      }
     </div>
   )
 }

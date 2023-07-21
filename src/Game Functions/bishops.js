@@ -22,51 +22,14 @@ class Bishop {
   constructor(name, pic) {
     this.name = name
     this.pic = pic
-    this.positions = []
-    this.coords = null
   }
 
-  setPositions(pos) {
-    this.positions.push(pos)
-  }
-
-  getPositions() {
-    return this.positions
-  }
-
-  resetPositions() {
-    this.positions = []
-  }
-
-  illegalMove() {
-    return !this.coords.includes(this.positions[1])
-  }
-
-  checkCheck(contraryKing, filledSquares) {
-    const coordsToCheck = updateCoords(
+  getMoves(position, filledSquares) {
+    return updateCoords(
       RANGES,
-      this.positions[1],
-      filledSquares,
-    )
-
-    if (coordsToCheck.includes(contraryKing)) {
-      console.log('CHECK')
-    } else {
-      console.log('NOPE CHECK')
-      this.resetPositions()
-    }
-
-    console.log(coordsToCheck)
-  }
-
-  setCoords(setMoves, filledSquares) {
-    this.coords = updateCoords(
-      RANGES,
-      this.positions[0],
+      position,
       filledSquares
     )
-
-    setMoves(this.coords)
   }
 }
 
