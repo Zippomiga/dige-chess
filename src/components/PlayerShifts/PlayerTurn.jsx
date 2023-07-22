@@ -1,6 +1,7 @@
 import './player-turn.css'
 import blackShift from '../../assets/chess-pieces/b-shift.png'
 import whiteShift from '../../assets/chess-pieces/w-shift.png'
+import inCheck from '../../assets/chess-pieces/exclamation.png'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 

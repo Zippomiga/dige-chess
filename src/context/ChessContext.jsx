@@ -19,12 +19,6 @@ export default function ChessContextProvider(props) {
   const [POS_1, POS_2] = chess.positions
   const PLAYER = chess.turn ? 'W' : 'B'
 
-  // const invalidSquare = PIECE_1 === null
-  // const invalidMove = !moves?.includes(POS_2)
-
-  // const invalidPlayer = !PIECE_1?.name.startsWith(PLAYER)
-  // const samePlayer = PIECE_1?.name.startsWith(PIECE_2?.name[0])
-
   const updateBoard = () => {
     const NEW_BOARD = [...chess.board]
 
@@ -44,36 +38,48 @@ export default function ChessContextProvider(props) {
     })
 
     const movesToCheck = PIECE_1?.getMoves(POS_2, FILLED_SQUARES)
-
     return movesToCheck?.includes(CONTRARY_KING)
   }
 
   useEffect(() => {
-    const MOVES = PIECE_1?.getMoves(POS_1, FILLED_SQUARES).filter(move => {
-      const piece = chess.board[move]
-      return !piece?.name.startsWith(PLAYER)
-    })
-
-    setChess(chess => ({ ...chess, moves: MOVES }))
-
-    if (chess.squares.length === 2) { // this means that the player has clicked twice
+    if (chess.squares.length === 2) {
       setChess(chess => {
-        return {
-          board: updateBoard(),
-          squares: [],
-          positions: [],
-          moves: [],
-          check: isCheck(),
-          turn: !chess.turn
-        }
+        const invalidMove = !chess.moves?.includes(POS_2)
+        const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
+
+        return invalidMove || samePlayer ?
+          {
+            ...chess,
+            squares: [],
+            positions: [],
+            moves: [],
+          } : {
+            board: updateBoard(),
+            squares: [],
+            positions: [],
+            moves: [],
+            check: isCheck(),
+            turn: !chess.turn
+          }
+      })
+    } else {
+      setChess(chess => {
+        const MOVES = PIECE_1?.getMoves(POS_1, FILLED_SQUARES).filter(move => {
+          const piece = chess.board[move]
+          return !piece?.name.startsWith(PLAYER)
+        })
+
+        return { ...chess, moves: MOVES }
       })
     }
   }, [chess.squares])
 
+
   return (
     <ChessContext.Provider value={{
       chess,
-      setChess
+      setChess,
+      PLAYER
     }}>
       {props.children}
     </ChessContext.Provider>

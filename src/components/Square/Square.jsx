@@ -7,12 +7,20 @@ export default function Square({ currPiece, currPosit }) {
   const {
     chess,
     setChess,
+    PLAYER
   } = useContext(ChessContext)
 
   const isColorized = chess.moves?.includes(currPosit) ? 'square move' : 'square'
   const isPawn = currPiece?.name.includes('PAWN') ? 'pawn  ' : 'piece'
 
   function handleSquare() {
+    if (chess.squares.length === 0) {
+      const invalidSquare = !currPiece
+      const invalidPlayer = !currPiece?.name.startsWith(PLAYER)
+
+      if (invalidSquare || invalidPlayer) return
+    }
+
     setChess(chess => {
       return {
         ...chess,
