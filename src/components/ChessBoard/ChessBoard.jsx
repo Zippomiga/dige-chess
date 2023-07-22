@@ -3,13 +3,14 @@ import Square from '../Square/Square'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
+
 export default function ChessBoard() {
-  const { chessBoard } = useContext(ChessContext)
+  const { chess: { board } } = useContext(ChessContext)
 
   return (
     <section className='chess-board'>
       {
-        chessBoard.map((square, index) => {
+        board.map((square, index) => {
           return (
             <Square
               key={index}
