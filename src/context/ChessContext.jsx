@@ -14,9 +14,12 @@ export default function ChessContextProvider(props) {
     turn: true
   })
 
+  const {
+    squares: [PIECE_1, PIECE_2],
+    positions: [POS_1, POS_2]
+  } = chess
+
   const FILLED_SQUARES = chess.board.map((piece, pos) => piece && pos)
-  const [PIECE_1, PIECE_2] = chess.squares
-  const [POS_1, POS_2] = chess.positions
   const PLAYER = chess.turn ? 'W' : 'B'
 
   const updateBoard = () => {
@@ -41,26 +44,26 @@ export default function ChessContextProvider(props) {
     return movesToCheck?.includes(CONTRARY_KING)
   }
 
+
   useEffect(() => {
-    if (chess.squares.length === 2) {
+    if (chess.squares.length === 2) { // this means that the player has clicked twice
       setChess(chess => {
         const invalidMove = !chess.moves?.includes(POS_2)
         const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
 
-        return invalidMove || samePlayer ?
-          {
-            ...chess,
-            squares: [],
-            positions: [],
-            moves: [],
-          } : {
-            board: updateBoard(),
-            squares: [],
-            positions: [],
-            moves: [],
-            check: isCheck(),
-            turn: !chess.turn
-          }
+        return invalidMove || samePlayer ? {
+          ...chess,
+          squares: [],
+          positions: [],
+          moves: [],
+        } : {
+          board: updateBoard(),
+          squares: [],
+          positions: [],
+          moves: [],
+          check: isCheck(),
+          turn: !chess.turn
+        }
       })
     } else {
       setChess(chess => {
