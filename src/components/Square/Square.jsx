@@ -1,7 +1,6 @@
 import './square.css'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-// import { colorizeMoves, invalidMove, invalidPiece } from '../../Game Functions/auxiliar-functions'
 
 
 export default function Square({ currPiece, currPosit }) {
@@ -10,6 +9,9 @@ export default function Square({ currPiece, currPosit }) {
     setPositions,
     colorizedMoves,
   } = useContext(ChessContext)
+
+  const colorizedSquares = colorizedMoves?.includes(currPosit) ? 'square move' : 'square'
+  const pawnOrPiece = currPiece?.name.includes('PAWN') ? 'pawn  ' : 'piece'
 
   function handleSquare() {
     setSelectedSquares(pieces => [...pieces, currPiece])
@@ -52,12 +54,12 @@ export default function Square({ currPiece, currPosit }) {
 
   return (
     <div
-      className={colorizedMoves?.includes(currPosit) ? 'square move' : 'square'}
+      className={colorizedSquares}
       id={currPosit}
       onClick={handleSquare}
     >
       <img
-        className={currPiece?.name.includes('PAWN') ? 'pawn  ' : 'piece'}
+        className={pawnOrPiece}
         src={currPiece?.pic}
         alt={currPiece?.name}
       />

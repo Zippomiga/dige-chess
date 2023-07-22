@@ -3,21 +3,6 @@ import w_king from '../assets/chess-pieces/w-king.png'
 import { corner, edge, innerQuadrant } from './auxiliar-functions'
 
 
-const RANGES = [
-  corner(0, [1, 8, 9]),         //TopLeft
-  corner(7, [-1, 7, 8]),        //TopRight
-  corner(56, [-8, -7, 1]),      //BottomLeft
-  corner(63, [-9, -8, -1]),     //BottomRight
-
-  edge(0, [-1, 1, 7, 8, 9]),    //Top
-  edge(1, [-8, -7, 1, 8, 9]),   //Left
-  edge(2, [-9, -8, -1, 7, 8]),  //Right
-  edge(3, [-9, -8, -7, -1, 1]), //Bottom
-
-  innerQuadrant([-9, -8, -7, -1, 1, 7, 8, 9])
-]
-
-
 class King {
   constructor(name, pic) {
     this.name = name
@@ -25,6 +10,20 @@ class King {
   }
 
   getMoves(position, filledSquares = null) {
+    const RANGES = [
+      corner(0, [1, 8, 9]),         //TopLeft
+      corner(7, [-1, 7, 8]),        //TopRight
+      corner(56, [-8, -7, 1]),      //BottomLeft
+      corner(63, [-9, -8, -1]),     //BottomRight
+
+      edge(0, [-1, 1, 7, 8, 9]),    //Top
+      edge(1, [-8, -7, 1, 8, 9]),   //Left
+      edge(2, [-9, -8, -1, 7, 8]),  //Right
+      edge(3, [-9, -8, -7, -1, 1]), //Bottom
+
+      innerQuadrant([-9, -8, -7, -1, 1, 7, 8, 9])
+    ]
+
     return updateCoords(position, RANGES)
   }
 }

@@ -87,16 +87,16 @@ export function updateCoords(ranges, pos, filledSquares) {
 }
 
 
-export function invalidPiece(piece, playerTurn) {
-  const noPiece = piece === null
-  const invalidPlayer = !piece?.name.startsWith(playerTurn)
+// export function invalidPiece(piece, playerTurn) {
+//   const noPiece = piece === null
+//   const invalidPlayer = !piece?.name.startsWith(playerTurn)
 
-  return noPiece || invalidPlayer
-}
+//   return noPiece || invalidPlayer
+// }
 
-export function invalidMove(piece, sqrPiece) {
-  const illegalMove = piece?.illegalMove()
-  const samePlayer = piece?.name[0] === sqrPiece?.name[0]
+// export function invalidMove(piece, sqrPiece) {
+//   const illegalMove = piece?.illegalMove()
+//   const samePlayer = piece?.name[0] === sqrPiece?.name[0]
 
-  return illegalMove || samePlayer
-}
+//   return illegalMove || samePlayer
+// }

@@ -11,71 +11,78 @@ export default function ChessContextProvider(props) {
   const [check, setCheck] = useState(false)
   const [turn, setTurn] = useState(true)
 
-  const playerTurn = turn ? 'W' : 'B'
-  const [PIECE_1, PIECE_2] = selectedSquares
-  const [POS_1, POS_2] = positions
+  // const [chess, setChess] = useState({
+  //   chessBoard: CHESS_BOARD,
+  //   selectedSquares: [],
+  //   positions: [],
+  //   colorizedMoves: [],
+  //   check: false,
+  //   turn: true
+  // })
 
   const FILLED_SQUARES = chessBoard.map((piece, pos) => piece && pos)
+  const [PIECE_1, PIECE_2] = selectedSquares
+  const [POS_1, POS_2] = positions
+  const PLAYER = turn ? 'W' : 'B'
+
+  // function invalid() {
+  //   const invalidSquare = PIECE_1 === null
+  //   const invalidMove = !colorizedMoves?.includes(POS_2)
+
+  //   const invalidPlayer = !PIECE_1?.name.startsWith(PLAYER)
+  //   const samePlayer = PIECE_1?.name.startsWith(PIECE_2?.name[0])
+  //   return invalidSquare || invalidPlayer || invalidMove || samePlayer
+  // }
+
+  function updateChess() {
+    const NEW_BOARD = [...chessBoard]
+
+    NEW_BOARD[POS_1] = null
+    NEW_BOARD[POS_2] = PIECE_1
+
+    setChessBoard(NEW_BOARD)
+  }
+
+  function checkCheck() {
+    const CONTRARY_KING = chessBoard.findIndex(king => {
+      const contrary = {
+        'W': 'B_KING',
+        'B': 'W_KING'
+      }
+
+      return king?.name === contrary[PLAYER]
+    })
+
+    const movesToCheck = PIECE_1.getMoves(POS_2, FILLED_SQUARES)
+    const isCheck = movesToCheck.includes(CONTRARY_KING)
+
+    setCheck(isCheck)
+  }
 
   useEffect(() => {
-    if (!PIECE_1) return
+    const MOVES = PIECE_1?.getMoves(POS_1, FILLED_SQUARES)
+      .filter(move => !chessBoard[move]?.name.startsWith(PLAYER))
 
-    const COLORIZED = PIECE_1.getMoves(POS_1, FILLED_SQUARES)
+    setColorizedMoves(MOVES)
 
-    const ilegalCoords = chessBoard
-      .map((piece, pos) => piece?.name.startsWith(playerTurn) && pos)
-
-    const COLORIZED_MOVES = COLORIZED.filter(move => !ilegalCoords.includes(move))
-
-    setColorizedMoves(COLORIZED_MOVES)
-  }, [selectedSquares])
-
-
-  useEffect(() => {
-    if (positions.length === 2) { // this means that the player has clicked twice
-      const NEW_BOARD = [...chessBoard]
-
-      NEW_BOARD[POS_1] = null
-      NEW_BOARD[POS_2] = PIECE_1
-
-      setChessBoard(NEW_BOARD)
-      setTurn(turn => !turn)
-      setColorizedMoves([])
-    }
-  }, [selectedSquares])
-
-
-  useEffect(() => {
-    if (positions.length === 2) { // this means that the player has clicked twice
-      const CONTRARY_KING = chessBoard.findIndex(king => {
-        const contrary = {
-          'W': 'B_KING',
-          'B': 'W_KING'
-        }
-
-        return king?.name === contrary[playerTurn]
-      })
-
-      const movesToCheck = PIECE_1.getMoves(POS_2, FILLED_SQUARES)
-      const isCheck = movesToCheck?.includes(CONTRARY_KING)
-
-      setCheck(isCheck)
-      setPositions([])
+    if (selectedSquares.length === 2) { // this means that the player has clicked twice
+      updateChess()
+      checkCheck()
       setSelectedSquares([])
+      setPositions([])
+      setColorizedMoves([])
+      setTurn(turn => !turn)
     }
   }, [selectedSquares])
 
-
-  useEffect(() => {
-    console.log({ check })
-  }, [chessBoard])
 
   return (
     <ChessContext.Provider value={{
       chessBoard,
       setSelectedSquares,
       setPositions,
-      colorizedMoves
+      colorizedMoves,
+      turn
     }}>
       {props.children}
     </ChessContext.Provider>
