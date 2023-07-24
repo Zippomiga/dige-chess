@@ -59,7 +59,7 @@ export default function ChessContextProvider(props) {
         const invalidMove = !chess.moves?.includes(POS_2)
         const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
 
-        return false ? {
+        return invalidMove || samePlayer ? {
           ...chess,
           squares: [],
           positions: [],
@@ -85,7 +85,6 @@ export default function ChessContextProvider(props) {
       })
     }
   }, [chess.squares])
-
 
   return (
     <ChessContext.Provider value={{
