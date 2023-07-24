@@ -1,6 +1,6 @@
 import b_pawn from '../assets/chess-pieces/b-pawn.png'
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
-import { col, sqrs } from './auxiliar-functions'
+import { col } from './auxiliar-functions'
 
 
 class Pawn {
@@ -21,67 +21,35 @@ class Pawn {
 }
 
 
-function updateCoords(name, pos, init, filledSquares) {
-  const PL = (bl, wh) => name.startsWith('B') ? bl : wh
-  const FREE = pos => typeof pos === 'number' // this method prevents errors with the 'zero' position
-
-  return filledSquares.map((sq, coord) => { // Read the reference below
-    const V = v => PL(pos + v, pos - v)
-    const D = PL(coord - pos, pos - coord)
-
-    const VERT = (next = 8) => !FREE(filledSquares.at(V(next))) && V(next)
-    const DIAG = FREE(sq) && D
-
-    const initial = init === pos && VERT()
-    const atEdge = { 0: [9, 7], 3: [7, 9] }[col(pos)]
-
-    const VERTICAL = initial
-      ? [VERT(), VERT(16)].includes(coord)
-      : [VERT()].includes(coord)
-
-    const DIAGONAL = atEdge
-      ? [PL(...atEdge)].includes(DIAG)
-      : [7, 9].includes(DIAG)
-
-    return (VERTICAL || DIAGONAL) && coord
-  }).filter(n => FREE(n))
-}
-
-function update(name, pos, init, filledSquares) {
+function updateCoords(name, position, init, filledSquares) {
   const PLAYER = (wh, bl) => name.startsWith('W') ? wh : bl
-  const TAKEN = pos => typeof pos === 'number'
+  const FREE_SQUARE = square => typeof square !== 'number' // this method prevents errors with the 'zero' position
+  const COLUMN = c => col(position) === c
+  const INITIAL = position === init
 
-  const X = filledSquares.map((sqr, coord) => {
-    const INIT = pos === init
-    const NEXT_ONE = PLAYER(pos - 8, pos + 8)
-    const NEXT_TWO = PLAYER(pos - 16, pos + 16)
+  return filledSquares.map((square, coord) => {
+    const NEXT_ONE = PLAYER(position - 8, position + 8)
+    const NEXT_TWO = PLAYER(position - 16, position + 16)
     const NEXT_PIECE = filledSquares[NEXT_ONE]
 
-    const V_MOVES = !TAKEN(NEXT_PIECE) && INIT
+    const VERT_MOVES = FREE_SQUARE(NEXT_PIECE) && INITIAL
       ? [NEXT_ONE, NEXT_TWO]
       : [NEXT_ONE]
 
-
-    const VERTICAL = !TAKEN(sqr) && V_MOVES.includes(coord)
-
     const DIAGS = PLAYER(
-      [pos - 7, pos - 9],
-      [pos + 7, pos + 9]
+      [position - 7, position - 9],
+      [position + 7, position + 9]
     )
+    const COLUMN_A = [Math.max(...DIAGS)]
+    const COLUMN_H = [Math.min(...DIAGS)]
 
+    const DIAG_MOVES = COLUMN(0) ? COLUMN_A : COLUMN(3) ? COLUMN_H : DIAGS
 
-    // const COL = sqrs.columns[col(pos)]
-    // const contrary = COL === 0 ? sqrs.columns[3] : sqrs.columns[0]
-    // const fixed = DIAGS.filter(n => !contrary.includes(n))
-    // const D = fixed.includes(coord) && TAKEN(sqr)
+    const VERTICAL = FREE_SQUARE(square) && VERT_MOVES.includes(coord)
+    const DIAGONAL = !FREE_SQUARE(square) && DIAG_MOVES.includes(coord)
 
-    console.log({ ...DIAGS })
-
-    return VERTICAL ? coord : null
+    return VERTICAL || DIAGONAL ? coord : null
   })
-
-  console.log(X)
-  return X
 }
 
 
@@ -105,18 +73,28 @@ export const PAWNS = {
   W_PAWN_8: new Pawn('W_PAWN_8', w_pawn, 55)
 }
 
+// function update(name, pos, init, filledSquares) {
+//   const PL = (bl, wh) => name.startsWith('B') ? bl : wh
+//   const FREE = pos => typeof pos === 'number' // this method prevents errors with the 'zero' position
 
-/*
-'VERTICAL' will restrict the vertical moves depending of the position.
-If the pawn is at initial position, it can move two squares, otherwise, it just can move one square.
+//   return filledSquares.map((sq, coord) => { // Read the reference below
+//     const V = v => PL(pos + v, pos - v)
+//     const D = PL(coord - pos, pos - coord)
 
-'DIAGONAL' will restrict the diagonal moves depending on what column the pawn is, which in turn depends of its color. If the pawn is black or white, only can eat with a positional difference of...
+//     const VERT = (next = 8) => !FREE(filledSquares.at(V(next))) && V(next)
+//     const DIAG = FREE(sq) && D
 
-COLUMN A: ... 9 or 7 respectively
-COLUMN H: ... 7 or 9 respectively
+//     const initial = init === pos && VERT()
+//     const atEdge = { 0: [9, 7], 3: [7, 9] }[col(pos)]
 
-COLUMN B || C || D || E || F || G:
-It only will filter the moves by its color, with a positional difference of 7 or 9, both, or none if the diagonal squares are not allowed to move
+//     const VERTICAL = initial
+//       ? [VERT(), VERT(16)].includes(coord)
+//       : [VERT()].includes(coord)
 
-In both cases, 'VERT' && 'DIAG' will handle if it's possible to make that moves in case the square is free or not, preventing the pawn from 'jumping' or eating in a wrong way.
-*/
+//     const DIAGONAL = atEdge
+//       ? [PL(...atEdge)].includes(DIAG)
+//       : [7, 9].includes(DIAG)
+
+//     return (VERTICAL || DIAGONAL) && coord
+//   }).filter(n => FREE(n))
+// }
