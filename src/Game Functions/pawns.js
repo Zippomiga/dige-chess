@@ -48,6 +48,21 @@ function updateCoords(name, pos, init, filledSquares) {
 }
 
 
+function update(name, pos, init, filledSquares) {
+  const PLAYER = (wh, bl) => name.startsWith('W') ? wh : bl
+  const FREE = pos => typeof pos === 'number'
+
+  return filledSquares.filter((sqr, coord) => {
+    const INIT = pos === init
+    const NEXT_ONE = PLAYER(pos - 8, pos + 8)
+    const NEXT_TWO = PLAYER(pos - 16, pos + 16)
+
+    const MOVES = INIT ? [NEXT_ONE, NEXT_TWO] : [NEXT_ONE]
+    console.log(MOVES)
+  })
+}
+
+
 export const PAWNS = {
   B_PAWN_1: new Pawn('B_PAWN_1', b_pawn, 8),
   B_PAWN_2: new Pawn('B_PAWN_2', b_pawn, 9),

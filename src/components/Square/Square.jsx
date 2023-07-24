@@ -42,9 +42,9 @@ export default function Square({ currPiece, currPosit }) {
         src={currPiece?.pic}
         alt={currPiece?.name}
       />
-      {/* <span className='square-index'> */}
-      {/* {currPosit} */}
-      {/* </span> */}
+      <span className='square-index'>
+        {currPosit}
+      </span>
     </div>
   )
 }

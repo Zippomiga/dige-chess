@@ -76,7 +76,7 @@ export default function ChessContextProvider(props) {
       })
     } else {
       setChess(chess => { // this colorize the allowed moves
-        const MOVES = PIECE_1?.getMoves(POS_1, FILLED_SQUARES).filter(move => {
+        const MOVES = PIECE_1?.getMoves(POS_1, FILLED_SQUARES)?.filter(move => {
           const piece = chess.board[move]
           return !piece?.name.startsWith(PLAYER)
         })
