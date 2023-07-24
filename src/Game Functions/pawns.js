@@ -1,6 +1,6 @@
 import b_pawn from '../assets/chess-pieces/b-pawn.png'
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
-import { col } from './auxiliar-functions'
+import { col, sqrs } from './auxiliar-functions'
 
 
 class Pawn {
@@ -47,19 +47,41 @@ function updateCoords(name, pos, init, filledSquares) {
   }).filter(n => FREE(n))
 }
 
-
 function update(name, pos, init, filledSquares) {
   const PLAYER = (wh, bl) => name.startsWith('W') ? wh : bl
-  const FREE = pos => typeof pos === 'number'
+  const TAKEN = pos => typeof pos === 'number'
 
-  return filledSquares.filter((sqr, coord) => {
+  const X = filledSquares.map((sqr, coord) => {
     const INIT = pos === init
     const NEXT_ONE = PLAYER(pos - 8, pos + 8)
     const NEXT_TWO = PLAYER(pos - 16, pos + 16)
+    const NEXT_PIECE = filledSquares[NEXT_ONE]
 
-    const MOVES = INIT ? [NEXT_ONE, NEXT_TWO] : [NEXT_ONE]
-    console.log(MOVES)
+    const V_MOVES = !TAKEN(NEXT_PIECE) && INIT
+      ? [NEXT_ONE, NEXT_TWO]
+      : [NEXT_ONE]
+
+
+    const VERTICAL = !TAKEN(sqr) && V_MOVES.includes(coord)
+
+    const DIAGS = PLAYER(
+      [pos - 7, pos - 9],
+      [pos + 7, pos + 9]
+    )
+
+
+    // const COL = sqrs.columns[col(pos)]
+    // const contrary = COL === 0 ? sqrs.columns[3] : sqrs.columns[0]
+    // const fixed = DIAGS.filter(n => !contrary.includes(n))
+    // const D = fixed.includes(coord) && TAKEN(sqr)
+
+    console.log({ ...DIAGS })
+
+    return VERTICAL ? coord : null
   })
+
+  console.log(X)
+  return X
 }
 
 

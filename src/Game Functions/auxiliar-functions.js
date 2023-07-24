@@ -1,4 +1,4 @@
-const sqrs = {
+export const sqrs = {
   corners: [0, 7, 56, 63],
 
   edges: [
