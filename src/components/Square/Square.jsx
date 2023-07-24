@@ -7,19 +7,20 @@ export default function Square({ currPiece, currPosit }) {
   const {
     chess,
     setChess,
-    PLAYER
+    PLAYER,
   } = useContext(ChessContext)
 
-  const isColorized = chess.moves?.includes(currPosit) ? 'square move' : 'square'
+  const isKing = chess.check && currPosit === chess.king
+  const isMove = chess.moves?.includes(currPosit)
   const isPawn = currPiece?.name.includes('PAWN') ? 'pawn  ' : 'piece'
+  const squareColor = isKing ? 'square check' : isMove ? 'square move' : 'square'
 
   function handleSquare() {
-    if (chess.squares.length === 0) {
-      const invalidSquare = !currPiece
-      const invalidPlayer = !currPiece?.name.startsWith(PLAYER)
+    const startingMove = !chess.squares.length
+    const invalidSquare = !currPiece
+    const invalidPlayer = !currPiece?.name.startsWith(PLAYER)
 
-      if (invalidSquare || invalidPlayer) return
-    }
+    if (startingMove && (invalidSquare || invalidPlayer)) return
 
     setChess(chess => {
       return {
@@ -32,7 +33,7 @@ export default function Square({ currPiece, currPosit }) {
 
   return (
     <div
-      className={isColorized}
+      className={squareColor}
       id={currPosit}
       onClick={handleSquare}
     >
@@ -41,9 +42,9 @@ export default function Square({ currPiece, currPosit }) {
         src={currPiece?.pic}
         alt={currPiece?.name}
       />
-      <span className='square-index'>
-        {currPosit}
-      </span>
+      {/* <span className='square-index'> */}
+      {/* {currPosit} */}
+      {/* </span> */}
     </div>
   )
 }

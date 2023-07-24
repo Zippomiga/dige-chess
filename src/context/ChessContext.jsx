@@ -11,6 +11,7 @@ export default function ChessContextProvider(props) {
     positions: [],
     moves: [],
     check: false,
+    king: null,
     turn: true
   })
 
@@ -40,14 +41,21 @@ export default function ChessContextProvider(props) {
       return king?.name === contrary[PLAYER]
     })
 
-    const movesToCheck = PIECE_1?.getMoves(POS_2, FILLED_SQUARES)
-    return movesToCheck?.includes(CONTRARY_KING)
+    const IS_CHECK = PIECE_1?.getMoves(POS_2, FILLED_SQUARES).includes(CONTRARY_KING)
+
+    return { CONTRARY_KING, IS_CHECK }
   }
 
+  // const stillInCheck = () => {
+  //   if (check) {
+  //     return lastPiece?.getMoves(lastMove, FILLED_SQUARES).includes(chess.king)
+  //   }
+  // }
 
   useEffect(() => {
     if (chess.squares.length === 2) { // this means that the player has clicked twice
       setChess(chess => {
+        const { CONTRARY_KING, IS_CHECK } = isCheck()
         const invalidMove = !chess.moves?.includes(POS_2)
         const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
 
@@ -61,12 +69,13 @@ export default function ChessContextProvider(props) {
           squares: [],
           positions: [],
           moves: [],
-          check: isCheck(),
+          check: IS_CHECK,
+          king: CONTRARY_KING,
           turn: !chess.turn
         }
       })
     } else {
-      setChess(chess => {
+      setChess(chess => { // this colorize the allowed moves
         const MOVES = PIECE_1?.getMoves(POS_1, FILLED_SQUARES).filter(move => {
           const piece = chess.board[move]
           return !piece?.name.startsWith(PLAYER)

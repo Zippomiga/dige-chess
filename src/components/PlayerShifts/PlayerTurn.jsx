@@ -6,24 +6,39 @@ import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
 export default function PlayerTurn() {
-  const { chess: { turn, check } } = useContext(ChessContext)
+  const { chess: { board, turn, check, king } } = useContext(ChessContext)
+
+  const isCheck = player => check && board[king]?.name.startsWith(player)
 
   return (
     <div className='player-turn-panel'>
-      <img
-        src={blackShift}
-        alt="black-shift"
-        className={!turn ? 'player-turn' : 'player-turn current'}
-      />
-      <img
-        src={whiteShift}
-        alt="white-shift"
-        className={turn ? 'player-turn' : 'player-turn current'}
-      />
-      {
-        check &&
-        <span>JAQUE</span>
-      }
+
+      <div>
+        {isCheck('B') &&
+          <img
+            src={inCheck}
+            className='turn-check'
+            alt="" />}
+        <img
+          src={blackShift}
+          alt="black-shift"
+          className={!turn ? 'player-turn' : 'player-turn current'}
+        />
+      </div>
+
+      <div>
+        {isCheck('W') &&
+          <img
+            src={inCheck}
+            className='turn-check'
+            alt="" />}
+        <img
+          src={whiteShift}
+          alt="white-shift"
+          className={turn ? 'player-turn' : 'player-turn current'}
+        />
+      </div>
+
     </div>
   )
 }
