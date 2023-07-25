@@ -12,43 +12,39 @@ class Pawn {
 
   getMoves(position, filledSquares) {
     return updateCoords(
-      this.name,
+      this.name.startsWith('W'),
+      this.init === position,
       position,
-      this.init,
       filledSquares
     )
   }
 }
 
 
-function updateCoords(name, position, init, filledSquares) {
-  const PLAYER = (wh, bl) => name.startsWith('W') ? wh : bl
-  const FREE_SQUARE = square => typeof square !== 'number' // this method prevents errors with the 'zero' position
-  const COLUMN = c => col(position) === c
-  const INITIAL = position === init
+function updateCoords(isWhite, initial, position, filledSquares) {
+  const NEXT_SQUARE = diff => isWhite ? position - diff : position + diff
+  const FREE_SQUARE = square => typeof square !== 'number'
+  const COLUMN = columnIndex => col(position) === columnIndex
 
-  return filledSquares.map((square, coord) => {
-    const NEXT_ONE = PLAYER(position - 8, position + 8)
-    const NEXT_TWO = PLAYER(position - 16, position + 16)
-    const NEXT_PIECE = filledSquares[NEXT_ONE]
+  return filledSquares.map((square, move) => {
+    const VERT_NEXT = filledSquares[NEXT_SQUARE(8)]
+    const DIAG_NEXT = isWhite
+      ? [NEXT_SQUARE(7), NEXT_SQUARE(9)]
+      : [NEXT_SQUARE(9), NEXT_SQUARE(7)]
 
-    const VERT_MOVES = FREE_SQUARE(NEXT_PIECE) && INITIAL
-      ? [NEXT_ONE, NEXT_TWO]
-      : [NEXT_ONE]
+    const VERT_MOVES = initial && FREE_SQUARE(VERT_NEXT)
+      ? [NEXT_SQUARE(8), NEXT_SQUARE(16)]
+      : [NEXT_SQUARE(8)]
 
-    const DIAGS = PLAYER(
-      [position - 7, position - 9],
-      [position + 7, position + 9]
-    )
-    const COLUMN_A = [Math.max(...DIAGS)]
-    const COLUMN_H = [Math.min(...DIAGS)]
+    const DIAG_MOVES =
+      COLUMN(0) ? [Math.max(...DIAG_NEXT)] : // COLUMN A
+      COLUMN(3) ? [Math.min(...DIAG_NEXT)] : // COLUMN H
+      DIAG_NEXT
 
-    const DIAG_MOVES = COLUMN(0) ? COLUMN_A : COLUMN(3) ? COLUMN_H : DIAGS
+    const VERTICAL = FREE_SQUARE(square) && VERT_MOVES.includes(move)
+    const DIAGONAL = !FREE_SQUARE(square) && DIAG_MOVES.includes(move)
 
-    const VERTICAL = FREE_SQUARE(square) && VERT_MOVES.includes(coord)
-    const DIAGONAL = !FREE_SQUARE(square) && DIAG_MOVES.includes(coord)
-
-    return VERTICAL || DIAGONAL ? coord : null
+    return VERTICAL || DIAGONAL ? move : null
   })
 }
 
@@ -72,29 +68,3 @@ export const PAWNS = {
   W_PAWN_7: new Pawn('W_PAWN_7', w_pawn, 54),
   W_PAWN_8: new Pawn('W_PAWN_8', w_pawn, 55)
 }
-
-// function update(name, pos, init, filledSquares) {
-//   const PL = (bl, wh) => name.startsWith('B') ? bl : wh
-//   const FREE = pos => typeof pos === 'number' // this method prevents errors with the 'zero' position
-
-//   return filledSquares.map((sq, coord) => { // Read the reference below
-//     const V = v => PL(pos + v, pos - v)
-//     const D = PL(coord - pos, pos - coord)
-
-//     const VERT = (next = 8) => !FREE(filledSquares.at(V(next))) && V(next)
-//     const DIAG = FREE(sq) && D
-
-//     const initial = init === pos && VERT()
-//     const atEdge = { 0: [9, 7], 3: [7, 9] }[col(pos)]
-
-//     const VERTICAL = initial
-//       ? [VERT(), VERT(16)].includes(coord)
-//       : [VERT()].includes(coord)
-
-//     const DIAGONAL = atEdge
-//       ? [PL(...atEdge)].includes(DIAG)
-//       : [7, 9].includes(DIAG)
-
-//     return (VERTICAL || DIAGONAL) && coord
-//   }).filter(n => FREE(n))
-// }
