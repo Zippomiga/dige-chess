@@ -23,7 +23,7 @@ class Pawn {
 
 function updateCoords(isWhite, initial, position, filledSquares) {
   const NEXT = diff => isWhite ? position - diff : position + diff
-  const FILLED = square => typeof square !== 'number'
+  const FILLED = square => square === null
   const COLUMN = columnIndex => col(position) === columnIndex
 
   return filledSquares.map((square, move) => {

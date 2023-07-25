@@ -6,13 +6,12 @@ import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
 export default function PlayerTurn() {
-  const { chess: {
-    board,
-    turn,
-    check: { IS_CHECK, CONTRARY_KING }
-  } } = useContext(ChessContext)
+  const { chess } = useContext(ChessContext)
 
-  const isCheck = player => IS_CHECK && board[CONTRARY_KING]?.name.startsWith(player)
+  const isCheck = player => {
+    const piece = chess.board[chess.check.CONTRARY_KING]
+    return chess.check.IS_CHECK && piece?.name.startsWith(player)
+  }
 
   return (
     <div className='player-turn-panel'>
@@ -26,7 +25,7 @@ export default function PlayerTurn() {
         <img
           src={blackShift}
           alt="black-shift"
-          className={!turn ? 'player-turn' : 'player-turn current'}
+          className={!chess.turn ? 'player-turn' : 'player-turn current'}
         />
       </div>
 
@@ -39,7 +38,7 @@ export default function PlayerTurn() {
         <img
           src={whiteShift}
           alt="white-shift"
-          className={turn ? 'player-turn' : 'player-turn current'}
+          className={chess.turn ? 'player-turn' : 'player-turn current'}
         />
       </div>
 

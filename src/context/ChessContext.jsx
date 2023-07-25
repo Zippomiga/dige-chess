@@ -31,6 +31,7 @@ export default function ChessContextProvider(props) {
   const PLAYER = chess.turn ? 'W' : 'B'
   const PIECE_MOVES = position => PIECE_1?.getMoves(position, FILLED_SQUARES)
 
+
   const updateBoard = () => {
     const NEW_BOARD = [...chess.board]
 
@@ -40,7 +41,8 @@ export default function ChessContextProvider(props) {
     return NEW_BOARD
   }
 
-  const isCheck = () => {
+
+  const updateCheck = () => {
     const CONTRARY_KING = chess.board.findIndex(king => {
       const contrary = {
         'W': 'B_KING',
@@ -55,37 +57,52 @@ export default function ChessContextProvider(props) {
     return { CONTRARY_KING, MOVES, IS_CHECK }
   }
 
+
+  const updateChess = () => {
+    return {
+      board: updateBoard(),
+      squares: [],
+      positions: [],
+      moves: [],
+      check: updateCheck(),
+      turn: !chess.turn
+    }
+  }
+
+
+  const colorizeMoves = chess => {
+    const MOVES = PIECE_MOVES(POS_1)
+    const COLORIZED = MOVES?.filter(move => {
+      const piece = chess.board[move]
+      return !piece?.name.startsWith(PLAYER)
+    })
+
+    return { ...chess, moves: COLORIZED }
+  }
+
+
+  const resetChess = chess => {
+    return {
+      ...chess,
+      squares: [],
+      positions: [],
+      moves: []
+    }
+  }
+
   useEffect(() => {
-    if (chess.squares.length === 2) { // this means that the player has clicked twice
-      setChess(chess => {
+    setChess(chess => {
+      if (chess.squares.length === 2) { // this means that the player has clicked twice
         const invalidMove = !chess.moves?.includes(POS_2)
         const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
 
-        return invalidMove || samePlayer ? {
-          ...chess,
-          squares: [],
-          positions: [],
-          moves: [],
-        } : {
-          board: updateBoard(),
-          squares: [],
-          positions: [],
-          moves: [],
-          check: isCheck(),
-          turn: !chess.turn
-        }
-      })
-    } else {
-      setChess(chess => { // this colorize the allowed moves
-        const MOVES = PIECE_MOVES(POS_1)
-        const COLORIZED = MOVES?.filter(move => {
-          const piece = chess.board[move]
-          return !piece?.name.startsWith(PLAYER)
-        })
-
-        return { ...chess, moves: COLORIZED }
-      })
-    }
+        return invalidMove || samePlayer
+          ? resetChess(chess)
+          : updateChess()
+      } else {
+        return colorizeMoves(chess)
+      }
+    })
   }, [chess.squares])
 
 
