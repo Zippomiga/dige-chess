@@ -22,27 +22,27 @@ class Pawn {
 
 
 function updateCoords(isWhite, initial, position, filledSquares) {
-  const NEXT_SQUARE = diff => isWhite ? position - diff : position + diff
-  const FREE_SQUARE = square => typeof square !== 'number'
+  const NEXT = diff => isWhite ? position - diff : position + diff
+  const FREE = square => typeof square !== 'number'
   const COLUMN = columnIndex => col(position) === columnIndex
 
   return filledSquares.map((square, move) => {
-    const VERT_NEXT = filledSquares[NEXT_SQUARE(8)]
+    const VERT_NEXT = filledSquares[NEXT(8)]
     const DIAG_NEXT = isWhite
-      ? [NEXT_SQUARE(7), NEXT_SQUARE(9)]
-      : [NEXT_SQUARE(9), NEXT_SQUARE(7)]
+      ? [NEXT(7), NEXT(9)]
+      : [NEXT(9), NEXT(7)]
 
-    const VERT_MOVES = initial && FREE_SQUARE(VERT_NEXT)
-      ? [NEXT_SQUARE(8), NEXT_SQUARE(16)]
-      : [NEXT_SQUARE(8)]
+    const VERT_MOVES = initial && FREE(VERT_NEXT)
+      ? [NEXT(8), NEXT(16)]
+      : [NEXT(8)]
 
     const DIAG_MOVES =
       COLUMN(0) ? [Math.max(...DIAG_NEXT)] : // COLUMN A
       COLUMN(3) ? [Math.min(...DIAG_NEXT)] : // COLUMN H
       DIAG_NEXT
 
-    const VERTICAL = FREE_SQUARE(square) && VERT_MOVES.includes(move)
-    const DIAGONAL = !FREE_SQUARE(square) && DIAG_MOVES.includes(move)
+    const VERTICAL = FREE(square) && VERT_MOVES.includes(move)
+    const DIAGONAL = !FREE(square) && DIAG_MOVES.includes(move)
 
     return VERTICAL || DIAGONAL ? move : null
   })

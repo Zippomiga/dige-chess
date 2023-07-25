@@ -6,9 +6,13 @@ import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
 export default function PlayerTurn() {
-  const { chess: { board, turn, check, king } } = useContext(ChessContext)
+  const { chess: {
+    board,
+    turn,
+    check: { IS_CHECK, CONTRARY_KING }
+  } } = useContext(ChessContext)
 
-  const isCheck = player => check && board[king]?.name.startsWith(player)
+  const isCheck = player => IS_CHECK && board[CONTRARY_KING]?.name.startsWith(player)
 
   return (
     <div className='player-turn-panel'>

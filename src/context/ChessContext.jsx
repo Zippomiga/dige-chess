@@ -5,13 +5,20 @@ import { createContext, useState, useEffect } from "react";
 export const ChessContext = createContext()
 
 export default function ChessContextProvider(props) {
+  // const [copy, setCopy] = useState({})
+  // const [board, setBoard] = useState(CHESS_BOARD)
+  // const [squares, setSquares] = useState([])
+  // const [positions, setPositions] = useState([])
+  // const [moves, setMoves] = useState([])
+  // const [check, setCheck] = useState({})
+  // const [turn, setTurn] = useState(true)
+
   const [chess, setChess] = useState({
     board: CHESS_BOARD,
     squares: [],
     positions: [],
     moves: [],
-    check: false,
-    king: null,
+    check: {},
     turn: true
   })
 
@@ -22,6 +29,7 @@ export default function ChessContextProvider(props) {
 
   const FILLED_SQUARES = chess.board.map((piece, pos) => piece && pos)
   const PLAYER = chess.turn ? 'W' : 'B'
+  const PIECE_MOVES = position => PIECE_1?.getMoves(position, FILLED_SQUARES)
 
   const updateBoard = () => {
     const NEW_BOARD = [...chess.board]
@@ -41,21 +49,15 @@ export default function ChessContextProvider(props) {
       return king?.name === contrary[PLAYER]
     })
 
-    const IS_CHECK = PIECE_1?.getMoves(POS_2, FILLED_SQUARES).includes(CONTRARY_KING)
+    const MOVES = PIECE_MOVES(POS_2)
+    const IS_CHECK = MOVES.includes(CONTRARY_KING)
 
-    return { CONTRARY_KING, IS_CHECK }
+    return { CONTRARY_KING, MOVES, IS_CHECK }
   }
-
-  // const stillInCheck = () => {
-  //   if (check) {
-  //     return lastPiece?.getMoves(lastMove, FILLED_SQUARES).includes(chess.king)
-  //   }
-  // }
 
   useEffect(() => {
     if (chess.squares.length === 2) { // this means that the player has clicked twice
       setChess(chess => {
-        const { CONTRARY_KING, IS_CHECK } = isCheck()
         const invalidMove = !chess.moves?.includes(POS_2)
         const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
 
@@ -69,22 +71,34 @@ export default function ChessContextProvider(props) {
           squares: [],
           positions: [],
           moves: [],
-          check: IS_CHECK,
-          king: CONTRARY_KING,
+          check: isCheck(),
           turn: !chess.turn
         }
       })
     } else {
       setChess(chess => { // this colorize the allowed moves
-        const MOVES = PIECE_1?.getMoves(POS_1, FILLED_SQUARES)?.filter(move => {
+        const MOVES = PIECE_MOVES(POS_1)
+        const COLORIZED = MOVES?.filter(move => {
           const piece = chess.board[move]
           return !piece?.name.startsWith(PLAYER)
         })
 
-        return { ...chess, moves: MOVES }
+        return { ...chess, moves: COLORIZED }
       })
     }
   }, [chess.squares])
+
+
+  // useEffect(() => {
+  //   if(chess.check.IS_CHECK) {
+  //     setCopy(chess)
+  //   }
+
+  //   if(copy?.check?.IS_CHECK) {
+  //     console.log('STILL IN CHECK');
+  //     setChess(copy)
+  //   }
+  //  }, [chess.check])
 
   return (
     <ChessContext.Provider value={{
