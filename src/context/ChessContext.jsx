@@ -5,7 +5,7 @@ import { createContext, useState, useEffect } from "react";
 export const ChessContext = createContext()
 
 export default function ChessContextProvider(props) {
-  // const [copy, setCopy] = useState({})
+  const [copy, setCopy] = useState({})
   // const [board, setBoard] = useState(CHESS_BOARD)
   // const [squares, setSquares] = useState([])
   // const [positions, setPositions] = useState([])
@@ -54,7 +54,7 @@ export default function ChessContextProvider(props) {
     const MOVES = PIECE_MOVES(POS_2)
     const IS_CHECK = MOVES.includes(CONTRARY_KING)
 
-    return { CONTRARY_KING, MOVES, IS_CHECK }
+    return { PIECE_1, CONTRARY_KING, MOVES, IS_CHECK }
   }
 
 
@@ -90,32 +90,39 @@ export default function ChessContextProvider(props) {
     }
   }
 
-  useEffect(() => {
-    setChess(chess => {
-      if (chess.squares.length === 2) { // this means that the player has clicked twice
-        const invalidMove = !chess.moves?.includes(POS_2)
-        const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
 
-        return invalidMove || samePlayer
-          ? resetChess(chess)
-          : updateChess()
-      } else {
-        return colorizeMoves(chess)
-      }
+  useEffect(() => {
+    const clickedTwice = chess.squares.length === 2
+    const invalidMove = !chess.moves?.includes(POS_2)
+    const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
+
+    setChess(chess => {
+      return clickedTwice ? (invalidMove || samePlayer)
+        ? resetChess(chess)
+        : updateChess()
+        : colorizeMoves(chess)
     })
   }, [chess.squares])
 
 
-  // useEffect(() => {
-  //   if(chess.check.IS_CHECK) {
-  //     setCopy(chess)
-  //   }
+  useEffect(() => {
+    if (chess.check.IS_CHECK) {
+      setCopy(chess)
+    }
 
-  //   if(copy?.check?.IS_CHECK) {
-  //     console.log('STILL IN CHECK');
-  //     setChess(copy)
-  //   }
-  //  }, [chess.check])
+    const lastPiece = copy.check?.PIECE_1
+    const lastPosition = copy.board?.indexOf(lastPiece)
+    const king = copy.check?.CONTRARY_KING
+    const stillInCheck = lastPiece?.getMoves(lastPosition, FILLED_SQUARES).includes(king)
+
+    if (stillInCheck) {
+      console.log('STILL')
+      setChess(copy)
+    } else {
+      console.log('NOT IN CHECK')
+    }
+    console.log({ copy, stillInCheck })
+  }, [chess.check])
 
   return (
     <ChessContext.Provider value={{
