@@ -1,14 +1,14 @@
-export const sqrs = {
-  corners: [0, 7, 56, 63],
+const SQUARES = {
+  CORNERS: [0, 7, 56, 63],
 
-  edges: [
+  EDGES: [
     [0, 1, 2, 3, 4, 5, 6, 7],         //Top
     [0, 8, 16, 24, 32, 40, 48, 56],   //Left
     [7, 15, 23, 31, 39, 47, 55, 63],  //Right
     [56, 57, 58, 59, 60, 61, 62, 63]  //Bottom
   ],
 
-  columns: [
+  COLUMNS: [
     [0, 8, 16, 24, 32, 40, 48, 56],   //column A
     [1, 9, 17, 25, 33, 41, 49, 57],   //column B
     [6, 14, 22, 30, 38, 46, 54, 62],  //column G
@@ -17,17 +17,17 @@ export const sqrs = {
 }
 
 
-const allEdges = sqrs.edges.flat()
+const ALL_EDGES = SQUARES.EDGES.flat()
 
-export const col = pos => sqrs.columns.findIndex(co => co.includes(pos))
+export const col = pos => SQUARES.COLUMNS.findIndex(co => co.includes(pos))
 
 
-export const corner = (ext, moves) => {
-  const cornerLimits = sqrs.corners
-    .filter(co => co !== ext)
+export const corner = (corner, moves) => {
+  const cornerLimits = SQUARES.CORNERS
+    .filter(co => co !== corner)
 
   return [
-    [ext],
+    [corner],
     cornerLimits,
     moves
   ]
@@ -35,12 +35,12 @@ export const corner = (ext, moves) => {
 
 
 export const edge = (edg, moves) => {
-  const edgeLimits = sqrs.edges
+  const edgeLimits = SQUARES.EDGES
     .filter((_, edge) => edge !== edg)
     .flat()
 
   return [
-    sqrs.edges[edg],
+    SQUARES.EDGES[edg],
     edgeLimits,
     moves
   ]
@@ -51,20 +51,20 @@ export const innerQuadrant = moves => {
   const innerQ = Array(64)
     .fill(null)
     .map((_, qIdx) => qIdx)
-    .filter(qCoord => !allEdges.includes(qCoord))
+    .filter(qCoord => !ALL_EDGES.includes(qCoord))
 
   return [
     innerQ,
-    allEdges,
+    ALL_EDGES,
     moves
   ]
 }
 
 
 export function updateCoords(ranges, pos, filledSquares) {
-  const [, edges, moves] = ranges.find(ra => ra[0].includes(pos))
+  const [, EDGES, moves] = ranges.find(ra => ra[0].includes(pos))
 
-  const limits = [...filledSquares, ...edges]
+  const limits = [...filledSquares, ...EDGES]
     .filter((limit, i, arr) => {
       const uniq = arr.indexOf(limit) === i // keeps unique items
       const curr = limit !== pos            // prevents of newCoords from returning an empty array
@@ -85,18 +85,3 @@ export function updateCoords(ranges, pos, filledSquares) {
 
   return newCoords
 }
-
-
-// export function invalidPiece(piece, playerTurn) {
-//   const noPiece = piece === null
-//   const invalidPlayer = !piece?.name.startsWith(playerTurn)
-
-//   return noPiece || invalidPlayer
-// }
-
-// export function invalidMove(piece, sqrPiece) {
-//   const illegalMove = piece?.illegalMove()
-//   const samePlayer = piece?.name[0] === sqrPiece?.name[0]
-
-//   return illegalMove || samePlayer
-// }

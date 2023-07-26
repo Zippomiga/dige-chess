@@ -116,12 +116,12 @@ export default function ChessContextProvider(props) {
     const stillInCheck = lastPiece?.getMoves(lastPosition, FILLED_SQUARES).includes(king)
 
     if (stillInCheck) {
-      console.log('STILL')
+      // console.log('STILL IN CHECK')
       setChess(copy)
-    } else {
-      console.log('NOT IN CHECK')
+    // } else {
+      // console.log('NOT IN CHECK')
     }
-    console.log({ copy, stillInCheck })
+    // console.log({ copy, stillInCheck })
   }, [chess.check])
 
   return (
