@@ -22,14 +22,17 @@ export default function ChessContextProvider(props) {
     turn: true
   })
 
-  const {
-    squares: [PIECE_1, PIECE_2],
-    positions: [POS_1, POS_2]
-  } = chess
-
-  const FILLED_SQUARES = chess.board.map((piece, pos) => piece && pos)
+  const [PIECE_1, PIECE_2] = chess.squares
+  const [POS_1, POS_2] = chess.positions
   const PLAYER = chess.turn ? 'W' : 'B'
-  const PIECE_MOVES = position => PIECE_1?.getMoves(position, FILLED_SQUARES)
+
+
+  const PIECE_MOVES = (piece, position) => {
+    const filledSquares = chess.board
+      .map((piece, position) => piece && position)
+
+    return piece?.getMoves(position, filledSquares)
+  }
 
 
   const updateBoard = () => {
@@ -51,7 +54,7 @@ export default function ChessContextProvider(props) {
       return king?.name === contrary[PLAYER]
     })
 
-    const MOVES = PIECE_MOVES(POS_2)
+    const MOVES = PIECE_MOVES(PIECE_1, POS_2)
     const IS_CHECK = MOVES.includes(CONTRARY_KING)
 
     return { PIECE_1, CONTRARY_KING, MOVES, IS_CHECK }
@@ -70,17 +73,6 @@ export default function ChessContextProvider(props) {
   }
 
 
-  const colorizeMoves = chess => {
-    const MOVES = PIECE_MOVES(POS_1)
-    const COLORIZED = MOVES?.filter(move => {
-      const piece = chess.board[move]
-      return !piece?.name.startsWith(PLAYER)
-    })
-
-    return { ...chess, moves: COLORIZED }
-  }
-
-
   const resetChess = chess => {
     return {
       ...chess,
@@ -91,17 +83,32 @@ export default function ChessContextProvider(props) {
   }
 
 
+  function colorizeMoves() {
+    const MOVES = PIECE_MOVES(PIECE_1, POS_1)
+
+    const COLORIZED = MOVES?.filter(move => {
+      const piece = chess.board[move]
+
+      return !piece?.name.startsWith(PLAYER)
+    })
+
+    setChess(chess => { return { ...chess, moves: COLORIZED } })
+  }
+
+
   useEffect(() => {
     const clickedTwice = chess.squares.length === 2
-    const invalidMove = !chess.moves?.includes(POS_2)
-    const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
 
-    setChess(chess => {
-      return clickedTwice ? (invalidMove || samePlayer)
-        ? resetChess(chess)
-        : updateChess()
-        : colorizeMoves(chess)
-    })
+    if (clickedTwice) {
+      const invalidMove = !chess.moves?.includes(POS_2)
+      const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
+
+      setChess(chess => {
+        return invalidMove || samePlayer
+          ? resetChess(chess)
+          : updateChess()
+      })
+    } else { colorizeMoves() }
   }, [chess.squares])
 
 
@@ -110,19 +117,26 @@ export default function ChessContextProvider(props) {
       setCopy(chess)
     }
 
-    const lastPiece = copy.check?.PIECE_1
-    const lastPosition = copy.board?.indexOf(lastPiece)
-    const king = copy.check?.CONTRARY_KING
-    const stillInCheck = lastPiece?.getMoves(lastPosition, FILLED_SQUARES).includes(king)
+    const stillInCheck = () => {
+      const lastKing = copy.check?.CONTRARY_KING
+      const lastPiece = copy.check?.PIECE_1
+      const lastPosition = copy.board?.indexOf(lastPiece)
+      const lastMoves = PIECE_MOVES(lastPiece, lastPosition)
 
-    if (stillInCheck) {
-      // console.log('STILL IN CHECK')
-      setChess(copy)
-    // } else {
-      // console.log('NOT IN CHECK')
+      return lastMoves?.includes(lastKing)
     }
-    // console.log({ copy, stillInCheck })
+
+    if (stillInCheck()) {
+      setChess(chess => {
+        return {
+          ...chess,
+          check: copy.check,
+          turn: copy.turn
+        }
+      })
+    }
   }, [chess.check])
+
 
   return (
     <ChessContext.Provider value={{
