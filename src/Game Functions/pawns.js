@@ -39,7 +39,7 @@ function updateCoords(isWhite, initial, position, filledSquares) {
 
     const DIAG_MOVES =
       EDGE(0) ? [Math.max(...DIAG_NEXT)] : // COLUMN A
-      EDGE(3) ? [Math.min(...DIAG_NEXT)] : // COLUMN H
+      EDGE(7) ? [Math.min(...DIAG_NEXT)] : // COLUMN H
       DIAG_NEXT
 
     const VERTICAL = FREE && VERT_MOVES.includes(move)

@@ -43,12 +43,12 @@ function updateCoords(pos) {
         X.a_r, X.b_r,
         Y.a_l, Y.a_r, Y.b_r, Y.b_l
       ]
-    case 2:         //knight at column G
+    case 6:         //knight at column G
       return [
         X.a_l, X.b_l,
         Y.a_l, Y.a_r, Y.b_r, Y.b_l
       ]
-    case 3:         //knight at column H
+    case 7:         //knight at column H
       return [
         X.a_l, X.b_l,
         Y.a_l, Y.b_l

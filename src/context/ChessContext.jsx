@@ -27,11 +27,11 @@ export default function ChessContextProvider(props) {
   const PLAYER = chess.turn ? 'W' : 'B'
 
 
-  const PIECE_MOVES = (piece, position) => {
+  const PIECE_MOVES = (selectedPiece, selectedPosition) => {
     const filledSquares = chess.board
       .map((piece, position) => piece && position)
 
-    return piece?.getMoves(position, filledSquares)
+    return selectedPiece?.getMoves(selectedPosition, filledSquares)
   }
 
 
@@ -55,31 +55,45 @@ export default function ChessContextProvider(props) {
     })
 
     const MOVES = PIECE_MOVES(PIECE_1, POS_2)
-    const IS_CHECK = MOVES.includes(CONTRARY_KING)
+    const IS_CHECK = MOVES?.includes(CONTRARY_KING)
 
     return { PIECE_1, CONTRARY_KING, MOVES, IS_CHECK }
   }
 
 
-  const updateChess = () => {
-    return {
-      board: updateBoard(),
-      squares: [],
-      positions: [],
-      moves: [],
-      check: updateCheck(),
-      turn: !chess.turn
-    }
+  const stillInCheck = () => {
+    const lastKing = copy.check?.CONTRARY_KING
+    const lastPiece = copy.check?.PIECE_1
+    const lastPosition = copy.board?.indexOf(lastPiece)
+    const lastMoves = PIECE_MOVES(lastPiece, lastPosition)
+
+    return lastMoves?.includes(lastKing)
   }
 
 
-  const resetChess = chess => {
-    return {
-      ...chess,
-      squares: [],
-      positions: [],
-      moves: []
-    }
+  function resetChess() {
+    setChess(chess => {
+      return {
+        ...chess,
+        squares: [],
+        positions: [],
+        moves: []
+      }
+    })
+  }
+
+
+  function updateChess() {
+    setChess(chess => {
+      return {
+        board: updateBoard(),
+        squares: [],
+        positions: [],
+        moves: [],
+        check: updateCheck(),
+        turn: !chess.turn
+      }
+    })
   }
 
 
@@ -103,27 +117,20 @@ export default function ChessContextProvider(props) {
       const invalidMove = !chess.moves?.includes(POS_2)
       const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
 
-      setChess(chess => {
-        return invalidMove || samePlayer
-          ? resetChess(chess)
-          : updateChess()
-      })
-    } else { colorizeMoves() }
+      if (invalidMove || samePlayer) {
+        resetChess()
+      } else {
+        updateChess()
+      }
+    } else {
+      colorizeMoves()
+    }
   }, [chess.squares])
 
 
   useEffect(() => {
     if (chess.check.IS_CHECK) {
       setCopy(chess)
-    }
-
-    const stillInCheck = () => {
-      const lastKing = copy.check?.CONTRARY_KING
-      const lastPiece = copy.check?.PIECE_1
-      const lastPosition = copy.board?.indexOf(lastPiece)
-      const lastMoves = PIECE_MOVES(lastPiece, lastPosition)
-
-      return lastMoves?.includes(lastKing)
     }
 
     if (stillInCheck()) {

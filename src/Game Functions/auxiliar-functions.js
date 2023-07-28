@@ -9,10 +9,14 @@ const SQUARES = {
   ],
 
   COLUMNS: [
-    [0, 8, 16, 24, 32, 40, 48, 56],   //column A
-    [1, 9, 17, 25, 33, 41, 49, 57],   //column B
-    [6, 14, 22, 30, 38, 46, 54, 62],  //column G
-    [7, 15, 23, 31, 39, 47, 55, 63]   //column H
+    [0, 8, 16, 24, 32, 40, 48, 56],   // A
+    [1, 9, 17, 25, 33, 41, 49, 57],   // B
+    [2, 10, 18, 26, 34, 42, 50, 58],  // C
+    [3, 11, 19, 27, 35, 43, 51, 59],  // D
+    [4, 12, 20, 28, 36, 44, 52, 60],  // E
+    [5, 13, 21, 29, 37, 45, 53, 61],  // F
+    [6, 14, 22, 30, 38, 46, 54, 62],  // G
+    [7, 15, 23, 31, 39, 47, 55, 63]   // H
   ]
 }
 
@@ -63,13 +67,13 @@ export const innerQuadrant = moves => {
 export function updateCoords(ranges, position, filledSquares) {
   const ARR = ranges.find(ra => {
     const x = ra[0].includes(position)
-    console.log({ ra, x })
+    // console.log({ ra, x })
 
     return x
   })
   const [y, EDGES, MOVES] = ARR
 
-  console.log({ y })
+  // console.log({ y })
 
   const LIMITS = [...filledSquares, ...EDGES]
     .filter((limit, i, arr) => {

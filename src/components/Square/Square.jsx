@@ -9,7 +9,8 @@ export default function Square({ currPiece, currPosit }) {
   const isPawn = currPiece?.name.includes('PAWN') ? 'pawn  ' : 'piece'
 
   const squareColor = () => {
-    const isKing = chess.check.IS_CHECK && chess.check.CONTRARY_KING === currPosit
+    const { CONTRARY_KING, IS_CHECK } = chess.check
+    const isKing = IS_CHECK && CONTRARY_KING === currPosit
     const isMove = chess.moves?.includes(currPosit)
     
     return isKing ? 'square check' : isMove ? 'square move' : 'square'

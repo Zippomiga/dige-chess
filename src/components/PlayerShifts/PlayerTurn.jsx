@@ -9,8 +9,9 @@ export default function PlayerTurn() {
   const { chess } = useContext(ChessContext)
 
   const isCheck = player => {
-    const piece = chess.board[chess.check.CONTRARY_KING]
-    return chess.check.IS_CHECK && piece?.name.startsWith(player)
+    const { CONTRARY_KING, IS_CHECK } = chess.check
+    const piece = chess.board[CONTRARY_KING]
+    return IS_CHECK && piece?.name.startsWith(player)
   }
 
   return (
