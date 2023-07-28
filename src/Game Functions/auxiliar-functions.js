@@ -19,7 +19,10 @@ const SQUARES = {
 
 const ALL_EDGES = SQUARES.EDGES.flat()
 
-export const col = pos => SQUARES.COLUMNS.findIndex(co => co.includes(pos))
+export const column = position => {
+  return SQUARES.COLUMNS
+    .findIndex(co => co.includes(position))
+}
 
 export const corner = (corner, moves) => {
   const cornerLimits = SQUARES.CORNERS
@@ -32,13 +35,13 @@ export const corner = (corner, moves) => {
   ]
 }
 
-export const edge = (edg, moves) => {
+export const edge = (edge, moves) => {
   const edgeLimits = SQUARES.EDGES
-    .filter((_, edge) => edge !== edg)
+    .filter((_, ed) => ed !== edge)
     .flat()
 
   return [
-    SQUARES.EDGES[edg],
+    SQUARES.EDGES[edge],
     edgeLimits,
     moves
   ]
@@ -57,27 +60,35 @@ export const innerQuadrant = moves => {
   ]
 }
 
-export function updateCoords(ranges, pos, filledSquares) {
-  const [, EDGES, moves] = ranges.find(ra => ra[0].includes(pos))
+export function updateCoords(ranges, position, filledSquares) {
+  const ARR = ranges.find(ra => {
+    const x = ra[0].includes(position)
+    console.log({ ra, x })
 
-  const limits = [...filledSquares, ...EDGES]
+    return x
+  })
+  const [y, EDGES, MOVES] = ARR
+
+  console.log({ y })
+
+  const LIMITS = [...filledSquares, ...EDGES]
     .filter((limit, i, arr) => {
-      const uniq = arr.indexOf(limit) === i // keeps unique items
-      const curr = limit !== pos            // prevents of newCoords from returning an empty array
+      const uniques = arr.indexOf(limit) === i // keeps unique items
+      const current = limit !== position       // prevents of newCoords from returning an empty array
 
-      return uniq && curr
+      return uniques && current
     })
 
-  const newCoords = []
+  const NEW_COORDS = []
 
-  moves.forEach(move => {
-    let coord = pos
+  MOVES.forEach(move => {
+    let coord = position
 
-    while (!limits.includes(coord)) {
+    while (!LIMITS.includes(coord)) {
       coord += move
-      newCoords.push(coord)
+      NEW_COORDS.push(coord)
     }
   })
 
-  return newCoords
+  return NEW_COORDS
 }

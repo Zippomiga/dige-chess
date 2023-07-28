@@ -6,10 +6,14 @@ import { ChessContext } from '../../context/ChessContext'
 export default function Square({ currPiece, currPosit }) {
   const { chess, setChess, PLAYER } = useContext(ChessContext)
 
-  const isKing = chess.check.IS_CHECK && currPosit === chess.check.CONTRARY_KING
-  const isMove = chess.moves?.includes(currPosit)
   const isPawn = currPiece?.name.includes('PAWN') ? 'pawn  ' : 'piece'
-  const squareColor = isKing ? 'square check' : isMove ? 'square move' : 'square'
+
+  const squareColor = () => {
+    const isKing = chess.check.IS_CHECK && chess.check.CONTRARY_KING === currPosit
+    const isMove = chess.moves?.includes(currPosit)
+    
+    return isKing ? 'square check' : isMove ? 'square move' : 'square'
+  } 
 
   function handleSquare() {
     const startingMove = !chess.squares.length
@@ -29,7 +33,7 @@ export default function Square({ currPiece, currPosit }) {
 
   return (
     <div
-      className={squareColor}
+      className={squareColor()}
       id={currPosit}
       onClick={handleSquare}
     >
