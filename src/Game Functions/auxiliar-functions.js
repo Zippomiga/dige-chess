@@ -21,7 +21,6 @@ const ALL_EDGES = SQUARES.EDGES.flat()
 
 export const col = pos => SQUARES.COLUMNS.findIndex(co => co.includes(pos))
 
-
 export const corner = (corner, moves) => {
   const cornerLimits = SQUARES.CORNERS
     .filter(co => co !== corner)
@@ -32,7 +31,6 @@ export const corner = (corner, moves) => {
     moves
   ]
 }
-
 
 export const edge = (edg, moves) => {
   const edgeLimits = SQUARES.EDGES
@@ -46,7 +44,6 @@ export const edge = (edg, moves) => {
   ]
 }
 
-
 export const innerQuadrant = moves => {
   const innerQ = Array(64)
     .fill(null)
@@ -59,7 +56,6 @@ export const innerQuadrant = moves => {
     moves
   ]
 }
-
 
 export function updateCoords(ranges, pos, filledSquares) {
   const [, EDGES, moves] = ranges.find(ra => ra[0].includes(pos))

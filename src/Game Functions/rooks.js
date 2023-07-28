@@ -14,7 +14,7 @@ class Rook {
       corner(0, [1, 8]),
       corner(7, [-1, 8]),
       corner(56, [-8, 1]),
-      corner(63, [-1, -8],),
+      corner(63, [-1, -8]),
 
       edge(0, [-1, 1, 8]),
       edge(1, [-8, 1, 8]),
