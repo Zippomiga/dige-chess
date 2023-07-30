@@ -65,15 +65,8 @@ export const innerQuadrant = moves => {
 }
 
 export function updateCoords(ranges, position, filledSquares) {
-  const ARR = ranges.find(ra => {
-    const x = ra[0].includes(position)
-    // console.log({ ra, x })
-
-    return x
-  })
-  const [y, EDGES, MOVES] = ARR
-
-  // console.log({ y })
+  const ARR = ranges.find(ra => ra[0].includes(position))
+  const [, EDGES, MOVES] = ARR
 
   const LIMITS = [...filledSquares, ...EDGES]
     .filter((limit, i, arr) => {

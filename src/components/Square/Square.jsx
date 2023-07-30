@@ -3,48 +3,49 @@ import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
 
-export default function Square({ currPiece, currPosit }) {
-  const { chess, setChess, PLAYER } = useContext(ChessContext)
+export default function Square({ square, position }) {
+  const {
+    check: { KING_POSITION, IS_CHECK },
+    moves,
+    squares,
+    setSquares,
+    positions,
+    setPositions,
+    PLAYER
+  } = useContext(ChessContext)
 
-  const isPawn = currPiece?.name.includes('PAWN') ? 'pawn  ' : 'piece'
 
   const squareColor = () => {
-    const { CONTRARY_KING, IS_CHECK } = chess.check
-    const isKing = IS_CHECK && CONTRARY_KING === currPosit
-    const isMove = chess.moves?.includes(currPosit)
-    
+    const isKing = IS_CHECK && KING_POSITION === position
+    const isMove = moves?.includes(position)
+
     return isKing ? 'square check' : isMove ? 'square move' : 'square'
-  } 
+  }
 
   function handleSquare() {
-    const startingMove = !chess.squares.length
-    const invalidSquare = !currPiece
-    const invalidPlayer = !currPiece?.name.startsWith(PLAYER)
+    const startingMove = !squares.length
+    const invalidSquare = !square
+    const invalidPlayer = !square?.name.startsWith(PLAYER)
 
     if (startingMove && (invalidSquare || invalidPlayer)) return
 
-    setChess(chess => {
-      return {
-        ...chess,
-        squares: [...chess.squares, currPiece],
-        positions: [...chess.positions, currPosit]
-      }
-    })
+    setSquares(squares => [...squares, square])
+    setPositions(positions => [...positions, position])
   }
 
   return (
     <div
       className={squareColor()}
-      id={currPosit}
+      id={position}
       onClick={handleSquare}
     >
       <img
-        className={isPawn}
-        src={currPiece?.pic}
-        alt={currPiece?.name}
+        className={square?.name.includes('PAWN') ? 'pawn  ' : 'piece'}
+        src={square?.pic}
+        alt={square?.name}
       />
       <span className='square-index'>
-        {currPosit}
+        {position}
       </span>
     </div>
   )

@@ -5,17 +5,17 @@ import { ChessContext } from '../../context/ChessContext'
 
 
 export default function ChessBoard() {
-  const { chess } = useContext(ChessContext)
+  const { board } = useContext(ChessContext)
 
   return (
     <section className='chess-board'>
       {
-        chess.board.map((square, index) => {
+        board.map((square, position) => {
           return (
             <Square
-              key={index}
-              currPiece={square}
-              currPosit={index}
+              key={position}
+              square={square}
+              position={position}
             />
           )
         })

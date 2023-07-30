@@ -1,17 +1,18 @@
 import './player-turn.css'
-import blackShift from '../../assets/chess-pieces/b-shift.png'
-import whiteShift from '../../assets/chess-pieces/w-shift.png'
+import blackTurn from '../../assets/chess-pieces/b-shift.png'
+import whiteTurn from '../../assets/chess-pieces/w-shift.png'
 import inCheck from '../../assets/chess-pieces/exclamation.png'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
 export default function PlayerTurn() {
-  const { chess } = useContext(ChessContext)
+  const {
+    check: { CONTRARY_KING, IS_CHECK },
+    turn
+  } = useContext(ChessContext)
 
   const isCheck = player => {
-    const { CONTRARY_KING, IS_CHECK } = chess.check
-    const piece = chess.board[CONTRARY_KING]
-    return IS_CHECK && piece?.name.startsWith(player)
+    return IS_CHECK && CONTRARY_KING?.name.startsWith(player)
   }
 
   return (
@@ -24,9 +25,9 @@ export default function PlayerTurn() {
             className='turn-check'
             alt="" />}
         <img
-          src={blackShift}
+          src={blackTurn}
           alt="black-shift"
-          className={!chess.turn ? 'player-turn' : 'player-turn current'}
+          className={!turn ? 'player-turn' : 'player-turn current'}
         />
       </div>
 
@@ -37,9 +38,9 @@ export default function PlayerTurn() {
             className='turn-check'
             alt="" />}
         <img
-          src={whiteShift}
+          src={whiteTurn}
           alt="white-shift"
-          className={chess.turn ? 'player-turn' : 'player-turn current'}
+          className={turn ? 'player-turn' : 'player-turn current'}
         />
       </div>
 
