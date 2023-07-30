@@ -46,7 +46,7 @@ function updateCoords(isWhite, initial, position, filledSquares) {
     const DIAGONAL = !FREE && DIAG_MOVES.includes(move)
 
     return VERTICAL || DIAGONAL ? move : null
-  })
+  }).filter(coord => coord !== null)
 }
 
 

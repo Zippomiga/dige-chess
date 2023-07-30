@@ -12,6 +12,7 @@ export default function ChessContextProvider(props) {
   const [check, setCheck] = useState({})
   const [turn, setTurn] = useState(true)
   const [prevChess, setPrevChess] = useState({})
+  const [threatenings, setThreatenings] = useState([])
 
   const [PIECE_1, PIECE_2] = squares
   const [POS_1, POS_2] = positions
@@ -43,15 +44,15 @@ export default function ChessContextProvider(props) {
       return king?.name === contrary[PLAYER]
     })
     const KING_POSITION = board.indexOf(CONTRARY_KING)
-    const THREATENING = PIECE_1
-    const THREATENING_MOVES = getMovements(THREATENING, POS_2)
+    const THREATENING_MOVES = getMovements(PIECE_1, POS_2)
     const IS_CHECK = THREATENING_MOVES?.includes(KING_POSITION)
 
     setCheck({
       CONTRARY_KING,
       KING_POSITION,
-      THREATENING,
+      THREATENING: PIECE_1,
       THREATENING_MOVES,
+      LAST_POSITION: POS_2,
       IS_CHECK
     })
   }
@@ -89,6 +90,14 @@ export default function ChessContextProvider(props) {
     setMoves([...COLORIZED, POS_1])
   }
 
+  const isStillInCheck = () => {
+    const { CONTRARY_KING, LAST_POSITION, THREATENING } = prevChess.check || {}
+    const INDEX_KING = board.indexOf(CONTRARY_KING)
+    const KEEP_THREATENING = getMovements(THREATENING, LAST_POSITION)
+    
+    console.log({INDEX_KING})
+    return KEEP_THREATENING?.includes(INDEX_KING)
+  }
 
   useEffect(() => {
     if (squares.length === 1) { // player has clicked once
@@ -109,8 +118,25 @@ export default function ChessContextProvider(props) {
 
 
   useEffect(() => {
-    console.log('CURRENT', check)
-    console.log('PREVIOUS', prevChess.check)
+    console.log('CURRENT')
+    console.log({board})
+    console.log({squares})
+    console.log({positions})
+    console.log({moves})
+    console.log({check})
+    console.log({turn})
+
+    console.log('PREVIOUS')
+    console.log(prevChess)
+
+    if (isStillInCheck()) {
+      console.log('SIGUE')
+      setBoard(prevChess.board)
+      setCheck(prevChess.check)
+      setTurn(prevChess.turn)
+    } else {
+      console.log('NO SIGUE')
+    }
   }, [check])
 
 

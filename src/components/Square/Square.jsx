@@ -5,7 +5,8 @@ import { ChessContext } from '../../context/ChessContext'
 
 export default function Square({ square, position }) {
   const {
-    check: { KING_POSITION, IS_CHECK },
+    board,
+    check: { CONTRARY_KING, IS_CHECK },
     moves,
     squares,
     setSquares,
@@ -16,7 +17,7 @@ export default function Square({ square, position }) {
 
 
   const squareColor = () => {
-    const isKing = IS_CHECK && KING_POSITION === position
+    const isKing = IS_CHECK && board.indexOf(CONTRARY_KING) === position
     const isMove = moves?.includes(position)
 
     return isKing ? 'square check' : isMove ? 'square move' : 'square'
