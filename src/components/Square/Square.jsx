@@ -5,22 +5,22 @@ import { ChessContext } from '../../context/ChessContext'
 
 export default function Square({ square, position }) {
   const {
-    board,
-    check: { CONTRARY_KING, IS_CHECK },
-    moves,
+    kings: { CURRENT_KING, CONTRARY_KING },
+    check: { IS_THREATENING, LEFT_IN_CHECK },
+    colorizedMoves,
     squares,
     setSquares,
-    positions,
     setPositions,
     PLAYER
   } = useContext(ChessContext)
 
 
   const squareColor = () => {
-    const isKing = IS_CHECK && board.indexOf(CONTRARY_KING) === position
-    const isMove = moves?.includes(position)
+    const inCheck = IS_THREATENING || LEFT_IN_CHECK
+    const isKing = CURRENT_KING === position
+    const isMove = colorizedMoves?.includes(position)
 
-    return isKing ? 'square check' : isMove ? 'square move' : 'square'
+    return inCheck && isKing ? 'square check' : isMove ? 'square move' : 'square'
   }
 
   function handleSquare() {

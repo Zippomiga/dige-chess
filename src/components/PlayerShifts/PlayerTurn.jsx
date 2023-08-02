@@ -7,12 +7,16 @@ import { ChessContext } from '../../context/ChessContext'
 
 export default function PlayerTurn() {
   const {
-    check: { CONTRARY_KING, IS_CHECK },
+    board,
+    kings: { CURRENT_KING, CONTRARY_KING },
+    check: { IS_THREATENING, LEFT_IN_CHECK },
     turn
   } = useContext(ChessContext)
 
   const isCheck = player => {
-    return IS_CHECK && CONTRARY_KING?.name.startsWith(player)
+    const king = board[CURRENT_KING]
+    const inCheck = IS_THREATENING || LEFT_IN_CHECK
+    return inCheck && king?.name.startsWith(player)
   }
 
   return (
