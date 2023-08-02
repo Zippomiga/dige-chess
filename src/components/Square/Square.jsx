@@ -5,7 +5,7 @@ import { ChessContext } from '../../context/ChessContext'
 
 export default function Square({ square, position }) {
   const {
-    kings: { CURRENT_KING, CONTRARY_KING },
+    kings: { CURRENT_KING },
     check: { IS_THREATENING, LEFT_IN_CHECK },
     colorizedMoves,
     squares,

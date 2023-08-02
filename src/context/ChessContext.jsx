@@ -6,32 +6,33 @@ export const ChessContext = createContext()
 
 export default function ChessContextProvider(props) {
   const [board, setBoard] = useState(CHESS_BOARD)
+  const [prevBoard, setPrevBoard] = useState([])
+
   const [squares, setSquares] = useState([])
   const [positions, setPositions] = useState([])
   const [colorizedMoves, setColorizedMoves] = useState([])
-  const [turn, setTurn] = useState(true)
 
-  const [threatenings, setThreatenings] = useState({})
+  const [threats, setThreats] = useState({})
   const [kings, setKings] = useState({})
   const [check, setCheck] = useState({})
 
-  const [PIECE_1, PIECE_2] = squares
-  const [POSITION_1, POSITION_2] = positions
+  const [turn, setTurn] = useState(true)
   const PLAYER = turn ? 'W' : 'B'
 
-  const getMovements = (selectedPiece, selectedPosition) => {
-    const filledSquares = board.map((filled, position) => {
-      return filled && position
-    })
-    const MOVEMENTS = selectedPiece?.getMoves(selectedPosition, filledSquares)
-    return MOVEMENTS.sort((a, b) => a - b)
+  const [PIECE_1, PIECE_2] = squares
+  const [POSITION_1, POSITION_2] = positions
+
+  const getMovements = (piece, position) => {
+    const filledSquares = (filled, index) => filled && index
+    return piece.getMoves(position, board.map(filledSquares))
   }
 
-  function updateBoard() {
+  function updateBoards() {
     const NEW_BOARD = [...board]
     NEW_BOARD[POSITION_1] = null
     NEW_BOARD[POSITION_2] = PIECE_1
 
+    setPrevBoard(board)
     setBoard(NEW_BOARD)
   }
 
@@ -43,8 +44,8 @@ export default function ChessContextProvider(props) {
 
   function colorizeMoves() {
     const PIECE_MOVES = getMovements(PIECE_1, POSITION_1)
-    const COLORIZED_MOVES = PIECE_MOVES?.filter(move => {
-      const notSamePlayer = !board[move]?.name.startsWith(PLAYER)
+    const COLORIZED_MOVES = PIECE_MOVES.filter(square => {
+      const notSamePlayer = !board[square]?.name.startsWith(PLAYER)
       return notSamePlayer
     })
 
@@ -52,56 +53,54 @@ export default function ChessContextProvider(props) {
   }
 
   function updateThreatenings() {
-    const threateningsMoves = threatenings => {
-      return threatenings.map(threatening => {
-        const [piece, position] = threatening
-        const nextMoves = getMovements(piece, position)
-        return { position, piece, nextMoves }
-      })
+    const threatsMoves = threats => {
+      const nextMoves = ([piece, position]) => getMovements(piece, position)
+      return threats.map(nextMoves)
     }
+    const THREATS = board
+      .map((threat, position) => [threat, position])
+      .filter(threat => threat[0])
 
-    const THREATENINGS = board
-      .map((threatening, position) => [threatening, position])
-      .filter(threatening => threatening[0])
+    const CURRENT = THREATS.filter(threat => threat[0].name.startsWith(PLAYER))
+    const CONTRARY = THREATS.filter(threat => !threat[0].name.startsWith(PLAYER))
 
-    const CURRENT = THREATENINGS.filter(t => t[0].name.startsWith(PLAYER))
-    const CONTRARY = THREATENINGS.filter(t => !t[0].name.startsWith(PLAYER))
-
-    const CURRENT_MOVES = threateningsMoves(CURRENT)
-    const CONTRARY_MOVES = threateningsMoves(CONTRARY)
-
-    setThreatenings({ CURRENT_MOVES, CONTRARY_MOVES })
+    setThreats({
+      CURRENT_MOVES: threatsMoves(CURRENT),
+      CONTRARY_MOVES: threatsMoves(CONTRARY),
+    })
   }
 
   function updateKings() {
-    const CURRENT_KING = board.findIndex(king => {
-      return king?.name === PLAYER + "_KING"
-    })
-    const CONTRARY_KING = board.findIndex(king => {
-      const contrary = {
-        'W': 'B_KING',
-        'B': 'W_KING'
-      }
-      return king?.name === contrary[PLAYER]
-    })
+    const kingPosition = king => board
+      .findIndex(k => k?.name === king[PLAYER])
 
-    setKings({ CURRENT_KING, CONTRARY_KING })
+    const CURRENT = {
+      'W': 'W_KING',
+      'B': 'B_KING'
+    }
+    const CONTRART = {
+      'W': 'B_KING',
+      'B': 'W_KING'
+    }
+
+    setKings({
+      CURRENT_KING: kingPosition(CURRENT),
+      CONTRARY_KING: kingPosition(CONTRART)
+    })
   }
 
   function updateCheck() {
     const isCheck = (threateningsMoves, king) => {
-      return threateningsMoves?.some(threatening => {
-        return threatening.nextMoves.includes(king)
-      })
+      const isKingThere = nextMoves => nextMoves.includes(king)
+      return threateningsMoves?.some(isKingThere)
     }
-
-    const { CURRENT_MOVES, CONTRARY_MOVES } = threatenings
+    const { CURRENT_MOVES, CONTRARY_MOVES } = threats
     const { CURRENT_KING, CONTRARY_KING } = kings
 
-    const IS_THREATENING = isCheck(CONTRARY_MOVES, CURRENT_KING)
-    const LEFT_IN_CHECK = isCheck(CURRENT_MOVES, CONTRARY_KING)
-
-    setCheck({ IS_THREATENING, LEFT_IN_CHECK })
+    setCheck({
+      IS_THREATENING: isCheck(CONTRARY_MOVES, CURRENT_KING),
+      LEFT_IN_CHECK: isCheck(CURRENT_MOVES, CONTRARY_KING)
+    })
   }
 
 
@@ -110,19 +109,18 @@ export default function ChessContextProvider(props) {
       colorizeMoves()
     }
     if (squares.length === 2) { // player has clicked twice
-      const invalidMove = !colorizedMoves?.includes(POSITION_2)
-      const samePlayer = PIECE_1?.name[0] === PIECE_2?.name[0]
+      const invalidMove = !colorizedMoves.includes(POSITION_2)
+      const samePlayer = PIECE_1.name.startsWith(PIECE_2?.name[0])
 
       if (invalidMove || samePlayer) {
         resetChess()
       } else {
-        updateBoard()
+        updateBoards()
         resetChess()
         setTurn(turn => !turn)
       }
     }
   }, [squares])
-
 
   useEffect(() => {
     updateThreatenings()
@@ -134,8 +132,10 @@ export default function ChessContextProvider(props) {
   }, [kings])
 
   useEffect(() => {
-    console.log(kings);
-    console.log(check);
+    if (check.LEFT_IN_CHECK) {
+      setBoard(prevBoard)
+      setTurn(turn => !turn)
+    }
   }, [check])
 
 
@@ -151,8 +151,8 @@ export default function ChessContextProvider(props) {
       setColorizedMoves,
       turn,
       setTurn,
-      threatenings,
-      setThreatenings,
+      threats,
+      setThreats,
       kings,
       setKings,
       check,
