@@ -53,16 +53,16 @@ export default function ChessContextProvider(props) {
   }
 
   function updateThreatenings() {
-    const threatsMoves = threats => {
-      const nextMoves = ([piece, position]) => getMovements(piece, position)
-      return threats.map(nextMoves)
-    }
-    const THREATS = board
-      .map((threat, position) => [threat, position])
-      .filter(threat => threat[0])
+    const THREATS = board.filter(threat => threat)
+    const CURRENT = THREATS.filter(threat => threat.name.startsWith(PLAYER))
+    const CONTRARY = THREATS.filter(threat => !threat.name.startsWith(PLAYER))
 
-    const CURRENT = THREATS.filter(threat => threat[0].name.startsWith(PLAYER))
-    const CONTRARY = THREATS.filter(threat => !threat[0].name.startsWith(PLAYER))
+    const threatsMoves = threats => {
+      return threats.map(threat => {
+        const position = board.indexOf(threat)
+        return getMovements(threat, position)
+      })
+    }
 
     setThreats({
       CURRENT_MOVES: threatsMoves(CURRENT),
@@ -71,21 +71,22 @@ export default function ChessContextProvider(props) {
   }
 
   function updateKings() {
-    const kingPosition = king => board
-      .findIndex(k => k?.name === king[PLAYER])
+    const kingPosition = king => {
+      return board.findIndex(k => k?.name === king[PLAYER])
+    }
 
     const CURRENT = {
       'W': 'W_KING',
       'B': 'B_KING'
     }
-    const CONTRART = {
+    const CONTRARY = {
       'W': 'B_KING',
       'B': 'W_KING'
     }
 
     setKings({
       CURRENT_KING: kingPosition(CURRENT),
-      CONTRARY_KING: kingPosition(CONTRART)
+      CONTRARY_KING: kingPosition(CONTRARY)
     })
   }
 
