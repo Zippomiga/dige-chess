@@ -5,74 +5,61 @@ import { createContext, useState, useEffect } from "react";
 export const ChessContext = createContext()
 
 export default function ChessContextProvider(props) {
-  const [board, setBoard] = useState(CHESS_BOARD)
-  const [prevBoard, setPrevBoard] = useState([])
+  const [currentBoard, setCurrentBoard] = useState(CHESS_BOARD)
+  const [previousBoard, setPreviousBoard] = useState([])
 
   const [squares, setSquares] = useState([])
   const [positions, setPositions] = useState([])
-  const [colorizedMoves, setColorizedMoves] = useState([])
-
-  const [threats, setThreats] = useState({})
-  const [kings, setKings] = useState({})
-  const [check, setCheck] = useState({})
-
   const [turn, setTurn] = useState(true)
+
+  const [SQUARE_1, SQUARE_2] = squares
+  const [POSITION_1, POSITION_2] = positions
   const PLAYER = turn ? 'W' : 'B'
 
-  const [PIECE_1, PIECE_2] = squares
-  const [POSITION_1, POSITION_2] = positions
+
 
   const getMovements = (piece, position) => {
-    const filledSquares = (filled, index) => filled && index
-    return piece.getMoves(position, board.map(filledSquares))
+    const filledSquares = currentBoard.map((filled, index) => filled && index)
+    return piece?.getMoves(position, filledSquares)
   }
 
-  function updateBoards() {
-    const NEW_BOARD = [...board]
-    NEW_BOARD[POSITION_1] = null
-    NEW_BOARD[POSITION_2] = PIECE_1
 
-    setPrevBoard(board)
-    setBoard(NEW_BOARD)
-  }
 
-  function resetChess() {
-    setSquares([])
-    setPositions([])
-    setColorizedMoves([])
-  }
-
-  function colorizeMoves() {
-    const PIECE_MOVES = getMovements(PIECE_1, POSITION_1)
-    const COLORIZED_MOVES = PIECE_MOVES.filter(square => {
-      const notSamePlayer = !board[square]?.name.startsWith(PLAYER)
-      return notSamePlayer
+  const COLORIZED_MOVES = () => {
+    const MOVES = getMovements(SQUARE_1, POSITION_1) || []
+    const COLORIZED = MOVES.filter(move => {
+      const piece = currentBoard[move]
+      return !piece?.name.startsWith(PLAYER)
     })
 
-    setColorizedMoves([...COLORIZED_MOVES, POSITION_1])
+    return [...COLORIZED, POSITION_1]
   }
 
-  function updateThreatenings() {
-    const THREATS = board.filter(threat => threat)
-    const CURRENT = THREATS.filter(threat => threat.name.startsWith(PLAYER))
-    const CONTRARY = THREATS.filter(threat => !threat.name.startsWith(PLAYER))
 
+
+  const THREATENINGS_MOVES = () => {
     const threatsMoves = threats => {
       return threats.map(threat => {
-        const position = board.indexOf(threat)
+        const position = currentBoard.indexOf(threat)
         return getMovements(threat, position)
       })
     }
 
-    setThreats({
+    const THREATS = currentBoard.filter(threat => threat !== null)
+    const CURRENT = THREATS.filter(threat => threat.name.startsWith(PLAYER))
+    const CONTRARY = THREATS.filter(threat => !threat.name.startsWith(PLAYER))
+
+    return {
       CURRENT_MOVES: threatsMoves(CURRENT),
       CONTRARY_MOVES: threatsMoves(CONTRARY),
-    })
+    }
   }
 
-  function updateKings() {
+
+
+  const KINGS_POSITIONS = () => {
     const kingPosition = king => {
-      return board.findIndex(k => k?.name === king[PLAYER])
+      return currentBoard.findIndex(k => k?.name === king[PLAYER])
     }
 
     const CURRENT = {
@@ -84,81 +71,96 @@ export default function ChessContextProvider(props) {
       'B': 'W_KING'
     }
 
-    setKings({
+    return {
       CURRENT_KING: kingPosition(CURRENT),
       CONTRARY_KING: kingPosition(CONTRARY)
-    })
+    }
   }
 
-  function updateCheck() {
-    const isCheck = (threateningsMoves, king) => {
-      const isKingThere = nextMoves => nextMoves.includes(king)
-      return threateningsMoves?.some(isKingThere)
-    }
-    const { CURRENT_MOVES, CONTRARY_MOVES } = threats
-    const { CURRENT_KING, CONTRARY_KING } = kings
 
-    setCheck({
-      IS_THREATENING: isCheck(CONTRARY_MOVES, CURRENT_KING),
+
+  const CHECKS = () => {
+    const isCheck = (threatsMoves, king) => {
+      return threatsMoves.some(moves => moves.includes(king))
+    }
+
+    const { CURRENT_MOVES, CONTRARY_MOVES } = THREATENINGS_MOVES()
+    const { CURRENT_KING, CONTRARY_KING } = KINGS_POSITIONS()
+
+    return {
+      IS_THREATENED: isCheck(CONTRARY_MOVES, CURRENT_KING),
       LEFT_IN_CHECK: isCheck(CURRENT_MOVES, CONTRARY_KING)
-    })
+    }
   }
 
 
-  useEffect(() => {
-    if (squares.length === 1) { // player has clicked once
-      colorizeMoves()
-    }
-    if (squares.length === 2) { // player has clicked twice
-      const invalidMove = !colorizedMoves.includes(POSITION_2)
-      const samePlayer = PIECE_1.name.startsWith(PIECE_2?.name[0])
 
-      if (invalidMove || samePlayer) {
-        resetChess()
-      } else {
-        updateBoards()
-        resetChess()
-        setTurn(turn => !turn)
-      }
-    }
-  }, [squares])
+  function updateBoards() {
+    const NEW_BOARD = [...currentBoard]
 
-  useEffect(() => {
-    updateThreatenings()
-    updateKings()
-  }, [turn])
+    NEW_BOARD[POSITION_1] = null
+    NEW_BOARD[POSITION_2] = SQUARE_1
 
-  useEffect(() => {
-    updateCheck()
-  }, [kings])
+    setPreviousBoard(currentBoard)
+    setCurrentBoard(NEW_BOARD)
+  }
 
-  useEffect(() => {
-    if (check.LEFT_IN_CHECK) {
-      setBoard(prevBoard)
+
+
+  function resetChess() {
+    setSquares([])
+    setPositions([])
+  }
+
+
+
+  function updateChess() {
+    const invalidMove = !COLORIZED_MOVES().includes(POSITION_2)
+    const samePlayer = SQUARE_1?.name.startsWith(SQUARE_2?.name[0])
+
+    if (invalidMove || samePlayer) {
+      resetChess()
+    } else {
+      updateBoards()
+      resetChess()
       setTurn(turn => !turn)
     }
-  }, [check])
+  }
+
+
+
+  function setLastMovement() {
+    setCurrentBoard(previousBoard)
+    setTurn(turn => !turn)
+  }
+
+
+
+  useEffect(() => {
+    const CLICKED_TWICE = squares.length === 2
+    const { LEFT_IN_CHECK } = CHECKS()
+
+    if (CLICKED_TWICE) updateChess()
+    if (LEFT_IN_CHECK) setLastMovement()
+  }, [squares, turn])
+
 
 
   return (
     <ChessContext.Provider value={{
-      board,
-      setBoard,
+      currentBoard,
+      setCurrentBoard,
       squares,
       setSquares,
       positions,
       setPositions,
-      colorizedMoves,
-      setColorizedMoves,
+      colorizedMoves: COLORIZED_MOVES(),
       turn,
       setTurn,
-      threats,
-      setThreats,
-      kings,
-      setKings,
-      check,
-      setCheck,
-      PLAYER
+      kingsPositions: KINGS_POSITIONS(),
+      checks: CHECKS(),
+      PLAYER,
+      setLastMovement
     }}>
       {props.children}
     </ChessContext.Provider>

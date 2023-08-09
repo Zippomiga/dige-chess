@@ -2,22 +2,27 @@ import './player-turn.css'
 import blackTurn from '../../assets/chess-pieces/b-shift.png'
 import whiteTurn from '../../assets/chess-pieces/w-shift.png'
 import inCheck from '../../assets/chess-pieces/exclamation.png'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
 export default function PlayerTurn() {
   const {
-    board,
-    kings: { CURRENT_KING },
-    check: { IS_THREATENING, LEFT_IN_CHECK },
-    turn
+    currentBoard,
+    kingsPositions: { CURRENT_KING },
+    checks: { IS_THREATENED, LEFT_IN_CHECK },
+    turn,
+    setLastMovement
   } = useContext(ChessContext)
 
   const isCheck = player => {
-    const inCheck = IS_THREATENING || LEFT_IN_CHECK
-    const king = board[CURRENT_KING]
+    const isInCheck = IS_THREATENED || LEFT_IN_CHECK
+    const king = currentBoard[CURRENT_KING]
 
-    return inCheck && king?.name.startsWith(player)
+    return isInCheck && king.name.startsWith(player)
+  }
+
+  function handleLastMovement() {
+    setLastMovement()
   }
 
   return (
@@ -35,7 +40,6 @@ export default function PlayerTurn() {
           className={!turn ? 'player-turn' : 'player-turn current'}
         />
       </div>
-
       <div>
         {isCheck('W') &&
           <img
@@ -48,7 +52,9 @@ export default function PlayerTurn() {
           className={turn ? 'player-turn' : 'player-turn current'}
         />
       </div>
-
+      <button onClick={handleLastMovement}>
+        Last Movement
+      </button>
     </div>
   )
 }
