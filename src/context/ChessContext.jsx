@@ -25,13 +25,18 @@ export default function ChessContextProvider(props) {
 
 
 
-  const COLORIZED_MOVES = () => {
-    const MOVES = getMovements(SQUARE_1, POSITION_1) || []
-    const COLORIZED = MOVES.filter(move => {
+  const fixedMovements = moves => {
+    return moves.filter(move => {
       const piece = currentBoard[move]
       return !piece?.name.startsWith(PLAYER)
     })
+  }
 
+
+
+  const COLORIZED_MOVES = () => {
+    const MOVES = getMovements(SQUARE_1, POSITION_1) || []
+    const COLORIZED = fixedMovements(MOVES)
     return [...COLORIZED, POSITION_1]
   }
 
@@ -95,6 +100,38 @@ export default function ChessContextProvider(props) {
 
 
 
+  const CHECK_MATE = () => {
+    const { CURRENT_KING } = KINGS_POSITIONS()
+    const { CURRENT_MOVES, CONTRARY_MOVES } = THREATENINGS_MOVES()
+
+    const KING = currentBoard[CURRENT_KING]
+    const MOVES = getMovements(KING, CURRENT_KING)
+    const KING_MOVES = fixedMovements(MOVES)
+
+    if (!KING_MOVES.length) return
+
+    const KING_CANT_MOVE = KING_MOVES
+      .every(currentKingMove => {
+        return CONTRARY_MOVES
+          .flat()
+          .includes(currentKingMove)
+      })
+
+    const PLAYER_CANT_BLOCK = !CURRENT_MOVES
+      .flat()
+      .some(currentMove => {
+        return CONTRARY_MOVES
+          .flat()
+          .includes(currentMove)
+      })
+
+    console.log({ MOVES, KING_MOVES });
+    console.log({ CURRENT_MOVES, CONTRARY_MOVES });
+    console.log({ KING_CANT_MOVE, PLAYER_CANT_BLOCK });
+  }
+
+
+
   function updateBoards() {
     const NEW_BOARD = [...currentBoard]
 
@@ -140,11 +177,18 @@ export default function ChessContextProvider(props) {
     const CLICKED_TWICE = squares.length === 2
     const { LEFT_IN_CHECK } = CHECKS()
 
-    if (CLICKED_TWICE) updateChess()
-    if (LEFT_IN_CHECK) setLastMovement()
-  }, [squares, turn])
+    if (CLICKED_TWICE) {
+      updateChess()
+    }
+    if (LEFT_IN_CHECK) {
+      setLastMovement()
+    }
+  }, [squares])
 
 
+  useEffect(() => {
+    CHECK_MATE()
+  }, [turn])
 
   return (
     <ChessContext.Provider value={{
