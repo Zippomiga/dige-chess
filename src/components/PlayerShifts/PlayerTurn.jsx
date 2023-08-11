@@ -1,7 +1,7 @@
 import './player-turn.css'
 import blackTurn from '../../assets/chess-pieces/b-shift.png'
 import whiteTurn from '../../assets/chess-pieces/w-shift.png'
-import inCheck from '../../assets/chess-pieces/exclamation.png'
+import kingInCheck from '../../assets/chess-pieces/exclamation.png'
 import { useContext, useState } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
@@ -11,18 +11,22 @@ export default function PlayerTurn() {
     kingsPositions: { CURRENT_KING },
     checks: { IS_THREATENED, LEFT_IN_CHECK },
     turn,
+    lastMove,
+    setLastMove,
     setLastMovement
   } = useContext(ChessContext)
 
   const isCheck = player => {
-    const isInCheck = IS_THREATENED || LEFT_IN_CHECK
+    const inCheck = IS_THREATENED || LEFT_IN_CHECK
     const king = currentBoard[CURRENT_KING]
 
-    return isInCheck && king.name.startsWith(player)
+    return inCheck && king.name.startsWith(player)
   }
 
   function handleLastMovement() {
+    if(!lastMove) return
     setLastMovement()
+    setLastMove(false)
   }
 
   return (
@@ -31,7 +35,7 @@ export default function PlayerTurn() {
       <div>
         {isCheck('B') &&
           <img
-            src={inCheck}
+            src={kingInCheck}
             className='turn-check'
             alt="" />}
         <img
@@ -43,7 +47,7 @@ export default function PlayerTurn() {
       <div>
         {isCheck('W') &&
           <img
-            src={inCheck}
+            src={kingInCheck}
             className='turn-check'
             alt="" />}
         <img

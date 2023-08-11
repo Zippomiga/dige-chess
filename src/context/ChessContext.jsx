@@ -7,6 +7,7 @@ export const ChessContext = createContext()
 export default function ChessContextProvider(props) {
   const [currentBoard, setCurrentBoard] = useState(CHESS_BOARD)
   const [previousBoard, setPreviousBoard] = useState([])
+  const [lastMove, setLastMove] = useState(false)
 
   const [squares, setSquares] = useState([])
   const [positions, setPositions] = useState([])
@@ -25,18 +26,18 @@ export default function ChessContextProvider(props) {
 
 
 
-  const fixedMovements = moves => {
-    return moves.filter(move => {
+  const fixMovements = movements => {
+    return movements.filter(move => {
       const piece = currentBoard[move]
       return !piece?.name.startsWith(PLAYER)
     })
-  }
+  } // not taken into account squares where there are pieces of the same player
 
 
 
   const COLORIZED_MOVES = () => {
     const MOVES = getMovements(SQUARE_1, POSITION_1) || []
-    const COLORIZED = fixedMovements(MOVES)
+    const COLORIZED = fixMovements(MOVES)
     return [...COLORIZED, POSITION_1]
   }
 
@@ -49,7 +50,6 @@ export default function ChessContextProvider(props) {
         return getMovements(threat, position)
       })
     }
-
     const THREATS = currentBoard.filter(threat => threat !== null)
     const CURRENT = THREATS.filter(threat => threat.name.startsWith(PLAYER))
     const CONTRARY = THREATS.filter(threat => !threat.name.startsWith(PLAYER))
@@ -106,7 +106,7 @@ export default function ChessContextProvider(props) {
 
     const KING = currentBoard[CURRENT_KING]
     const MOVES = getMovements(KING, CURRENT_KING)
-    const KING_MOVES = fixedMovements(MOVES)
+    const KING_MOVES = fixMovements(MOVES)
 
     if (!KING_MOVES.length) return
 
@@ -117,17 +117,27 @@ export default function ChessContextProvider(props) {
           .includes(currentKingMove)
       })
 
-    const PLAYER_CANT_BLOCK = !CURRENT_MOVES
-      .flat()
-      .some(currentMove => {
-        return CONTRARY_MOVES
-          .flat()
-          .includes(currentMove)
+    const THREATS = CONTRARY_MOVES.filter(contraryMoves => {
+      return contraryMoves.some(move => {
+        return KING_MOVES.includes(move)
       })
+    })
+
+    const PLAYER_CANT_BLOCK = !THREATS
+      .flat()
+      .some(threatMove => {
+        return CURRENT_MOVES
+          .flat()
+          .includes(threatMove)
+      })
+
+    // const curr = CURRENT_MOVES.flat().filter(m => CONTRARY_MOVES.flat().includes(m))
+    // const cont = CONTRARY_MOVES.flat().filter(m => CURRENT_MOVES.flat().includes(m))
 
     console.log({ MOVES, KING_MOVES });
     console.log({ CURRENT_MOVES, CONTRARY_MOVES });
     console.log({ KING_CANT_MOVE, PLAYER_CANT_BLOCK });
+    console.log(THREATS);
   }
 
 
@@ -144,13 +154,6 @@ export default function ChessContextProvider(props) {
 
 
 
-  function resetChess() {
-    setSquares([])
-    setPositions([])
-  }
-
-
-
   function updateChess() {
     const invalidMove = !COLORIZED_MOVES().includes(POSITION_2)
     const samePlayer = SQUARE_1?.name.startsWith(SQUARE_2?.name[0])
@@ -162,6 +165,14 @@ export default function ChessContextProvider(props) {
       resetChess()
       setTurn(turn => !turn)
     }
+  }
+
+
+
+  function resetChess() {
+    setSquares([])
+    setPositions([])
+    setLastMove(true)
   }
 
 
@@ -194,6 +205,10 @@ export default function ChessContextProvider(props) {
     <ChessContext.Provider value={{
       currentBoard,
       setCurrentBoard,
+      previousBoard,
+      setPreviousBoard,
+      lastMove,
+      setLastMove,
       squares,
       setSquares,
       positions,
