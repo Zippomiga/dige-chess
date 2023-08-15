@@ -11,28 +11,29 @@ class Knight {
 
   getMoves(position, filledSquares = null) {
     return updateCoords(position)
+      .filter(coord => -1 < coord && coord < 64)
   }
 }
 
 
-function updateCoords(pos) {
+function updateCoords(position) {
   const [x, y] = [2, 16]
 
   const X = {
-    b_l: pos - x + 8,
-    a_l: pos - x - 8,
-    a_r: pos + x - 8,
-    b_r: pos + x + 8
+    b_l: position - x + 8,
+    a_l: position - x - 8,
+    a_r: position + x - 8,
+    b_r: position + x + 8
   }
 
   const Y = {
-    b_l: pos + y - 1,
-    a_l: pos - y - 1,
-    a_r: pos - y + 1,
-    b_r: pos + y + 1
+    b_l: position + y - 1,
+    a_l: position - y - 1,
+    a_r: position - y + 1,
+    b_r: position + y + 1
   }
 
-  switch (column(pos)) {
+  switch (column(position)) {
     case 0:         //knight at column A
       return [
         X.a_r, X.b_r,

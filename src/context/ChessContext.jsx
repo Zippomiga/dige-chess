@@ -55,6 +55,7 @@ export default function ChessContextProvider(props) {
     const CONTRARY = THREATS.filter(threat => !threat.name.startsWith(PLAYER))
 
     return {
+      THREATS,
       CURRENT_MOVES: threatsMoves(CURRENT),
       CONTRARY_MOVES: threatsMoves(CONTRARY),
     }
@@ -102,7 +103,7 @@ export default function ChessContextProvider(props) {
 
   const CHECK_MATE = () => {
     const { CURRENT_KING } = KINGS_POSITIONS()
-    const { CURRENT_MOVES, CONTRARY_MOVES } = THREATENINGS_MOVES()
+    const { THREATS, CURRENT_MOVES, CONTRARY_MOVES } = THREATENINGS_MOVES()
 
     const KING = currentBoard[CURRENT_KING]
     const MOVES = getMovements(KING, CURRENT_KING)
@@ -110,34 +111,48 @@ export default function ChessContextProvider(props) {
 
     if (!KING_MOVES.length) return
 
-    const KING_CANT_MOVE = KING_MOVES
+    const KING_CANT_MOVE = KING_MOVES // TEÓRICAMENTE ESTO NO VA A SER NECESARIO
       .every(currentKingMove => {
         return CONTRARY_MOVES
           .flat()
           .includes(currentKingMove)
       })
 
-    const THREATS = CONTRARY_MOVES.filter(contraryMoves => {
-      return contraryMoves.some(move => {
-        return KING_MOVES.includes(move)
-      })
+
+    const CURRENT_PIECES = THREATS.filter(threat => {
+      const pieces = threat.name.startsWith(PLAYER)
+      // const isKing = threat.name.includes("KING")
+      return pieces
     })
 
-    const PLAYER_CANT_BLOCK = !THREATS
-      .flat()
-      .some(threatMove => {
-        return CURRENT_MOVES
-          .flat()
-          .includes(threatMove)
-      })
+    // const x = CURRENT_MOVES.filter((_, i) => {
+    //   const isKing = CURRENT[i].name.includes("KING")
+    //   return !isKing
+    // })
 
-    // const curr = CURRENT_MOVES.flat().filter(m => CONTRARY_MOVES.flat().includes(m))
-    // const cont = CONTRARY_MOVES.flat().filter(m => CURRENT_MOVES.flat().includes(m))
+    for (let i = 0; i < CURRENT_PIECES.length; i++) {
+      const piece = CURRENT_PIECES[i]
+      const position = currentBoard.indexOf(piece)
+      const moves = CURRENT_MOVES[i]
 
-    console.log({ MOVES, KING_MOVES });
-    console.log({ CURRENT_MOVES, CONTRARY_MOVES });
-    console.log({ KING_CANT_MOVE, PLAYER_CANT_BLOCK });
-    console.log(THREATS);
+      console.log({ piece, position });
+
+      for (let j = 0; j < moves.length; j++) {
+        const move = moves[j]
+
+        console.log({ move });
+      }
+
+      // 1. LA PIEZA DEL CURRENT PLAYER TIENE QUE HACER UN MOVIMIENTO, Y DESPUES DE ESE MOVIMIENTO COMPROBAR SI SIGUE EN JAQUE
+      // 2. EL JAQUE SE COMPRUEBA OBTENIENDO NUEVAMENTE LOS MOVIMIENTOS DE LAS PIEZAS DEL CONTRARIO DESPUES DE HABER MOVIDO LA PIEZA
+      // 3. SI SIGUE EN JAQUE, CONTINUAR CON EL LOOP HASTA ENCONTRAR LA PIEZA QUE BLOQUEE EL JAQUE
+      // 4. SI SE ENCUENTRA UNA PIEZA QUE BLOQUEE EL JAQUE, DEVOLVER FALSE (SE PUEDE BLOQUEAR)
+      // SI NO SE ENCUENTRA, DEVOLVER TRUE (NO SE PUEDE BLOQUEAR => ES JAQUE MATE)
+    }
+    // console.log({ CURRENT_PIECES, CURRENT_MOVES });
+    // console.log({ x });
+    const U = [...new Set(CONTRARY_MOVES.flat())]
+    console.log(U);
   }
 
 
@@ -178,6 +193,7 @@ export default function ChessContextProvider(props) {
 
 
   function setLastMovement() {
+    resetChess()
     setCurrentBoard(previousBoard)
     setTurn(turn => !turn)
   }
