@@ -19,8 +19,8 @@ export default function ChessContextProvider(props) {
 
 
 
-  const filledSquares = board => {
-    return board.map((filled, index) => filled && index)
+  const filledSquares = (board = currentBoard) => {
+    return board.map((filled, position) => filled && position)
   }
 
 
@@ -35,8 +35,7 @@ export default function ChessContextProvider(props) {
 
 
   const COLORIZED_MOVES = () => {
-    const filled = filledSquares(currentBoard)
-    const MOVES = SQUARE_1?.getMoves(POSITION_1, filled) || []
+    const MOVES = SQUARE_1?.getMoves(POSITION_1, filledSquares()) || []
     const COLORIZED = fixMovements(MOVES)
 
     return [...COLORIZED, POSITION_1]
@@ -47,9 +46,8 @@ export default function ChessContextProvider(props) {
   const THREATENINGS_MOVES = () => {
     const threatsMoves = threats => {
       return threats.map(threat => {
-        const filled = filledSquares(currentBoard)
         const position = currentBoard.indexOf(threat)
-        return threat?.getMoves(position, filled)
+        return threat?.getMoves(position, filledSquares())
       })
     }
     const THREATS = currentBoard.filter(threat => threat !== null)
@@ -105,66 +103,57 @@ export default function ChessContextProvider(props) {
 
 
   const CHECK_MATE = () => {
-    const { CURRENT, CONTRARY, CURRENT_MOVES, CONTRARY_MOVES } = THREATENINGS_MOVES()
-    const { CURRENT_KING, CONTRARY_KING } = KINGS_POSITIONS()
+    const { CURRENT, CURRENT_MOVES, CONTRARY_MOVES } = THREATENINGS_MOVES()
+    const { CURRENT_KING } = KINGS_POSITIONS()
     const { IS_THREATENED, LEFT_IN_CHECK } = CHECKS()
 
-    const F = CONTRARY_MOVES
-      .filter(contraryMove => contraryMove.includes(CURRENT_KING))
-      .flat()
-    console.log(F);
+    // const KING = currentBoard[CURRENT_KING]
+    // const MOVES = KING.getMoves(CURRENT_KING, filledSquares())
+    // const KING_MOVES = fixMovements(MOVES)
+
+    // const KING_CANT_MOVE = KING_MOVES // TEÓRICAMENTE ESTO NO VA A SER NECESARIO
+    //   .every(currentKingMove => {
+    //     return CONTRARY_MOVES
+    //       .flat()
+    //       .includes(currentKingMove)
+    //   })
 
     if (IS_THREATENED || LEFT_IN_CHECK) {
+      // console.log({ KING_MOVES, KING_CANT_MOVE });
+
       for (let i = 0; i < CURRENT.length; i++) {
         const currentPiece = CURRENT[i]
-        const currentPosition = currentBoard.indexOf(currentPiece)
         const currentMoves = CURRENT_MOVES[i]
+        const currentCoord = currentBoard.indexOf(currentPiece)
 
-        console.log({ currentPiece, currentPosition });
+        console.log({ currentCoord, currentPiece, currentMoves  });
 
         for (let j = 0; j < currentMoves.length; j++) {
           const newCoord = currentMoves[j]
           const newBoard = [...currentBoard]
 
+          newBoard[currentCoord] = null
           newBoard[newCoord] = currentPiece
-          newBoard[currentPosition] = null
 
-          const newFilled = filledSquares(newBoard)
+          const CONTRARY = newBoard.filter(threat => {
+            return threat !== null && !threat.name.startsWith(PLAYER)
+          })
 
-          for (let k = 0; k < CONTRARY.length; k++) {
-            const threat = CONTRARY[k]
+          const newMoves = CONTRARY.map(threat => {
             const position = newBoard.indexOf(threat)
+            return threat?.getMoves(position, filledSquares(newBoard))
+          })
 
-            console.log({ threat, position });
-          }
+          const uniqueMoves = [...new Set(newMoves.flat())].sort((a, b) => a - b)
+          const isKing = currentPiece.name.includes("KING")
+          const keepThreatened = uniqueMoves.includes(CURRENT_KING)
+          
+          const PROTECTED_KING = !isKing && !keepThreatened
 
-
-          // const threatsMoves = CONTRARY.map(threat => {
-          //   const newPosition = newBoard.indexOf(threat)
-          //   return threat.getMoves(newPosition, newFilled)
-          // })
-
-          // const tm = [...new Set(threatsMoves.flat())]
-
-          // if (F.includes(newCoord)) {
-          //   console.log('JESUS');
-          //   console.log({ newFilled, newCoord, tm });
-          // }
-          // const UNIQUES = [...new Set(threatsMoves.flat())]
-
-          // console.log({ UNIQUES, currentPiece });
+          console.log({ newCoord, uniqueMoves, PROTECTED_KING });
         }
       }
-
-      // const KING_CANT_MOVE = KING_MOVES // TEÓRICAMENTE ESTO NO VA A SER NECESARIO
-      //   .every(currentKingMove => {
-      //     return CONTRARY_MOVES
-      //       .flat()
-      //       .includes(currentKingMove)
-      //   })
-
-
-      // 1. LA PIEZA DEL CURRENT PLAYER TIENE QUE HACER UN MOVIMIENTO, Y DESPUES DE ESE MOVIMIENTO COMPROBAR SI SIGUE EN JAQUE
+      // 1. LA PIEZA DEL CURRENT PLAYER TIENE QUE HACER UN MOVIMIENTO, Y DESPUES DE ESE MOVIMIENTO COMPROBAR SI SE SIGUE EN JAQUE
       // 2. EL JAQUE SE COMPRUEBA OBTENIENDO NUEVAMENTE LOS MOVIMIENTOS DE LAS PIEZAS DEL CONTRARIO DESPUES DE HABER MOVIDO LA PIEZA
       // 3. SI SIGUE EN JAQUE, CONTINUAR CON EL LOOP HASTA ENCONTRAR LA PIEZA QUE BLOQUEE EL JAQUE
       // 4. SI SE ENCUENTRA UNA PIEZA QUE BLOQUEE EL JAQUE, DEVOLVER FALSE (SE PUEDE BLOQUEAR)
