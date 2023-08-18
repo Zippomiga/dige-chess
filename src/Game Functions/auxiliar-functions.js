@@ -70,8 +70,8 @@ export function updateCoords(ranges, position, filledSquares) {
 
   const LIMITS = [...filledSquares, ...EDGES]
     .filter((limit, i, arr) => {
-      const uniques = arr.indexOf(limit) === i // keeps unique items
-      const current = limit !== position       // prevents of newCoords from returning an empty array
+      const uniques = arr.indexOf(limit) === i 
+      const current = limit !== position // prevents of newCoords from returning an empty array
 
       return uniques && current
     })

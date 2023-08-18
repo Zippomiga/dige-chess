@@ -18,151 +18,6 @@ export default function ChessContextProvider(props) {
   const PLAYER = turn ? 'W' : 'B'
 
 
-
-  const filledSquares = (board = currentBoard) => {
-    return board.map((filled, position) => filled && position)
-  }
-
-
-
-  const fixMovements = movements => {
-    return movements.filter(move => {
-      const piece = currentBoard[move]
-      return !piece?.name.startsWith(PLAYER)
-    })
-  } // not taken into account squares where there are pieces of the same player
-
-
-
-  const COLORIZED_MOVES = () => {
-    const MOVES = SQUARE_1?.getMoves(POSITION_1, filledSquares()) || []
-    const COLORIZED = fixMovements(MOVES)
-
-    return [...COLORIZED, POSITION_1]
-  }
-
-
-
-  const THREATENINGS_MOVES = () => {
-    const threatsMoves = threats => {
-      return threats.map(threat => {
-        const position = currentBoard.indexOf(threat)
-        return threat?.getMoves(position, filledSquares())
-      })
-    }
-    const THREATS = currentBoard.filter(threat => threat !== null)
-    const CURRENT = THREATS.filter(threat => threat.name.startsWith(PLAYER))
-    const CONTRARY = THREATS.filter(threat => !threat.name.startsWith(PLAYER))
-
-    return {
-      CURRENT,
-      CONTRARY,
-      CURRENT_MOVES: threatsMoves(CURRENT),
-      CONTRARY_MOVES: threatsMoves(CONTRARY),
-    }
-  }
-
-
-
-  const KINGS_POSITIONS = () => {
-    const kingPosition = king => {
-      return currentBoard.findIndex(k => k?.name === king[PLAYER])
-    }
-
-    const CURRENT = {
-      'W': 'W_KING',
-      'B': 'B_KING'
-    }
-    const CONTRARY = {
-      'W': 'B_KING',
-      'B': 'W_KING'
-    }
-
-    return {
-      CURRENT_KING: kingPosition(CURRENT),
-      CONTRARY_KING: kingPosition(CONTRARY)
-    }
-  }
-
-
-
-  const CHECKS = () => {
-    const isCheck = (threatsMoves, king) => {
-      return threatsMoves.some(moves => moves.includes(king))
-    }
-
-    const { CURRENT_MOVES, CONTRARY_MOVES } = THREATENINGS_MOVES()
-    const { CURRENT_KING, CONTRARY_KING } = KINGS_POSITIONS()
-
-    return {
-      IS_THREATENED: isCheck(CONTRARY_MOVES, CURRENT_KING),
-      LEFT_IN_CHECK: isCheck(CURRENT_MOVES, CONTRARY_KING)
-    }
-  }
-
-
-
-  const CHECK_MATE = () => {
-    const { CURRENT, CURRENT_MOVES, CONTRARY_MOVES } = THREATENINGS_MOVES()
-    const { CURRENT_KING } = KINGS_POSITIONS()
-    const { IS_THREATENED, LEFT_IN_CHECK } = CHECKS()
-
-    // const KING = currentBoard[CURRENT_KING]
-    // const MOVES = KING.getMoves(CURRENT_KING, filledSquares())
-    // const KING_MOVES = fixMovements(MOVES)
-
-    // const KING_CANT_MOVE = KING_MOVES // TEÓRICAMENTE ESTO NO VA A SER NECESARIO
-    //   .every(currentKingMove => {
-    //     return CONTRARY_MOVES
-    //       .flat()
-    //       .includes(currentKingMove)
-    //   })
-
-    if (IS_THREATENED || LEFT_IN_CHECK) {
-      // console.log({ KING_MOVES, KING_CANT_MOVE });
-
-      for (let i = 0; i < CURRENT.length; i++) {
-        const currentPiece = CURRENT[i]
-        const currentMoves = CURRENT_MOVES[i]
-        const currentCoord = currentBoard.indexOf(currentPiece)
-
-        console.log({ currentCoord, currentPiece, currentMoves  });
-
-        for (let j = 0; j < currentMoves.length; j++) {
-          const newCoord = currentMoves[j]
-          const newBoard = [...currentBoard]
-
-          newBoard[currentCoord] = null
-          newBoard[newCoord] = currentPiece
-
-          const CONTRARY = newBoard.filter(threat => {
-            return threat !== null && !threat.name.startsWith(PLAYER)
-          })
-
-          const newMoves = CONTRARY.map(threat => {
-            const position = newBoard.indexOf(threat)
-            return threat?.getMoves(position, filledSquares(newBoard))
-          })
-
-          const uniqueMoves = [...new Set(newMoves.flat())].sort((a, b) => a - b)
-          const isKing = currentPiece.name.includes("KING")
-          const keepThreatened = uniqueMoves.includes(CURRENT_KING)
-          
-          const PROTECTED_KING = !isKing && !keepThreatened
-
-          console.log({ newCoord, uniqueMoves, PROTECTED_KING });
-        }
-      }
-      // 1. LA PIEZA DEL CURRENT PLAYER TIENE QUE HACER UN MOVIMIENTO, Y DESPUES DE ESE MOVIMIENTO COMPROBAR SI SE SIGUE EN JAQUE
-      // 2. EL JAQUE SE COMPRUEBA OBTENIENDO NUEVAMENTE LOS MOVIMIENTOS DE LAS PIEZAS DEL CONTRARIO DESPUES DE HABER MOVIDO LA PIEZA
-      // 3. SI SIGUE EN JAQUE, CONTINUAR CON EL LOOP HASTA ENCONTRAR LA PIEZA QUE BLOQUEE EL JAQUE
-      // 4. SI SE ENCUENTRA UNA PIEZA QUE BLOQUEE EL JAQUE, DEVOLVER FALSE (SE PUEDE BLOQUEAR)
-      // SI NO SE ENCUENTRA, DEVOLVER TRUE (NO SE PUEDE BLOQUEAR => ES JAQUE MATE)
-    }
-  }
-
-
-
   function updateBoards() {
     const NEW_BOARD = [...currentBoard]
 
@@ -174,9 +29,8 @@ export default function ChessContextProvider(props) {
   }
 
 
-
   function updateChess() {
-    const invalidMove = !COLORIZED_MOVES().includes(POSITION_2)
+    const invalidMove = !colorizedMoves().includes(POSITION_2)
     const samePlayer = SQUARE_1?.name.startsWith(SQUARE_2?.name[0])
 
     if (invalidMove || samePlayer) {
@@ -189,13 +43,11 @@ export default function ChessContextProvider(props) {
   }
 
 
-
   function resetChess() {
     setSquares([])
     setPositions([])
     setLastMove(true)
   }
-
 
 
   function setLastMovement() {
@@ -205,12 +57,146 @@ export default function ChessContextProvider(props) {
   }
 
 
+  const filledSquares = (board = currentBoard) => {
+    return board.map((filled, position) => filled && position)
+  }
+
+
+  const fixedMoves = movements => {
+    return movements.filter(move => {
+      const piece = currentBoard[move]
+      return !piece?.name.startsWith(PLAYER)
+    })
+  } // not taken into account squares where there are pieces of the same player
+
+
+  const colorizedMoves = () => {
+    const movements = SQUARE_1?.getMoves(POSITION_1, filledSquares()) || []
+    const colorized = fixedMoves(movements)
+    return [...colorized, POSITION_1]
+  }
+
+
+  const playerPieces = (player, board = currentBoard) => {
+    return board.filter(threat => {
+      switch (player) {
+        case 'current':
+          return threat !== null && threat.name.startsWith(PLAYER)
+        case 'contrary':
+          return threat !== null && !threat.name.startsWith(PLAYER)
+      }
+    })
+  }
+
+
+  const threateningsMoves = (player, board = currentBoard) => {
+    const threatsMoves = pieces => pieces.map(threat => {
+      const position = board.indexOf(threat)
+      return threat?.getMoves(position, filledSquares(board))
+    })
+
+    switch (player) {
+      case 'current':
+        return threatsMoves(CURRENT_PIECES)
+      case 'contrary':
+        return threatsMoves(CONTRARY_PIECES)
+    }
+  }
+
+
+  const kingPosition = player => {
+    const current = {
+      'W': 'W_KING',
+      'B': 'B_KING'
+    }
+
+    const contrary = {
+      'W': 'B_KING',
+      'B': 'W_KING'
+    }
+
+    return currentBoard.findIndex(king => {
+      switch (player) {
+        case 'current':
+          return king?.name === current[PLAYER]
+        case 'contrary':
+          return king?.name === contrary[PLAYER]
+      }
+    })
+  }
+
+
+  const isCheck = (threateningsMoves, king) => {
+    return threateningsMoves.some(moves => moves.includes(king))
+  }
+
+
+  const kingCantMove = () => {
+    const KING = currentBoard[CURRENT_KING]
+    const MOVES = KING.getMoves(CURRENT_KING, filledSquares())
+    const KING_MOVES = fixedMoves(MOVES)
+
+    return KING_MOVES.every(kingMove => {
+      return CONTRARY_MOVES.flat().includes(kingMove)
+    })
+  }
+
+  const isCheckMate = () => {
+    let checkMate = false
+
+    if (kingCantMove() && (IS_THREATENED || LEFT_IN_CHECK)) {
+      for (let i = 0; i < CURRENT_PIECES.length; i++) {
+        if (checkMate) { break }
+
+        const currentPiece = CURRENT_PIECES[i]
+        const currentMoves = CURRENT_MOVES[i]
+        const currentCoord = currentBoard.indexOf(currentPiece)
+
+        if (currentPiece.name.includes("KING")) { continue }
+
+        // console.log({ currentPiece, currentMoves, currentCoord });
+
+        for (let j = 0; j < currentMoves.length; j++) {
+          if (checkMate) { break }
+
+          const newCoord = currentMoves[j]
+          const newBoard = [...currentBoard]
+
+          newBoard[currentCoord] = null
+          newBoard[newCoord] = currentPiece
+
+          const contraryMoves = threateningsMoves('contrary', newBoard)
+          const newMovements = [...new Set(contraryMoves.flat())]
+
+          // console.log({ newCoord, newBoard, newMovements });
+
+          if (!newMovements.includes(CURRENT_KING)) { return }
+
+          const everyPieceChecked = i === CURRENT_PIECES.length - 1
+          const everyMoveChecked = j === currentMoves.length - 1
+
+          checkMate = everyPieceChecked && everyMoveChecked
+        }
+      }
+      return checkMate
+    }
+  }
+
+
+  const CURRENT_PIECES = playerPieces('current')
+  const CURRENT_MOVES = threateningsMoves('current')
+  const CURRENT_KING = kingPosition('current')
+
+  const CONTRARY_PIECES = playerPieces('contrary')
+  const CONTRARY_MOVES = threateningsMoves('contrary')
+  const CONTRARY_KING = kingPosition('contrary')
+
+  const IS_THREATENED = isCheck(CONTRARY_MOVES, CURRENT_KING)
+  const LEFT_IN_CHECK = isCheck(CURRENT_MOVES, CONTRARY_KING)
+
 
   useEffect(() => {
-    const CLICKED_TWICE = squares.length === 2
-    const { LEFT_IN_CHECK } = CHECKS()
-
-    if (CLICKED_TWICE) {
+    if (squares.length === 2) { // player has clicked twice
       updateChess()
     }
     if (LEFT_IN_CHECK) {
@@ -220,8 +206,9 @@ export default function ChessContextProvider(props) {
 
 
   useEffect(() => {
-    CHECK_MATE()
+    if (isCheckMate()) { console.log('JAQUE MATE') };
   }, [turn])
+
 
   return (
     <ChessContext.Provider value={{
@@ -235,11 +222,11 @@ export default function ChessContextProvider(props) {
       setSquares,
       positions,
       setPositions,
-      colorizedMoves: COLORIZED_MOVES(),
+      colorizedMoves: colorizedMoves(),
       turn,
       setTurn,
-      kingsPositions: KINGS_POSITIONS(),
-      checks: CHECKS(),
+      kingsPositions: { CURRENT_KING, CONTRARY_KING },
+      checks: { IS_THREATENED, LEFT_IN_CHECK },
       PLAYER,
       setLastMovement
     }}>
