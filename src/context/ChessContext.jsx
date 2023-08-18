@@ -15,6 +15,7 @@ export default function ChessContextProvider(props) {
 
   const [SQUARE_1, SQUARE_2] = squares
   const [POSITION_1, POSITION_2] = positions
+
   const PLAYER = turn ? 'W' : 'B'
 
 
@@ -29,6 +30,13 @@ export default function ChessContextProvider(props) {
   }
 
 
+  function resetChess() {
+    setSquares([])
+    setPositions([])
+    setLastMove(true)
+  }
+
+
   function updateChess() {
     const invalidMove = !colorizedMoves().includes(POSITION_2)
     const samePlayer = SQUARE_1?.name.startsWith(SQUARE_2?.name[0])
@@ -40,13 +48,6 @@ export default function ChessContextProvider(props) {
       resetChess()
       setTurn(turn => !turn)
     }
-  }
-
-
-  function resetChess() {
-    setSquares([])
-    setPositions([])
-    setLastMove(true)
   }
 
 
@@ -90,20 +91,12 @@ export default function ChessContextProvider(props) {
 
 
   const threateningsMoves = (player, board = currentBoard) => {
-    const threatsMoves = pieces => pieces.map(threat => {
+    const threatenings = playerPieces(player, board)
+
+    return threatenings.map(threat => {
       const position = board.indexOf(threat)
       return threat?.getMoves(position, filledSquares(board))
     })
-
-    const current = playerPieces(player, board)
-    const contrary = playerPieces(player, board)
-
-    switch (player) {
-      case 'current':
-        return threatsMoves(current)
-      case 'contrary':
-        return threatsMoves(contrary)
-    }
   }
 
 
@@ -129,11 +122,6 @@ export default function ChessContextProvider(props) {
   }
 
 
-  const isCheck = (threateningsMoves, king) => {
-    return threateningsMoves.some(moves => moves.includes(king))
-  }
-
-
   const kingCantMove = () => {
     const king = currentBoard[CURRENT_KING]
     const moves = king.getMoves(CURRENT_KING, filledSquares())
@@ -144,9 +132,13 @@ export default function ChessContextProvider(props) {
     })
   }
 
-  const isCheckMate = () => {
-    const CURRENT_PIECES = playerPieces('current')
 
+  const isCheck = (threateningsMoves, king) => {
+    return threateningsMoves.some(moves => moves.includes(king))
+  }
+
+
+  const isCheckMate = () => {
     for (let i = 0; i < CURRENT_PIECES.length; i++) {
       const currentPiece = CURRENT_PIECES[i]
       const currentMoves = CURRENT_MOVES[i]
@@ -164,19 +156,23 @@ export default function ChessContextProvider(props) {
         newBoard[currentCoord] = null
         newBoard[newCoord] = currentPiece
 
-        const contraryMoves = threateningsMoves('contrary', newBoard)
-        const newMovements = [...new Set(contraryMoves.flat())]
+        const newMovements = threateningsMoves('contrary', newBoard)
+        const contraryMoves = [...new Set(newMovements.flat())]
 
-        const checkCanBeBlocked = !newMovements.includes(CURRENT_KING)
-        const allPiecesChecked = CURRENT_PIECES.length - 1 === i
-        const allMovesChecked = currentMoves.length - 1 === j
+        const allPiecesChecked = (CURRENT_PIECES.length - 1) === i
+        const allMovesChecked = (currentMoves.length - 1) === j
 
-        if (checkCanBeBlocked) { return false }
-        if (allPiecesChecked && allMovesChecked) { return true }
+        const NOT_CHECK_MATE = !contraryMoves.includes(CURRENT_KING)
+        const IS_CHECK_MATE = allMovesChecked && allPiecesChecked
+
+        if (NOT_CHECK_MATE) { return false }
+        if (IS_CHECK_MATE) { return true }
       }
     }
   }
 
+  const CURRENT_PIECES = playerPieces('current')
+  const CONTRARY_PIECES = playerPieces('contrary')
 
   const CURRENT_MOVES = threateningsMoves('current')
   const CONTRARY_MOVES = threateningsMoves('contrary')
@@ -199,8 +195,8 @@ export default function ChessContextProvider(props) {
 
 
   useEffect(() => {
-    if (kingCantMove() && (IS_THREATENED || LEFT_IN_CHECK)) {
-      if (isCheckMate()) { console.log('JAQUE MATE') }
+    if ((IS_THREATENED || LEFT_IN_CHECK) && kingCantMove()) {
+      console.log(isCheckMate() ? 'CHECK MATE' : 'NOT CHECK MATE');
     }
   }, [turn])
 
@@ -217,13 +213,15 @@ export default function ChessContextProvider(props) {
       setSquares,
       positions,
       setPositions,
-      colorizedMoves: colorizedMoves(),
       turn,
       setTurn,
-      kingsPositions: { CURRENT_KING, CONTRARY_KING },
-      checks: { IS_THREATENED, LEFT_IN_CHECK },
-      PLAYER,
-      setLastMovement
+      setLastMovement,
+      colorizedMoves: colorizedMoves(),
+      CURRENT_KING,
+      CONTRARY_KING,
+      IS_THREATENED,
+      LEFT_IN_CHECK,
+      PLAYER
     }}>
       {props.children}
     </ChessContext.Provider>

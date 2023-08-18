@@ -9,8 +9,9 @@ export default function Square({ square, position }) {
     setSquares,
     setPositions,
     colorizedMoves,
-    kingsPositions: { CURRENT_KING },
-    checks: { IS_THREATENED, LEFT_IN_CHECK },
+    CURRENT_KING,
+    IS_THREATENED,
+    LEFT_IN_CHECK,
     PLAYER
   } = useContext(ChessContext)
 

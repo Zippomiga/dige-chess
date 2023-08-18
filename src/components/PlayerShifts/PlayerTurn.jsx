@@ -2,14 +2,15 @@ import './player-turn.css'
 import blackTurn from '../../assets/chess-pieces/b-shift.png'
 import whiteTurn from '../../assets/chess-pieces/w-shift.png'
 import kingInCheck from '../../assets/chess-pieces/exclamation.png'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
 export default function PlayerTurn() {
   const {
     currentBoard,
-    kingsPositions: { CURRENT_KING },
-    checks: { IS_THREATENED, LEFT_IN_CHECK },
+    CURRENT_KING,
+    IS_THREATENED,
+    LEFT_IN_CHECK,
     turn,
     lastMove,
     setLastMove,
@@ -24,14 +25,13 @@ export default function PlayerTurn() {
   }
 
   function handleLastMovement() {
-    if(!lastMove) return
+    if (!lastMove) return
     setLastMovement()
     setLastMove(false)
   }
 
   return (
     <div className='player-turn-panel'>
-
       <div>
         {isCheck('B') &&
           <img
