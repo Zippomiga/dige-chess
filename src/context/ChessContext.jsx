@@ -135,11 +135,11 @@ export default function ChessContextProvider(props) {
 
 
   const kingCantMove = () => {
-    const KING = currentBoard[CURRENT_KING]
-    const MOVES = KING.getMoves(CURRENT_KING, filledSquares())
-    const KING_MOVES = fixedMoves(MOVES)
+    const king = currentBoard[CURRENT_KING]
+    const moves = king.getMoves(CURRENT_KING, filledSquares())
+    const kingMoves = fixedMoves(moves)
 
-    return KING_MOVES.every(kingMove => {
+    return kingMoves.every(kingMove => {
       return CONTRARY_MOVES.flat().includes(kingMove)
     })
   }
