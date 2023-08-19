@@ -1,6 +1,6 @@
 import b_pawn from '../assets/chess-pieces/b-pawn.png'
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
-import { column } from './auxiliar-functions'
+import { findColumn } from './auxiliar-functions'
 
 
 class Pawn {
@@ -21,11 +21,10 @@ class Pawn {
 }
 
 
-
 function updateCoords(isWhite, initial, position, filledSquares) {
   return filledSquares.map((square, move) => {
     const NEXT = diff => isWhite ? position - diff : position + diff
-    const EDGE = columnIndex => column(position) === columnIndex
+    const EDGE = columnIndex => findColumn(position) === columnIndex
     const FREE = square === null
 
     const VERT_NEXT = initial && filledSquares[NEXT(8)] === null

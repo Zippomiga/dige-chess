@@ -1,33 +1,20 @@
 import b_queen from '../assets/chess-pieces/b-queen.png'
 import w_queen from '../assets/chess-pieces/w-queen.png'
-import { corner, edge, innerQuadrant, updateCoords } from './auxiliar-functions'
+import { updateCoords } from './auxiliar-functions'
 
 
 class Queen {
   constructor(name, pic) {
     this.name = name
     this.pic = pic
+    this.movements = [-9, -8, -7, -1, 1, 7, 8, 9]
   }
 
   getMoves(position, filledSquares) {
-    const RANGES = [
-      corner(0, [1, 8, 9]),         //TopLeft
-      corner(7, [-1, 7, 8]),        //TopRight
-      corner(56, [-8, -7, 1]),      //BottomLeft
-      corner(63, [-9, -8, -1]),     //BottomRight
-
-      edge(0, [-1, 1, 7, 8, 9]),    //Top
-      edge(1, [-8, -7, 1, 8, 9]),   //Left
-      edge(2, [-9, -8, -1, 7, 8]),  //Right
-      edge(3, [-9, -8, -7, -1, 1]), //Bottom
-
-      innerQuadrant([-9, -8, -7, -1, 1, 7, 8, 9])
-    ]
-    
     return updateCoords(
-      RANGES,
+      this.movements,
       position,
-      filledSquares,
+      filledSquares
     )
   }
 }

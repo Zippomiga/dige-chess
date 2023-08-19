@@ -29,7 +29,7 @@ export default function Square({ square, position }) {
     const invalidSquare = !square
     const invalidPlayer = !square?.name.startsWith(PLAYER)
 
-    if (startingMove && (invalidSquare || invalidPlayer)) return
+    if (startingMove && (invalidSquare || invalidPlayer)) { return }
 
     setSquares(squares => [...squares, square])
     setPositions(positions => [...positions, position])
@@ -41,14 +41,16 @@ export default function Square({ square, position }) {
       id={position}
       onClick={handleSquare}
     >
-      <img
-        className={square?.name.includes('PAWN') ? 'pawn  ' : 'piece'}
-        src={square?.pic}
-        alt={square?.name}
-      />
-      <span className='square-index'>
-        {position}
-      </span>
+      <div>
+        <img
+          className={square?.name.includes('PAWN') ? 'pawn  ' : 'piece'}
+          src={square?.pic}
+          alt={square?.name}
+        />
+        <span className='square-index'>
+          {position}
+        </span>
+      </div>
     </div>
   )
 }

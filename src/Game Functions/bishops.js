@@ -1,31 +1,18 @@
 import b_bishop from '../assets/chess-pieces/b-bishop.png'
 import w_bishop from '../assets/chess-pieces/w-bishop.png'
-import { corner, edge, innerQuadrant, updateCoords } from './auxiliar-functions'
+import { updateCoords } from './auxiliar-functions'
 
 
 class Bishop {
   constructor(name, pic) {
     this.name = name
     this.pic = pic
+    this.movements = [-9, -7, 7, 9]
   }
 
   getMoves(position, filledSquares) {
-    const RANGES = [
-      corner(0, [9]),
-      corner(7, [7]),
-      corner(56, [-7]),
-      corner(63, [-9]),
-
-      edge(0, [7, 9]),
-      edge(1, [-7, 9]),
-      edge(2, [-9, 7]),
-      edge(3, [-9, -7]),
-
-      innerQuadrant([-9, -7, 7, 9])
-    ]
-
     return updateCoords(
-      RANGES,
+      this.movements,
       position,
       filledSquares
     )
