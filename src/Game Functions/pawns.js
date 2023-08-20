@@ -21,28 +21,25 @@ class Pawn {
 }
 
 
-function updateCoords(isWhite, initial, position, filledSquares) {
+function updateCoords(isWhite, initialMove, position, filledSquares) {
   return filledSquares.map((square, move) => {
     const NEXT = diff => isWhite ? position - diff : position + diff
     const EDGE = columnIndex => findColumn(position) === columnIndex
-    const FREE = square === null
+    const FREE = (squareMove = square) => squareMove === null
 
-    const VERT_NEXT = initial && filledSquares[NEXT(8)] === null
-    const DIAG_NEXT = isWhite
-      ? [NEXT(7), NEXT(9)]
-      : [NEXT(9), NEXT(7)]
-
-    const VERT_MOVES = VERT_NEXT
+    const VERT_NEXT = FREE(filledSquares[NEXT(8)])
+    const VERT_MOVES = initialMove && VERT_NEXT
       ? [NEXT(8), NEXT(16)]
       : [NEXT(8)]
 
+    const DIAG_NEXT = [NEXT(7), NEXT(9)]
     const DIAG_MOVES =
       EDGE(0) ? [Math.max(...DIAG_NEXT)] : // COLUMN A
       EDGE(7) ? [Math.min(...DIAG_NEXT)] : // COLUMN H
       DIAG_NEXT
 
-    const VERTICAL = FREE && VERT_MOVES.includes(move)
-    const DIAGONAL = !FREE && DIAG_MOVES.includes(move)
+    const VERTICAL = VERT_MOVES.includes(move) && FREE()
+    const DIAGONAL = DIAG_MOVES.includes(move) && !FREE()
 
     return VERTICAL || DIAGONAL ? move : null
   }).filter(coord => coord !== null)
