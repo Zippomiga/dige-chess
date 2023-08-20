@@ -1,25 +1,54 @@
 import './square.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
+import { CheckContext } from '../../context/CheckContext'
 
 
 export default function Square({ square, position }) {
   const {
+    currentBoard,
+    setCurrentBoard,
+    previousBoard,
+    setPreviousBoard,
+    lastMove,
+    setLastMove,
     squares,
     setSquares,
+    positions,
     setPositions,
+    turn,
+    setTurn,
+    PLAYER,
+    updateBoards,
+    resetChess,
+    updateChess,
+    setLastMovement,
+    filledSquares,
+    fixedMoves,
     colorizedMoves,
-    CURRENT_KING,
-    IS_THREATENED,
-    LEFT_IN_CHECK,
-    PLAYER
+    playerPieces
   } = useContext(ChessContext)
 
+  const {
+    threateningsMoves,
+    kingPosition,
+    kingCantMove,
+    isCheck,
+    isCheckMate,
+    CURRENT_PIECES,
+    CONTRARY_PIECES,
+    CURRENT_MOVES,
+    CONTRARY_MOVES,
+    CURRENT_KING,
+    CONTRARY_KING,
+    IS_THREATENED,
+    LEFT_IN_CHECK
+  } = useContext(CheckContext)
 
   const squareColor = () => {
     const inCheck = IS_THREATENED || LEFT_IN_CHECK
     const isKing = CURRENT_KING === position
-    const isMove = colorizedMoves.includes(position)
+    const isMove = colorizedMoves().includes(position)
 
     return inCheck && isKing ? 'square check' : isMove ? 'square move' : 'square'
   }

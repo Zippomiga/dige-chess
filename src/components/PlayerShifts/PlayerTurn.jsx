@@ -4,18 +4,48 @@ import whiteTurn from '../../assets/chess-pieces/w-shift.png'
 import kingInCheck from '../../assets/chess-pieces/exclamation.png'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
+import { CheckContext } from '../../context/CheckContext'
 
 export default function PlayerTurn() {
   const {
     currentBoard,
-    CURRENT_KING,
-    IS_THREATENED,
-    LEFT_IN_CHECK,
-    turn,
+    setCurrentBoard,
+    previousBoard,
+    setPreviousBoard,
     lastMove,
     setLastMove,
-    setLastMovement
+    squares,
+    setSquares,
+    positions,
+    setPositions,
+    turn,
+    setTurn,
+    PLAYER,
+    updateBoards,
+    resetChess,
+    updateChess,
+    setLastMovement,
+    filledSquares,
+    fixedMoves,
+    colorizedMoves,
+    playerPieces
   } = useContext(ChessContext)
+
+  const { 
+    threateningsMoves,
+    kingPosition,
+    kingCantMove,
+    // isCheck,
+    isCheckMate,
+    CURRENT_PIECES,
+    CONTRARY_PIECES,
+    CURRENT_MOVES,
+    CONTRARY_MOVES,
+    CURRENT_KING,
+    CONTRARY_KING,
+    IS_THREATENED,
+    LEFT_IN_CHECK
+  } = useContext(CheckContext)
 
   const isCheck = player => {
     const inCheck = IS_THREATENED || LEFT_IN_CHECK

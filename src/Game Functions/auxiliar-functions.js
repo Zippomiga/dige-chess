@@ -21,7 +21,13 @@ const COLUMNS = [
 ]
 
 
-const EDGES = [
+export const findColumn = position => {
+  return COLUMNS
+    .findIndex(column => column.includes(position))
+}
+
+
+export const EDGES = [
   ROWS[0],    // TOP
   ROWS[7],    // BOTTOM
   COLUMNS[0], // LEFT
@@ -29,9 +35,20 @@ const EDGES = [
 ]
 
 
-export const findColumn = position => {
-  return COLUMNS
-    .findIndex(column => column.includes(position))
+export const findRestEdges = position => {
+  return EDGES
+    .filter(edge => !edge.includes(position))
+    .flat()
+}
+
+
+export const fixEdgeMovements = (movements, position) => {
+  return movements.filter(movement => {
+    const restEdges = findRestEdges(position)
+    const firstCalc = movement + position
+
+    return !restEdges.includes(firstCalc) // movements at contrary edges in the first calculation are ignored
+  })
 }
 
 
@@ -42,24 +59,19 @@ export function updateCoords(movements, position, filledSquares) {
     return filledSquare && notSamePiece
   })
 
-  const REST_OF_EDGES = EDGES.filter(edge => {
-    return !edge.includes(position)
-  })
+  const REST_OF_EDGES = findRestEdges(position)
+  const MOVEMENTS = fixEdgeMovements(movements, position)
 
-  const LIMITS = [FILLED_SQUARES, REST_OF_EDGES].flat(2)
-
+  const LIMITS = [...FILLED_SQUARES, ...REST_OF_EDGES]
   const NEW_COORDS = []
 
-  movements.forEach(movement => {
+  MOVEMENTS.forEach(movement => {
     let coord = position
 
     while (!LIMITS.includes(coord)) {
-      if (coord < 0 || coord > 63) { // out of board
-        break
-      } else {
-        coord += movement
-        NEW_COORDS.push(coord)
-      }
+      if (coord < 0 || coord > 63) { break } // out of board
+      coord += movement
+      NEW_COORDS.push(coord)
     }
   })
 

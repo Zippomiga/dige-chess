@@ -1,6 +1,6 @@
 import b_king from '../assets/chess-pieces/b-king.png'
 import w_king from '../assets/chess-pieces/w-king.png'
-
+import { fixEdgeMovements, EDGES } from './auxiliar-functions'
 
 class King {
   constructor(name, pic) {
@@ -19,7 +19,11 @@ class King {
 
 
 function updateCoords(movements, position) {
-  return movements
+  const fixedMovements = fixEdgeMovements(movements, position)
+  const kingInEdge = EDGES.flat().includes(position)
+  const MOVEMENTS = kingInEdge ? fixedMovements : movements
+
+  return MOVEMENTS
     .map(movement => movement + position)
     .filter(coord => coord > -1 && coord < 64)
 }
