@@ -1,22 +1,22 @@
 import b_pawn from '../assets/chess-pieces/b-pawn.png'
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
-import { findColumn } from './auxiliar-functions'
+import { findColumn, validCoord } from './auxiliar-functions'
 
 
 class Pawn {
-  constructor(name, pic, init) {
+  constructor(name, pic, initialPosition) {
     this.name = name
     this.pic = pic
-    this.init = init
+    this.initialPosition = initialPosition
   }
 
   getMoves(position, filledSquares) {
     return updateCoords(
       this.name.startsWith('W'),
-      this.init === position,
+      this.initialPosition === position,
       position,
       filledSquares
-    )
+    ).filter(validCoord)
   }
 }
 
@@ -28,7 +28,7 @@ function updateCoords(isWhite, initialMove, position, filledSquares) {
     const FREE = (squareMove = square) => squareMove === null
 
     const VERT_NEXT = FREE(filledSquares[NEXT(8)])
-    const VERT_MOVES = initialMove && VERT_NEXT
+    const VERT_MOVES = VERT_NEXT && initialMove
       ? [NEXT(8), NEXT(16)]
       : [NEXT(8)]
 
@@ -42,7 +42,7 @@ function updateCoords(isWhite, initialMove, position, filledSquares) {
     const DIAGONAL = DIAG_MOVES.includes(move) && !FREE()
 
     return VERTICAL || DIAGONAL ? move : null
-  }).filter(coord => coord !== null)
+  })
 }
 
 

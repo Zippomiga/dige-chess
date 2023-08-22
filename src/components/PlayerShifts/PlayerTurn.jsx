@@ -25,6 +25,7 @@ export default function PlayerTurn() {
     resetChess,
     updateChess,
     setLastMovement,
+    isSamePlayer,
     filledSquares,
     fixedMoves,
     colorizedMoves,

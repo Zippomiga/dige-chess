@@ -19,14 +19,12 @@ export default function ChessContextProvider(props) {
   const PLAYER = turn ? 'W' : 'B'
 
 
-  function updateBoards() {
-    const NEW_BOARD = [...currentBoard]
+  const updateBoard = (position1, position2, newSquare) => {
+    const newBoard = [...currentBoard]
+    newBoard[position1] = null
+    newBoard[position2] = newSquare
 
-    NEW_BOARD[POSITION_1] = null
-    NEW_BOARD[POSITION_2] = SQUARE_1
-
-    setPreviousBoard(currentBoard)
-    setCurrentBoard(NEW_BOARD)
+    return newBoard
   }
 
 
@@ -39,12 +37,14 @@ export default function ChessContextProvider(props) {
 
   function updateChess() {
     const invalidMove = !colorizedMoves().includes(POSITION_2)
-    const samePlayer = SQUARE_1?.name.startsWith(SQUARE_2?.name[0])
+    const samePlayer = isSamePlayer(SQUARE_2)
 
     if (invalidMove || samePlayer) {
       resetChess()
     } else {
-      updateBoards()
+      const newBoard = updateBoard(...positions, SQUARE_1)
+      setPreviousBoard(currentBoard)
+      setCurrentBoard(newBoard)
       resetChess()
       setTurn(turn => !turn)
     }
@@ -58,6 +58,9 @@ export default function ChessContextProvider(props) {
   }
 
 
+  const isSamePlayer = square => square?.name.startsWith(PLAYER)
+
+
   const filledSquares = (board = currentBoard) => {
     return board.map((filled, position) => filled && position)
   }
@@ -65,8 +68,8 @@ export default function ChessContextProvider(props) {
 
   const fixedMoves = movements => {
     return movements.filter(move => {
-      const piece = currentBoard[move]
-      return !piece?.name.startsWith(PLAYER)
+      const square = currentBoard[move]
+      return !isSamePlayer(square)
     })
   } // not taken into account squares where there are pieces of the same player
 
@@ -82,9 +85,9 @@ export default function ChessContextProvider(props) {
     return board.filter(threat => {
       switch (player) {
         case 'current':
-          return threat !== null && threat.name.startsWith(PLAYER)
+          return threat !== null && isSamePlayer(threat)
         case 'contrary':
-          return threat !== null && !threat.name.startsWith(PLAYER)
+          return threat !== null && !isSamePlayer(threat)
       }
     })
   }
@@ -105,10 +108,11 @@ export default function ChessContextProvider(props) {
       turn,
       setTurn,
       PLAYER,
-      updateBoards,
+      updateBoard,
       resetChess,
       updateChess,
       setLastMovement,
+      isSamePlayer,
       filledSquares,
       fixedMoves,
       colorizedMoves,

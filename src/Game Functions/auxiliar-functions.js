@@ -21,13 +21,7 @@ const COLUMNS = [
 ]
 
 
-export const findColumn = position => {
-  return COLUMNS
-    .findIndex(column => column.includes(position))
-}
-
-
-export const EDGES = [
+const EDGES = [
   ROWS[0],    // TOP
   ROWS[7],    // BOTTOM
   COLUMNS[0], // LEFT
@@ -35,45 +29,44 @@ export const EDGES = [
 ]
 
 
-export const findRestEdges = position => {
-  return EDGES
-    .filter(edge => !edge.includes(position))
-    .flat()
+export const findColumn = position => {
+  return COLUMNS
+    .findIndex(column => column.includes(position))
 }
 
 
-export const fixEdgeMovements = (movements, position) => {
-  return movements.filter(movement => {
-    const restEdges = findRestEdges(position)
-    const firstCalc = movement + position
-
-    return !restEdges.includes(firstCalc) // movements at contrary edges in the first calculation are ignored
-  })
+export const validCoord = coord => {
+  return coord !== null && coord > -1 && coord < 64
 }
 
 
-export function updateCoords(movements, position, filledSquares) {
-  const FILLED_SQUARES = filledSquares.filter(square => {
-    const filledSquare = square !== null
-    const notSamePiece = square !== position // prevents NEW COORDS from returning an empty array
-    return filledSquare && notSamePiece
-  })
+export function updateCoords(movements, position, filledSquares, isKing = false) {
+  const restOfEdges = EDGES.filter(edge => !edge.includes(position))
+  const pieceInEdge = EDGES.some(edge => edge.includes(position))
 
-  const REST_OF_EDGES = findRestEdges(position)
-  const MOVEMENTS = fixEdgeMovements(movements, position)
+  const LIMITS = [filledSquares, restOfEdges]
+    .flat(2)
+    .filter(square => square !== position)
 
-  const LIMITS = [...FILLED_SQUARES, ...REST_OF_EDGES]
   const NEW_COORDS = []
 
-  MOVEMENTS.forEach(movement => {
+  for (let i = 0; i < movements.length; i++) {
+    const movement = movements[i];
+    const firstCalc = movement + position
+    const firstMustBeIgnored = restOfEdges.some(edge => edge.includes(firstCalc))
+
+    if (pieceInEdge && firstMustBeIgnored) { continue }
     let coord = position
 
     while (!LIMITS.includes(coord)) {
-      if (coord < 0 || coord > 63) { break } // out of board
       coord += movement
       NEW_COORDS.push(coord)
-    }
-  })
 
-  return NEW_COORDS
+      if (isKing || coord < 0 || coord > 63) {
+        break
+      }
+    }
+  }
+
+  return NEW_COORDS.filter(validCoord)
 }

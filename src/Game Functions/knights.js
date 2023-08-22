@@ -1,6 +1,6 @@
 import b_knight_png from '../assets/chess-pieces/b-knight.png'
 import w_knight_png from '../assets/chess-pieces/w-knight.png'
-import { findColumn } from './auxiliar-functions'
+import { findColumn, validCoord } from './auxiliar-functions'
 
 
 class Knight {
@@ -10,27 +10,27 @@ class Knight {
   }
 
   getMoves(position, filledSquares = null) {
-    return updateCoords(position)
-      .filter(coord => coord > -1 && coord < 64)
+    return updateCoords(position).filter(validCoord)
   }
 }
 
 
 function updateCoords(position) {
+  const newCoord = (axis, diff) => position + axis + diff
   const [x, y] = [2, 16]
 
   const X = {
-    b_l: position - x + 8, // below left
-    a_l: position - x - 8, // above left
-    a_r: position + x - 8, // above right
-    b_r: position + x + 8  // below right
+    belowLeft: newCoord(-x, 8),
+    aboveLeft: newCoord(-x, -8),
+    aboveRight: newCoord(x, -8),
+    belowRight: newCoord(x, 8)
   }
 
   const Y = {
-    b_l: position + y - 1, // below left
-    a_l: position - y - 1, // above left
-    a_r: position - y + 1, // above right
-    b_r: position + y + 1  // below right
+    belowLeft: newCoord(y, -1),
+    aboveLeft: newCoord(-y, -1),
+    aboveRight: newCoord(-y, 1),
+    belowRight: newCoord(y, 1),
   }
 
   const COLUMN = findColumn(position)
@@ -38,28 +38,28 @@ function updateCoords(position) {
   switch (COLUMN) {
     case 0:  //knight at column A
       return [
-        X.a_r, X.b_r,
-        Y.a_r, Y.b_r
+        X.aboveRight, X.belowRight,
+        Y.aboveRight, Y.belowRight
       ]
     case 1:  //knight at column B
       return [
-        X.a_r, X.b_r,
-        Y.a_l, Y.a_r, Y.b_r, Y.b_l
+        X.aboveRight, X.belowRight,
+        Y.aboveLeft, Y.aboveRight, Y.belowRight, Y.belowLeft
       ]
     case 6:  //knight at column G
       return [
-        X.a_l, X.b_l,
-        Y.a_l, Y.a_r, Y.b_r, Y.b_l
+        X.aboveLeft, X.belowLeft,
+        Y.aboveLeft, Y.aboveRight, Y.belowRight, Y.belowLeft
       ]
     case 7:  //knight at column H
       return [
-        X.a_l, X.b_l,
-        Y.a_l, Y.b_l
+        X.aboveLeft, X.belowLeft,
+        Y.aboveLeft, Y.belowLeft
       ]
     default: //knight at column C || D || E || F
       return [
-        X.a_l, X.a_r, X.b_r, X.b_l,
-        Y.a_l, Y.a_r, Y.b_r, Y.b_l
+        ...Object.values(X),
+        ...Object.values(Y)
       ]
   }
 }

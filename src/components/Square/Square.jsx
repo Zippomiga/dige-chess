@@ -23,6 +23,7 @@ export default function Square({ square, position }) {
     resetChess,
     updateChess,
     setLastMovement,
+    isSamePlayer,
     filledSquares,
     fixedMoves,
     colorizedMoves,
@@ -56,7 +57,7 @@ export default function Square({ square, position }) {
   function handleSquare() {
     const startingMove = !squares.length
     const invalidSquare = !square
-    const invalidPlayer = !square?.name.startsWith(PLAYER)
+    const invalidPlayer = !isSamePlayer(square)
 
     if (startingMove && (invalidSquare || invalidPlayer)) { return }
 
