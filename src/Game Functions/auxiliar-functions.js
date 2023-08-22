@@ -41,21 +41,20 @@ export const validCoord = coord => {
 
 
 export function updateCoords(movements, position, filledSquares, isKing = false) {
-  const restOfEdges = EDGES.filter(edge => !edge.includes(position))
+  const fixedSquares = filledSquares.filter(square => square !== position)
+  const restOfEdges = EDGES.filter(edge => !edge.includes(position)).flat()
   const pieceInEdge = EDGES.some(edge => edge.includes(position))
 
-  const LIMITS = [filledSquares, restOfEdges]
-    .flat(2)
-    .filter(square => square !== position)
+  const fixedMovements = movements.filter(move => {
+    const coordInContraryEdge = move + position
+    return !restOfEdges.includes(coordInContraryEdge)
+  })
 
+  const MOVEMENTS = pieceInEdge ? fixedMovements : movements
+  const LIMITS = [...fixedSquares, ...restOfEdges]
   const NEW_COORDS = []
 
-  for (let i = 0; i < movements.length; i++) {
-    const movement = movements[i];
-    const firstCalc = movement + position
-    const firstMustBeIgnored = restOfEdges.some(edge => edge.includes(firstCalc))
-
-    if (pieceInEdge && firstMustBeIgnored) { continue }
+  MOVEMENTS.forEach(movement => {
     let coord = position
 
     while (!LIMITS.includes(coord)) {
@@ -66,7 +65,7 @@ export function updateCoords(movements, position, filledSquares, isKing = false)
         break
       }
     }
-  }
-
+  })
+  
   return NEW_COORDS.filter(validCoord)
 }
