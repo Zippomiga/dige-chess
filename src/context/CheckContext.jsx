@@ -72,7 +72,7 @@ export default function CheckContextProvider(props) {
       const currentPiece = CURRENT_PIECES[i]
       const currentMoves = CURRENT_MOVES[i]
       const currentCoord = currentBoard.indexOf(currentPiece)
-      console.log({ currentCoord, x: currentBoard[i] });
+      
       for (let j = 0; j < currentMoves.length; j++) {
         const newCoord = currentMoves[j]
         const newPiece = currentBoard[newCoord]
