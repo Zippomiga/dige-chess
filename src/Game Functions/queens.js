@@ -7,12 +7,12 @@ class Queen {
   constructor(name, pic) {
     this.name = name
     this.pic = pic
-    this.movements = [-9, -8, -7, -1, 1, 7, 8, 9]
+    this.directions = [-9, -8, -7, -1, 1, 7, 8, 9]
   }
 
   getMoves(position, filledSquares) {
     return updateCoords(
-      this.movements,
+      this.directions,
       position,
       filledSquares
     )

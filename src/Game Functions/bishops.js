@@ -7,12 +7,12 @@ class Bishop {
   constructor(name, pic) {
     this.name = name
     this.pic = pic
-    this.movements = [-9, -7, 7, 9]
+    this.directions = [-9, -7, 7, 9]
   }
 
   getMoves(position, filledSquares) {
     return updateCoords(
-      this.movements,
+      this.directions,
       position,
       filledSquares
     )

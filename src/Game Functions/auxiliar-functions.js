@@ -17,8 +17,7 @@ const EDGES = [
 
 
 export const findColumn = position => {
-  return COLUMNS
-    .findIndex(column => column.includes(position))
+  return COLUMNS.findIndex(column => column.includes(position))
 }
 
 
@@ -29,7 +28,7 @@ export const validCoord = coord => {
 }
 
 
-export function updateCoords(movements, position, filledSquares, isKing = false) {
+export function updateCoords(directions, position, filledSquares, isKing = false) {
   const fixedSquares = filledSquares.filter(square => square !== position)
   const restOfEdges = EDGES.filter(edge => !edge.includes(position)).flat()
   const pieceInEdge = EDGES.some(edge => edge.includes(position))
@@ -37,8 +36,8 @@ export function updateCoords(movements, position, filledSquares, isKing = false)
   const COLLISIONS = [...fixedSquares, ...restOfEdges]
   const NEW_COORDS = []
 
-  for (let i = 0; i < movements.length; i++) {
-    const movement = movements[i];
+  for (let i = 0; i < directions.length; i++) {
+    const direction = directions[i];
     const fristCalc = movement + position
     const inContraryEdge = restOfEdges.includes(fristCalc)
 
@@ -46,7 +45,7 @@ export function updateCoords(movements, position, filledSquares, isKing = false)
     let newCoord = position
 
     while (!COLLISIONS.includes(newCoord)) {
-      newCoord += movement
+      newCoord += direction
       NEW_COORDS.push(newCoord)
       if (!validCoord(newCoord) || isKing) { break }
     }

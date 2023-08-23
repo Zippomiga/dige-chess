@@ -7,12 +7,12 @@ class Rook {
   constructor(name, pic) {
     this.name = name
     this.pic = pic
-    this.movements = [-8, -1, 1, 8]
+    this.directions = [-8, -1, 1, 8]
   }
 
   getMoves(position, filledSquares) {
     return updateCoords(
-      this.movements,
+      this.directions,
       position,
       filledSquares
     )
