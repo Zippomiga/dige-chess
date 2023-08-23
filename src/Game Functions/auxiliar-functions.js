@@ -38,7 +38,7 @@ export function updateCoords(directions, position, filledSquares, isKing = false
 
   for (let i = 0; i < directions.length; i++) {
     const direction = directions[i];
-    const fristCalc = movement + position
+    const fristCalc = direction + position
     const inContraryEdge = restOfEdges.includes(fristCalc)
 
     if (pieceInEdge && inContraryEdge) { continue }
