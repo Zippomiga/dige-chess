@@ -28,36 +28,6 @@ export default function ChessContextProvider(props) {
   }
 
 
-  function resetChess() {
-    setSquares([])
-    setPositions([])
-    setLastMove(true)
-  }
-
-
-  function updateChess() {
-    const invalidMove = !colorizedMoves().includes(POSITION_2)
-    const samePlayer = isSamePlayer(SQUARE_2)
-
-    if (invalidMove || samePlayer) {
-      resetChess()
-    } else {
-      const newBoard = updateBoard(...positions, SQUARE_1)
-      setPreviousBoard(currentBoard)
-      setCurrentBoard(newBoard)
-      resetChess()
-      setTurn(turn => !turn)
-    }
-  }
-
-
-  function setLastMovement() {
-    resetChess()
-    setCurrentBoard(previousBoard)
-    setTurn(turn => !turn)
-  }
-
-
   const isSamePlayer = square => square?.name.startsWith(PLAYER)
 
 
@@ -90,6 +60,36 @@ export default function ChessContextProvider(props) {
           return threat !== null && !isSamePlayer(threat)
       }
     })
+  }
+
+
+  function resetChess() {
+    setSquares([])
+    setPositions([])
+    setLastMove(true)
+  }
+
+
+  function updateChess() {
+    const invalidMove = !colorizedMoves().includes(POSITION_2)
+    const samePlayer = isSamePlayer(SQUARE_2)
+
+    if (invalidMove || samePlayer) {
+      resetChess()
+    } else {
+      const newBoard = updateBoard(...positions, SQUARE_1)
+      setPreviousBoard(currentBoard)
+      setCurrentBoard(newBoard)
+      resetChess()
+      setTurn(turn => !turn)
+    }
+  }
+
+
+  function setLastMovement() {
+    resetChess()
+    setCurrentBoard(previousBoard)
+    setTurn(turn => !turn)
   }
 
 

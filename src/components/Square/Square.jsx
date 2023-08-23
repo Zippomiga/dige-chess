@@ -56,10 +56,9 @@ export default function Square({ square, position }) {
 
   function handleSquare() {
     const startingMove = !squares.length
-    const invalidSquare = !square
-    const invalidPlayer = !isSamePlayer(square)
-
-    if (startingMove && (invalidSquare || invalidPlayer)) { return }
+    const invalidSquare = !square || !isSamePlayer(square)
+    
+    if (startingMove && invalidSquare) { return }
 
     setSquares(squares => [...squares, square])
     setPositions(positions => [...positions, position])

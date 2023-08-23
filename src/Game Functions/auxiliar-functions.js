@@ -1,14 +1,3 @@
-const ROWS = [
-  [0, 1, 2, 3, 4, 5, 6, 7],         // A
-  [8, 9, 10, 11, 12, 13, 14, 15],   // B
-  [16, 17, 18, 19, 20, 21, 22, 23], // C
-  [24, 25, 26, 27, 28, 29, 30, 31], // D
-  [32, 33, 34, 35, 36, 37, 38, 39], // E
-  [40, 41, 42, 43, 44, 45, 46, 47], // F
-  [48, 49, 50, 51, 52, 53, 54, 55], // G
-  [56, 57, 58, 59, 60, 61, 62, 63]  // H
-]
-
 const COLUMNS = [
   [0, 8, 16, 24, 32, 40, 48, 56],   // A
   [1, 9, 17, 25, 33, 41, 49, 57],   // B
@@ -22,10 +11,8 @@ const COLUMNS = [
 
 
 const EDGES = [
-  ROWS[0],    // TOP
-  ROWS[7],    // BOTTOM
   COLUMNS[0], // LEFT
-  COLUMNS[7], // RIGHT
+  COLUMNS[7]  // RIGHT
 ]
 
 
@@ -36,7 +23,9 @@ export const findColumn = position => {
 
 
 export const validCoord = coord => {
-  return coord !== null && coord > -1 && coord < 64
+  const isValid = coord !== null
+  const inBoard = coord > -1 && coord < 64
+  return isValid && inBoard
 }
 
 
@@ -45,27 +34,23 @@ export function updateCoords(movements, position, filledSquares, isKing = false)
   const restOfEdges = EDGES.filter(edge => !edge.includes(position)).flat()
   const pieceInEdge = EDGES.some(edge => edge.includes(position))
 
-  const fixedMovements = movements.filter(move => {
-    const coordInContraryEdge = move + position
-    return !restOfEdges.includes(coordInContraryEdge)
-  })
-
-  const MOVEMENTS = pieceInEdge ? fixedMovements : movements
-  const LIMITS = [...fixedSquares, ...restOfEdges]
+  const COLLISIONS = [...fixedSquares, ...restOfEdges]
   const NEW_COORDS = []
 
-  MOVEMENTS.forEach(movement => {
-    let coord = position
+  for (let i = 0; i < movements.length; i++) {
+    const movement = movements[i];
+    const fristCalc = movement + position
+    const inContraryEdge = restOfEdges.includes(fristCalc)
 
-    while (!LIMITS.includes(coord)) {
-      coord += movement
-      NEW_COORDS.push(coord)
+    if (pieceInEdge && inContraryEdge) { continue }
+    let newCoord = position
 
-      if (isKing || coord < 0 || coord > 63) {
-        break
-      }
+    while (!COLLISIONS.includes(newCoord)) {
+      newCoord += movement
+      NEW_COORDS.push(newCoord)
+      if (!validCoord(newCoord) || isKing) { break }
     }
-  })
-  
+  }
+
   return NEW_COORDS.filter(validCoord)
 }

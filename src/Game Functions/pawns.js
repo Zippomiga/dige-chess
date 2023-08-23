@@ -23,9 +23,9 @@ class Pawn {
 
 function updateCoords(isWhite, initialMove, position, filledSquares) {
   return filledSquares.map((square, move) => {
-    const NEXT = diff => isWhite ? position - diff : position + diff
-    const EDGE = columnIndex => findColumn(position) === columnIndex
     const FREE = (squareMove = square) => squareMove === null
+    const NEXT = diff => isWhite ? position - diff : position + diff
+    const EDGE = edge => findColumn(position) === edge
 
     const VERT_NEXT = FREE(filledSquares[NEXT(8)])
     const VERT_MOVES = VERT_NEXT && initialMove
