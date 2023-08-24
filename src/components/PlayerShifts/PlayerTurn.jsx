@@ -12,31 +12,30 @@ export default function PlayerTurn() {
     setCurrentBoard,
     previousBoard,
     setPreviousBoard,
-    lastMove,
-    setLastMove,
+    lastMovement,
+    setLastMovement,
     squares,
     setSquares,
-    positions,
-    setPositions,
+    coords,
+    setCoords,
     turn,
     setTurn,
-    PLAYER,
-    updateBoards,
-    resetChess,
-    updateChess,
-    setLastMovement,
+    playerTurn,
+    updateBoard,
     isSamePlayer,
     filledSquares,
-    fixedMoves,
     colorizedMoves,
-    playerPieces
+    playerPieces,
+    resetChess,
+    updateChess,
+    setLastMove
   } = useContext(ChessContext)
 
-  const { 
-    threateningsMoves,
+
+  const {
+    threatsMoves,
     kingPosition,
-    kingCantMove,
-    // isCheck,
+    isCheck,
     isCheckMate,
     CURRENT_PIECES,
     CONTRARY_PIECES,
@@ -44,27 +43,27 @@ export default function PlayerTurn() {
     CONTRARY_MOVES,
     CURRENT_KING,
     CONTRARY_KING,
-    IS_THREATENED,
-    LEFT_IN_CHECK
+    IS_CHECK
   } = useContext(CheckContext)
 
-  const isCheck = player => {
-    const inCheck = IS_THREATENED || LEFT_IN_CHECK
+
+  const inCheck = player => {
     const king = currentBoard[CURRENT_KING]
-
-    return inCheck && king.name.startsWith(player)
+    return IS_CHECK && king.name.startsWith(player)
   }
 
-  function handleLastMovement() {
-    if (!lastMove) return
-    setLastMovement()
-    setLastMove(false)
+
+  function handleLastMove() {
+    if (!lastMovement) return
+    setLastMove()
+    setLastMovement(false)
   }
+
 
   return (
     <div className='player-turn-panel'>
       <div>
-        {isCheck('B') &&
+        {inCheck('B') &&
           <img
             src={kingInCheck}
             className='turn-check'
@@ -76,7 +75,7 @@ export default function PlayerTurn() {
         />
       </div>
       <div>
-        {isCheck('W') &&
+        {inCheck('W') &&
           <img
             src={kingInCheck}
             className='turn-check'
@@ -87,7 +86,7 @@ export default function PlayerTurn() {
           className={turn ? 'player-turn' : 'player-turn current'}
         />
       </div>
-      <button onClick={handleLastMovement}>
+      <button onClick={handleLastMove}>
         Last Movement
       </button>
     </div>

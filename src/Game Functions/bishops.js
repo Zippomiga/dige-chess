@@ -10,10 +10,10 @@ class Bishop {
     this.directions = [-9, -7, 7, 9]
   }
 
-  getMoves(position, filledSquares) {
+  getMoves(currentCoord, filledSquares) {
     return updateCoords(
       this.directions,
-      position,
+      currentCoord,
       filledSquares
     )
   }

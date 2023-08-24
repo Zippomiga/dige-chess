@@ -9,14 +9,14 @@ class Knight {
     this.pic = pic
   }
 
-  getMoves(position, filledSquares = null) {
-    return updateCoords(position).filter(validCoord)
+  getMoves(currentCoord, filledSquares = null) {
+    return updateCoords(currentCoord).filter(validCoord)
   }
 }
 
 
-function updateCoords(position) {
-  const newCoord = (axis, diff) => position + axis + diff
+function updateCoords(currentCoord) {
+  const newCoord = (axis, diff) => currentCoord + axis + diff
   const [x, y] = [2, 16]
 
   const X = {
@@ -33,7 +33,7 @@ function updateCoords(position) {
     belowRight: newCoord(y, 1),
   }
 
-  const COLUMN = findColumn(position)
+  const COLUMN = findColumn(currentCoord)
 
   switch (COLUMN) {
     case 0:  //knight at column A

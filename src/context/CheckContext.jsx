@@ -9,44 +9,46 @@ export default function CheckContextProvider(props) {
     setCurrentBoard,
     previousBoard,
     setPreviousBoard,
-    lastMove,
-    setLastMove,
+    lastMovement,
+    setLastMovement,
     squares,
     setSquares,
-    positions,
-    setPositions,
+    coords,
+    setCoords,
     turn,
     setTurn,
-    PLAYER,
+    playerTurn,
     updateBoard,
-    resetChess,
-    updateChess,
-    setLastMovement,
     isSamePlayer,
     filledSquares,
-    fixedMoves,
     colorizedMoves,
-    playerPieces
+    playerPieces,
+    resetChess,
+    updateChess,
+    setLastMove
   } = useContext(ChessContext)
 
 
-  const threateningsMoves = (player, board = currentBoard) => {
+  const [current, contrary] = ['current', 'contrary']
+
+
+  const threatsMoves = (player, board = currentBoard) => {
     const threatenings = playerPieces(player, board)
 
     return threatenings.map(threat => {
-      const position = board.indexOf(threat)
-      return threat?.getMoves(position, filledSquares(board))
+      const currentCoord = board.indexOf(threat)
+      return threat?.getMoves(currentCoord, filledSquares(board))
     })
   }
 
 
   const kingPosition = (player, board = currentBoard) => {
-    const current = {
+    const currentKing = {
       'W': 'W_KING',
       'B': 'B_KING'
     }
 
-    const contrary = {
+    const contraryKing = {
       'W': 'B_KING',
       'B': 'W_KING'
     }
@@ -54,16 +56,18 @@ export default function CheckContextProvider(props) {
     return board.findIndex(king => {
       switch (player) {
         case 'current':
-          return king?.name === current[PLAYER]
+          return king?.name === currentKing[playerTurn]
         case 'contrary':
-          return king?.name === contrary[PLAYER]
+          return king?.name === contraryKing[playerTurn]
       }
     })
   }
 
 
-  const isCheck = (threateningsMoves, king) => {
-    return threateningsMoves.some(moves => moves.includes(king))
+  const isCheck = (threatsMoves, king) => {
+    return threatsMoves.some(threatMove => {
+      return threatMove?.includes(king)
+    })
   }
 
 
@@ -72,59 +76,61 @@ export default function CheckContextProvider(props) {
       const currentPiece = CURRENT_PIECES[i]
       const currentMoves = CURRENT_MOVES[i]
       const currentCoord = currentBoard.indexOf(currentPiece)
-      
+
       for (let j = 0; j < currentMoves.length; j++) {
         const newCoord = currentMoves[j]
         const newPiece = currentBoard[newCoord]
         if (isSamePlayer(newPiece)) { continue }
 
         const newBoard = updateBoard(currentCoord, newCoord, currentPiece)
-        const newCurrentKing = kingPosition('current', newBoard)
-        const newContraryMoves = threateningsMoves('contrary', newBoard)
-
+        const newContraryMoves = threatsMoves(contrary, newBoard)
+        const newCurrentKing = kingPosition(current, newBoard)
         const NOT_CHECK_MATE = !isCheck(newContraryMoves, newCurrentKing)
+
         if (NOT_CHECK_MATE) { return false }
       }
     }
     return true
   }
 
-  const CURRENT_PIECES = playerPieces('current')
-  const CONTRARY_PIECES = playerPieces('contrary')
 
-  const CURRENT_MOVES = threateningsMoves('current')
-  const CONTRARY_MOVES = threateningsMoves('contrary')
+  const CURRENT_PIECES = playerPieces(current)
+  const CONTRARY_PIECES = playerPieces(contrary)
 
-  const CURRENT_KING = kingPosition('current')
-  const CONTRARY_KING = kingPosition('contrary')
+  const CURRENT_MOVES = threatsMoves(current)
+  const CONTRARY_MOVES = threatsMoves(contrary)
+
+  const CURRENT_KING = kingPosition(current)
+  const CONTRARY_KING = kingPosition(contrary)
 
   const IS_THREATENED = isCheck(CONTRARY_MOVES, CURRENT_KING)
   const LEFT_IN_CHECK = isCheck(CURRENT_MOVES, CONTRARY_KING)
 
+  const IS_CHECK = IS_THREATENED || LEFT_IN_CHECK
 
+  
   useEffect(() => {
     if (squares.length === 2) { // player has clicked twice
       updateChess()
     }
     if (LEFT_IN_CHECK) {
-      setLastMovement()
+      setLastMove()
     }
   }, [squares])
 
 
   useEffect(() => {
-    const isCheck = IS_THREATENED || LEFT_IN_CHECK
-    const checkMate = isCheckMate() ? 'CHECK MATE' : 'NOT CHECK MATE'
-    if (isCheck) { console.log(checkMate); }
+    if (IS_CHECK) {
+      const checkMate = isCheckMate() ? 'CHECK MATE' : 'NOT CHECK MATE'
+      console.log(checkMate);
+    }
   }, [turn])
-
 
 
   return (
     <CheckContext.Provider value={{
-      threateningsMoves,
+      threatsMoves,
       kingPosition,
-      // kingCantMove,
       isCheck,
       isCheckMate,
       CURRENT_PIECES,
@@ -133,8 +139,7 @@ export default function CheckContextProvider(props) {
       CONTRARY_MOVES,
       CURRENT_KING,
       CONTRARY_KING,
-      IS_THREATENED,
-      LEFT_IN_CHECK
+      IS_CHECK
     }}>
       {props.children}
     </CheckContext.Provider>

@@ -10,12 +10,12 @@ export default function ChessBoard() {
   return (
     <section className='chess-board'>
       {
-        currentBoard.map((square, position) => {
+        currentBoard.map((square, coord) => {
           return (
             <Square
-              key={position}
+              key={coord}
               square={square}
-              position={position}
+              coord={coord}
             />
           )
         })

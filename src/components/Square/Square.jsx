@@ -4,36 +4,34 @@ import { ChessContext } from '../../context/ChessContext'
 import { CheckContext } from '../../context/CheckContext'
 
 
-export default function Square({ square, position }) {
+export default function Square({ square, coord }) {
   const {
     currentBoard,
     setCurrentBoard,
     previousBoard,
     setPreviousBoard,
-    lastMove,
-    setLastMove,
+    lastMovement,
+    setLastMovement,
     squares,
     setSquares,
-    positions,
-    setPositions,
+    coords,
+    setCoords,
     turn,
     setTurn,
-    PLAYER,
-    updateBoards,
-    resetChess,
-    updateChess,
-    setLastMovement,
+    playerTurn,
+    updateBoard,
     isSamePlayer,
     filledSquares,
-    fixedMoves,
     colorizedMoves,
-    playerPieces
+    playerPieces,
+    resetChess,
+    updateChess,
+    setLastMove
   } = useContext(ChessContext)
 
   const {
-    threateningsMoves,
+    threatsMoves,
     kingPosition,
-    kingCantMove,
     isCheck,
     isCheckMate,
     CURRENT_PIECES,
@@ -42,17 +40,17 @@ export default function Square({ square, position }) {
     CONTRARY_MOVES,
     CURRENT_KING,
     CONTRARY_KING,
-    IS_THREATENED,
-    LEFT_IN_CHECK
+    IS_CHECK
   } = useContext(CheckContext)
 
-  const squareColor = () => {
-    const inCheck = IS_THREATENED || LEFT_IN_CHECK
-    const isKing = CURRENT_KING === position
-    const isMove = colorizedMoves().includes(position)
 
-    return inCheck && isKing ? 'square check' : isMove ? 'square move' : 'square'
+  const squareColor = () => {
+    const isKing = CURRENT_KING === coord
+    const isMove = colorizedMoves().includes(coord)
+
+    return IS_CHECK && isKing ? 'square check' : isMove ? 'square move' : 'square'
   }
+
 
   function handleSquare() {
     const startingMove = !squares.length
@@ -61,13 +59,14 @@ export default function Square({ square, position }) {
     if (startingMove && invalidSquare) { return }
 
     setSquares(squares => [...squares, square])
-    setPositions(positions => [...positions, position])
+    setCoords(coords => [...coords, coord])
   }
 
+  
   return (
     <div
       className={squareColor()}
-      id={position}
+      id={coord}
       onClick={handleSquare}
     >
       <div>
@@ -76,9 +75,9 @@ export default function Square({ square, position }) {
           src={square?.pic}
           alt={square?.name}
         />
-        <span className='square-index'>
-          {position}
-        </span>
+        {/* <span className='square-index'>
+          {coord}
+        </span> */}
       </div>
     </div>
   )

@@ -4,44 +4,45 @@ import { findColumn, validCoord } from './auxiliar-functions'
 
 
 class Pawn {
-  constructor(name, pic, initialPosition) {
+  constructor(name, pic, initialCoord) {
     this.name = name
     this.pic = pic
-    this.initialPosition = initialPosition
+    this.initialCoord = initialCoord
   }
 
-  getMoves(position, filledSquares) {
+  getMoves(currentCoord, filledSquares) {
     return updateCoords(
       this.name.startsWith('W'),
-      this.initialPosition === position,
-      position,
+      this.initialCoord === currentCoord,
+      currentCoord,
       filledSquares
     ).filter(validCoord)
   }
 }
 
 
-function updateCoords(isWhite, initialMove, position, filledSquares) {
-  return filledSquares.map((square, move) => {
-    const FREE = (squareMove = square) => squareMove === null
-    const NEXT = diff => isWhite ? position - diff : position + diff
-    const EDGE = edge => findColumn(position) === edge
+function updateCoords(isWhite, initialMove, currentCoord, filledSquares) {
+  return filledSquares.map((square, coord) => {
+    const FREE = (nextSquare = square) => nextSquare === null
+    const NEXT = diff => isWhite ? currentCoord - diff : currentCoord + diff
+    const EDGE = edge => findColumn(currentCoord) === edge
 
     const VERT_NEXT = FREE(filledSquares[NEXT(8)])
-    const VERT_MOVES = VERT_NEXT && initialMove
+    const DIAG_NEXT = [NEXT(7), NEXT(9)]
+    
+    const VERT_COORDS = VERT_NEXT && initialMove
       ? [NEXT(8), NEXT(16)]
       : [NEXT(8)]
 
-    const DIAG_NEXT = [NEXT(7), NEXT(9)]
-    const DIAG_MOVES =
+    const DIAG_COORDS =
       EDGE(0) ? [Math.max(...DIAG_NEXT)] : // COLUMN A
       EDGE(7) ? [Math.min(...DIAG_NEXT)] : // COLUMN H
       DIAG_NEXT
 
-    const VERTICAL = VERT_MOVES.includes(move) && FREE()
-    const DIAGONAL = DIAG_MOVES.includes(move) && !FREE()
+    const VERTICAL = VERT_COORDS.includes(coord) && FREE()
+    const DIAGONAL = DIAG_COORDS.includes(coord) && !FREE()
 
-    return VERTICAL || DIAGONAL ? move : null
+    return VERTICAL || DIAGONAL ? coord : null
   })
 }
 

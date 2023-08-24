@@ -1,5 +1,5 @@
 import { CHESS_BOARD } from "../Game Functions/board";
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 
 
 export const ChessContext = createContext()
@@ -7,57 +7,58 @@ export const ChessContext = createContext()
 export default function ChessContextProvider(props) {
   const [currentBoard, setCurrentBoard] = useState(CHESS_BOARD)
   const [previousBoard, setPreviousBoard] = useState([])
-  const [lastMove, setLastMove] = useState(false)
+  const [lastMovement, setLastMovement] = useState(false)
 
   const [squares, setSquares] = useState([])
-  const [positions, setPositions] = useState([])
+  const [coords, setCoords] = useState([])
   const [turn, setTurn] = useState(true)
 
-  const [SQUARE_1, SQUARE_2] = squares
-  const [POSITION_1, POSITION_2] = positions
+  const [currentSquare, newSquare] = squares
+  const [currentCoord, newCoord] = coords
 
-  const PLAYER = turn ? 'W' : 'B'
+  const playerTurn = turn ? 'W' : 'B'
 
 
-  const updateBoard = (position1, position2, newSquare) => {
+  const updateBoard = (currentCoord, newCoord, newPiece) => {
     const newBoard = [...currentBoard]
-    newBoard[position1] = null
-    newBoard[position2] = newSquare
+    newBoard[currentCoord] = null
+    newBoard[newCoord] = newPiece
 
     return newBoard
   }
 
 
-  const isSamePlayer = square => square?.name.startsWith(PLAYER)
+  const isSamePlayer = square => {
+    return square?.name.startsWith(playerTurn)
+  }
 
 
   const filledSquares = (board = currentBoard) => {
-    return board.map((filled, position) => filled && position)
-  }
-
-
-  const fixedMoves = movements => {
-    return movements.filter(move => {
-      const square = currentBoard[move]
-      return !isSamePlayer(square)
+    return board.map((filled, coord) => {
+      return filled && coord
     })
-  } // not taken into account squares where there are pieces of the same player
+  }
 
 
   const colorizedMoves = () => {
-    const movements = SQUARE_1?.getMoves(POSITION_1, filledSquares()) || []
-    const colorized = fixedMoves(movements)
-    return [...colorized, POSITION_1]
-  }
+    const movements = currentSquare
+      ?.getMoves(currentCoord, filledSquares()) || []
+
+    const colorized = movements.filter(move => {
+      return !isSamePlayer(currentBoard[move])
+    })
+
+    return [...colorized, currentCoord]
+  } // not taken into account squares where there are pieces of the same player
 
 
   const playerPieces = (player, board = currentBoard) => {
-    return board.filter(threat => {
+    return board.filter(piece => {
       switch (player) {
         case 'current':
-          return threat !== null && isSamePlayer(threat)
+          return isSamePlayer(piece)
         case 'contrary':
-          return threat !== null && !isSamePlayer(threat)
+          return !isSamePlayer(piece)
       }
     })
   }
@@ -65,19 +66,19 @@ export default function ChessContextProvider(props) {
 
   function resetChess() {
     setSquares([])
-    setPositions([])
-    setLastMove(true)
+    setCoords([])
+    setLastMovement(true)
   }
 
 
   function updateChess() {
-    const invalidMove = !colorizedMoves().includes(POSITION_2)
-    const samePlayer = isSamePlayer(SQUARE_2)
+    const newBoard = updateBoard(...coords, currentSquare)
+    const invalidMove = !colorizedMoves().includes(newCoord)
+    const samePlayer = isSamePlayer(newSquare)
 
     if (invalidMove || samePlayer) {
       resetChess()
     } else {
-      const newBoard = updateBoard(...positions, SQUARE_1)
       setPreviousBoard(currentBoard)
       setCurrentBoard(newBoard)
       resetChess()
@@ -86,7 +87,7 @@ export default function ChessContextProvider(props) {
   }
 
 
-  function setLastMovement() {
+  function setLastMove() {
     resetChess()
     setCurrentBoard(previousBoard)
     setTurn(turn => !turn)
@@ -99,24 +100,23 @@ export default function ChessContextProvider(props) {
       setCurrentBoard,
       previousBoard,
       setPreviousBoard,
-      lastMove,
-      setLastMove,
+      lastMovement,
+      setLastMovement,
       squares,
       setSquares,
-      positions,
-      setPositions,
+      coords,
+      setCoords,
       turn,
       setTurn,
-      PLAYER,
+      playerTurn,
       updateBoard,
-      resetChess,
-      updateChess,
-      setLastMovement,
       isSamePlayer,
       filledSquares,
-      fixedMoves,
       colorizedMoves,
-      playerPieces
+      playerPieces,
+      resetChess,
+      updateChess,
+      setLastMove
     }}>
       {props.children}
     </ChessContext.Provider>

@@ -10,10 +10,10 @@ class Queen {
     this.directions = [-9, -8, -7, -1, 1, 7, 8, 9]
   }
 
-  getMoves(position, filledSquares) {
+  getMoves(currentCoord, filledSquares) {
     return updateCoords(
       this.directions,
-      position,
+      currentCoord,
       filledSquares
     )
   }

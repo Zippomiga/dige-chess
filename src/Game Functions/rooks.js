@@ -10,10 +10,10 @@ class Rook {
     this.directions = [-8, -1, 1, 8]
   }
 
-  getMoves(position, filledSquares) {
+  getMoves(currentCoord, filledSquares) {
     return updateCoords(
       this.directions,
-      position,
+      currentCoord,
       filledSquares
     )
   }
