@@ -8,6 +8,7 @@ export default function ChessContextProvider(props) {
   const [currentBoard, setCurrentBoard] = useState(CHESS_BOARD)
   const [previousBoard, setPreviousBoard] = useState([])
   const [lastMovement, setLastMovement] = useState(false)
+  const [eatedPieces, setEatedPieces] = useState([])
 
   const [squares, setSquares] = useState([])
   const [coords, setCoords] = useState([])
@@ -17,7 +18,6 @@ export default function ChessContextProvider(props) {
   const [currentCoord, newCoord] = coords
 
   const playerTurn = turn ? 'W' : 'B'
-
 
   const updateBoard = (currentCoord, newCoord, newPiece) => {
     const newBoard = [...currentBoard]
@@ -64,6 +64,9 @@ export default function ChessContextProvider(props) {
   }
 
 
+  // const eatedPieces = {}
+
+
   function resetChess() {
     setSquares([])
     setCoords([])
@@ -102,6 +105,8 @@ export default function ChessContextProvider(props) {
       setPreviousBoard,
       lastMovement,
       setLastMovement,
+      eatedPieces,
+      setEatedPieces,
       squares,
       setSquares,
       coords,

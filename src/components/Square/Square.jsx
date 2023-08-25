@@ -12,6 +12,8 @@ export default function Square({ square, coord }) {
     setPreviousBoard,
     lastMovement,
     setLastMovement,
+    eatedPieces,
+    setEatedPieces,
     squares,
     setSquares,
     coords,
@@ -54,15 +56,20 @@ export default function Square({ square, coord }) {
 
   function handleSquare() {
     const startingMove = !squares.length
-    const invalidSquare = !square || !isSamePlayer(square)
-    
-    if (startingMove && invalidSquare) { return }
+    const notSamePlayer = !isSamePlayer(square)
+    const isPlayerEating = notSamePlayer && square !== null
+
+    if (startingMove && notSamePlayer) { return }
+    if (!startingMove && isPlayerEating) {
+      setEatedPieces(eatedPieces => [...eatedPieces, square]) 
+      console.log('EAT');
+    }
 
     setSquares(squares => [...squares, square])
     setCoords(coords => [...coords, coord])
   }
 
-  
+
   return (
     <div
       className={squareColor()}

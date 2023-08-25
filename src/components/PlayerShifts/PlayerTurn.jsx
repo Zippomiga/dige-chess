@@ -47,12 +47,6 @@ export default function PlayerTurn() {
   } = useContext(CheckContext)
 
 
-  const inCheck = player => {
-    const king = currentBoard[CURRENT_KING]
-    return IS_CHECK && king.name.startsWith(player)
-  }
-
-
   function handleLastMove() {
     if (!lastMovement) return
     setLastMove()
@@ -60,35 +54,40 @@ export default function PlayerTurn() {
   }
 
 
+  const inCheck = player => {
+    const king = currentBoard[CURRENT_KING]
+    const isKing = king.name.startsWith(player)
+    const isWhite = player === 'W'
+
+    const playerPic = isWhite ? whiteTurn : blackTurn
+    const playerTurn = isWhite ? turn : !turn
+
+    return (
+      <div>
+        {IS_CHECK && isKing && (
+          <img
+            src={kingInCheck}
+            className='turn-check'
+            alt=""
+          />
+        )}
+        <img
+          src={playerPic}
+          className={playerTurn ? 'player-turn' : 'player-turn current'}
+          alt=""
+        />
+      </div>
+    )
+  }
+
+
   return (
-    <div className='player-turn-panel'>
-      <div>
-        {inCheck('B') &&
-          <img
-            src={kingInCheck}
-            className='turn-check'
-            alt="" />}
-        <img
-          src={blackTurn}
-          alt="black-shift"
-          className={!turn ? 'player-turn' : 'player-turn current'}
-        />
-      </div>
-      <div>
-        {inCheck('W') &&
-          <img
-            src={kingInCheck}
-            className='turn-check'
-            alt="" />}
-        <img
-          src={whiteTurn}
-          alt="white-shift"
-          className={turn ? 'player-turn' : 'player-turn current'}
-        />
-      </div>
+    <section className='player-turn-panel'>
+      {inCheck('B')}
+      {inCheck('W')}
       <button onClick={handleLastMove}>
         Last Movement
       </button>
-    </div>
+    </section>
   )
 }

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect } from "react";
 import { ChessContext } from "./ChessContext";
 
+
 export const CheckContext = createContext()
 
 export default function CheckContextProvider(props) {
@@ -11,6 +12,8 @@ export default function CheckContextProvider(props) {
     setPreviousBoard,
     lastMovement,
     setLastMovement,
+    eatedPieces,
+    setEatedPieces,
     squares,
     setSquares,
     coords,
