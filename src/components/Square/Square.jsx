@@ -8,28 +8,34 @@ export default function Square({ square, coord }) {
   const {
     currentBoard,
     setCurrentBoard,
-    previousBoard,
-    setPreviousBoard,
-    lastMovement,
-    setLastMovement,
     currentEated,
     setCurrentEated,
+    previousBoard,
+    setPreviousBoard,
+    previousEated,
+    setPreviousEated,
+    lastMovement,
+    setLastMovement,
     squares,
     setSquares,
     coords,
     setCoords,
     turn,
     setTurn,
+    currentSquare,
+    newSquare,
+    currentCoord,
+    newCoord,
     playerTurn,
+    current,
+    contrary,
     updateBoard,
     isSamePlayer,
     filledSquares,
     colorizedMoves,
     playerPieces,
-    resetChess,
     updateChess,
-    setLastMove,
-    setPreviousEated
+    setLastMove
   } = useContext(ChessContext)
 
   const {
@@ -43,7 +49,8 @@ export default function Square({ square, coord }) {
     CONTRARY_MOVES,
     CURRENT_KING,
     CONTRARY_KING,
-    IS_THREATENED
+    IS_THREATENED,
+    LEFT_IN_CHECK
   } = useContext(CheckContext)
 
 
@@ -57,9 +64,9 @@ export default function Square({ square, coord }) {
     const isPlayerEating = !currentPlayer && square !== null
 
     if (startingMove && !currentPlayer) { return }
-    if (!startingMove && isMove && isPlayerEating) {
-      setPreviousEated(currentEated)
+    if (isMove && isPlayerEating) {
       setCurrentEated(currentEated => [...currentEated, square])
+      setPreviousEated(currentEated)
     }
 
     setSquares(squares => [...squares, square])

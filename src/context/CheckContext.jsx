@@ -8,29 +8,34 @@ export default function CheckContextProvider(props) {
   const {
     currentBoard,
     setCurrentBoard,
+    currentEated,
+    setCurrentEated,
     previousBoard,
     setPreviousBoard,
+    previousEated,
+    setPreviousEated,
     lastMovement,
     setLastMovement,
-    eatedPieces,
-    setEatedPieces,
     squares,
     setSquares,
     coords,
     setCoords,
     turn,
     setTurn,
+    currentSquare,
+    newSquare,
+    currentCoord,
+    newCoord,
     playerTurn,
+    current,
+    contrary,
     updateBoard,
     isSamePlayer,
     filledSquares,
     colorizedMoves,
     playerPieces,
-    resetChess,
     updateChess,
-    setLastMove,
-    current,
-    contrary
+    setLastMove
   } = useContext(ChessContext)
 
 
@@ -140,7 +145,8 @@ export default function CheckContextProvider(props) {
       CONTRARY_MOVES,
       CURRENT_KING,
       CONTRARY_KING,
-      IS_THREATENED
+      IS_THREATENED,
+      LEFT_IN_CHECK
     }}>
       {props.children}
     </CheckContext.Provider>
