@@ -98,6 +98,7 @@ export default function CheckContextProvider(props) {
         if (NOT_CHECK_MATE) { return false }
       }
     }
+    console.log('CHECK MATE');
     return true
   }
 
@@ -123,13 +124,8 @@ export default function CheckContextProvider(props) {
 
 
   useEffect(() => {
-    if (IS_THREATENED) {
-      const checkMate = isCheckMate() ? 'CHECK MATE' : 'NOT CHECK MATE'
-      console.log(checkMate);
-    }
-    if (LEFT_IN_CHECK) {
-      setLastMove()
-    }
+    if (IS_THREATENED) { isCheckMate() }
+    if (LEFT_IN_CHECK) { setLastMove() }
   }, [turn])
 
 
