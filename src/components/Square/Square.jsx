@@ -12,8 +12,8 @@ export default function Square({ square, coord }) {
     setPreviousBoard,
     lastMovement,
     setLastMovement,
-    eatedPieces,
-    setEatedPieces,
+    currentEated,
+    setCurrentEated,
     squares,
     setSquares,
     coords,
@@ -28,13 +28,14 @@ export default function Square({ square, coord }) {
     playerPieces,
     resetChess,
     updateChess,
-    setLastMove
+    setLastMove,
+    setPreviousEated
   } = useContext(ChessContext)
 
   const {
     threatsMoves,
     kingPosition,
-    isCheck,
+    // isCheck,
     isCheckMate,
     CURRENT_PIECES,
     CONTRARY_PIECES,
@@ -42,27 +43,23 @@ export default function Square({ square, coord }) {
     CONTRARY_MOVES,
     CURRENT_KING,
     CONTRARY_KING,
-    IS_CHECK
+    IS_THREATENED
   } = useContext(CheckContext)
 
 
-  const squareColor = () => {
-    const isKing = CURRENT_KING === coord
-    const isMove = colorizedMoves().includes(coord)
-
-    return IS_CHECK && isKing ? 'square check' : isMove ? 'square move' : 'square'
-  }
+  const isCheck = IS_THREATENED && CURRENT_KING === coord
+  const isMove = colorizedMoves().includes(coord)
 
 
   function handleSquare() {
     const startingMove = !squares.length
-    const notSamePlayer = !isSamePlayer(square)
-    const isPlayerEating = notSamePlayer && square !== null
+    const currentPlayer = isSamePlayer(square)
+    const isPlayerEating = !currentPlayer && square !== null
 
-    if (startingMove && notSamePlayer) { return }
-    if (!startingMove && isPlayerEating) {
-      setEatedPieces(eatedPieces => [...eatedPieces, square]) 
-      console.log('EAT');
+    if (startingMove && !currentPlayer) { return }
+    if (!startingMove && isMove && isPlayerEating) {
+      setPreviousEated(currentEated)
+      setCurrentEated(currentEated => [...currentEated, square])
     }
 
     setSquares(squares => [...squares, square])
@@ -72,7 +69,7 @@ export default function Square({ square, coord }) {
 
   return (
     <div
-      className={squareColor()}
+      className={isCheck ? 'square check' : isMove ? 'square move' : 'square'}
       id={coord}
       onClick={handleSquare}
     >

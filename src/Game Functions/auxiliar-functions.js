@@ -37,7 +37,7 @@ export function updateCoords(directions, currentCoord, filledSquares, isKing = f
   const NEW_COORDS = []
 
   for (let i = 0; i < directions.length; i++) {
-    const direction = directions[i];
+    const direction = directions[i]
     const fristCalc = direction + currentCoord
     const coordInContraryEdge = restOfEdges.includes(fristCalc)
 

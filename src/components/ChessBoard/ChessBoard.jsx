@@ -9,17 +9,15 @@ export default function ChessBoard() {
 
   return (
     <section className='chess-board'>
-      {
-        currentBoard.map((square, coord) => {
-          return (
-            <Square
-              key={coord}
-              square={square}
-              coord={coord}
-            />
-          )
-        })
-      }
+      {currentBoard.map((square, coord) => {
+        return (
+          <Square
+            key={coord}
+            square={square}
+            coord={coord}
+          />
+        )
+      })}
     </section>
   )
 }

@@ -10,8 +10,8 @@ export default function EatedPieces() {
     setPreviousBoard,
     lastMovement,
     setLastMovement,
-    eatedPieces,
-    setEatedPieces,
+    currentEated,
+    setCurrentEated,
     squares,
     setSquares,
     coords,
@@ -30,8 +30,8 @@ export default function EatedPieces() {
   } = useContext(ChessContext)
 
 
-  const eatedPlayer = player => {
-    const playerPieces = eatedPieces.filter(piece => {
+  const eatedPieces = player => {
+    const playerPieces = currentEated.filter(piece => {
       return piece.name.startsWith(player)
     })
 
@@ -39,15 +39,12 @@ export default function EatedPieces() {
       <div className='eated-player'>
         {playerPieces.map((piece, i) => {
           return (
-            <div
+            <img
               className='eated-piece'
+              src={piece.pic}
+              alt={piece.name}
               key={i}
-            >
-              <img
-                src={piece.pic}
-                alt={piece.name}
-              />
-            </div>
+            />
           )
         })}
       </div>
@@ -57,8 +54,8 @@ export default function EatedPieces() {
 
   return (
     <section className='eated-pieces'>
-      {eatedPlayer('B')}
-      {eatedPlayer('W')}
+      {eatedPieces('B')}
+      {eatedPieces('W')}
     </section>
 
   )

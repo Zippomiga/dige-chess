@@ -6,10 +6,11 @@ export const ChessContext = createContext()
 
 export default function ChessContextProvider(props) {
   const [currentBoard, setCurrentBoard] = useState(CHESS_BOARD)
+  const [currentEated, setCurrentEated] = useState([])
   const [previousBoard, setPreviousBoard] = useState([])
+  const [previousEated, setPreviousEated] = useState([])
+  
   const [lastMovement, setLastMovement] = useState(false)
-  const [eatedPieces, setEatedPieces] = useState([])
-
   const [squares, setSquares] = useState([])
   const [coords, setCoords] = useState([])
   const [turn, setTurn] = useState(true)
@@ -18,10 +19,14 @@ export default function ChessContextProvider(props) {
   const [currentCoord, newCoord] = coords
 
   const playerTurn = turn ? 'W' : 'B'
+  const current = 'current'
+  const contrary = 'contrary'
 
-  const updateBoard = (currentCoord, newCoord, newPiece) => {
+
+  const updateBoard = (oldCoord, newCoord, newPiece) => {
     const newBoard = [...currentBoard]
-    newBoard[currentCoord] = null
+    
+    newBoard[oldCoord] = null
     newBoard[newCoord] = newPiece
 
     return newBoard
@@ -41,11 +46,12 @@ export default function ChessContextProvider(props) {
 
 
   const colorizedMoves = () => {
-    const movements = currentSquare
-      ?.getMoves(currentCoord, filledSquares()) || []
+    const movements = currentSquare?.
+      getMoves(currentCoord, filledSquares()) || []
 
     const colorized = movements.filter(move => {
-      return !isSamePlayer(currentBoard[move])
+      const square = currentBoard[move]
+      return !isSamePlayer(square)
     })
 
     return [...colorized, currentCoord]
@@ -55,16 +61,13 @@ export default function ChessContextProvider(props) {
   const playerPieces = (player, board = currentBoard) => {
     return board.filter(piece => {
       switch (player) {
-        case 'current':
+        case current:
           return isSamePlayer(piece)
-        case 'contrary':
+        case contrary:
           return !isSamePlayer(piece)
       }
     })
   }
-
-
-  // const eatedPieces = {}
 
 
   function resetChess() {
@@ -76,24 +79,25 @@ export default function ChessContextProvider(props) {
 
   function updateChess() {
     const newBoard = updateBoard(...coords, currentSquare)
-    const invalidMove = !colorizedMoves().includes(newCoord)
+    const validMove = colorizedMoves().includes(newCoord)
     const samePlayer = isSamePlayer(newSquare)
 
-    if (invalidMove || samePlayer) {
+    if (!validMove || samePlayer) {
       resetChess()
     } else {
       setPreviousBoard(currentBoard)
       setCurrentBoard(newBoard)
-      resetChess()
       setTurn(turn => !turn)
+      resetChess()
     }
   }
 
 
   function setLastMove() {
-    resetChess()
     setCurrentBoard(previousBoard)
+    setCurrentEated(previousEated)
     setTurn(turn => !turn)
+    resetChess()
   }
 
 
@@ -105,8 +109,8 @@ export default function ChessContextProvider(props) {
       setPreviousBoard,
       lastMovement,
       setLastMovement,
-      eatedPieces,
-      setEatedPieces,
+      currentEated,
+      setCurrentEated,
       squares,
       setSquares,
       coords,
@@ -121,7 +125,10 @@ export default function ChessContextProvider(props) {
       playerPieces,
       resetChess,
       updateChess,
-      setLastMove
+      setLastMove,
+      current,
+      contrary,
+      setPreviousEated
     }}>
       {props.children}
     </ChessContext.Provider>

@@ -1,6 +1,9 @@
-/* .eated-pieces { */
-  /* display: flex; */
-/* } */
+.eated-pieces {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 75vh;
+}
 
 .eated-player {
   display: flex;
@@ -9,7 +12,7 @@
 .eated-piece {
   background-color: #dcdcdc;
   border: 1px solid #000;
-  /* border-radius: 50%; */
+  border-radius: 50%;
   padding: 0.2rem;
   height: 3rem;
   width: 3rem;

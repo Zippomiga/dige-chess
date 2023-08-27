@@ -43,7 +43,7 @@ export default function PlayerTurn() {
     CONTRARY_MOVES,
     CURRENT_KING,
     CONTRARY_KING,
-    IS_CHECK
+    IS_THREATENED
   } = useContext(CheckContext)
 
 
@@ -64,7 +64,7 @@ export default function PlayerTurn() {
 
     return (
       <div>
-        {IS_CHECK && isKing && (
+        {IS_THREATENED && isKing && (
           <img
             src={kingInCheck}
             className='turn-check'

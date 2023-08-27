@@ -28,11 +28,11 @@ export default function CheckContextProvider(props) {
     playerPieces,
     resetChess,
     updateChess,
-    setLastMove
+    setLastMove,
+    current,
+    contrary
   } = useContext(ChessContext)
 
-
-  const [current, contrary] = ['current', 'contrary']
 
 
   const threatsMoves = (player, board = currentBoard) => {
@@ -58,9 +58,9 @@ export default function CheckContextProvider(props) {
 
     return board.findIndex(king => {
       switch (player) {
-        case 'current':
+        case current:
           return king?.name === currentKing[playerTurn]
-        case 'contrary':
+        case contrary:
           return king?.name === contraryKing[playerTurn]
       }
     })
@@ -82,8 +82,8 @@ export default function CheckContextProvider(props) {
 
       for (let j = 0; j < currentMoves.length; j++) {
         const newCoord = currentMoves[j]
-        const newPiece = currentBoard[newCoord]
-        if (isSamePlayer(newPiece)) { continue }
+        const newPlace = currentBoard[newCoord]
+        if (isSamePlayer(newPlace)) { continue }
 
         const newBoard = updateBoard(currentCoord, newCoord, currentPiece)
         const newContraryMoves = threatsMoves(contrary, newBoard)
@@ -109,23 +109,21 @@ export default function CheckContextProvider(props) {
   const IS_THREATENED = isCheck(CONTRARY_MOVES, CURRENT_KING)
   const LEFT_IN_CHECK = isCheck(CURRENT_MOVES, CONTRARY_KING)
 
-  const IS_CHECK = IS_THREATENED || LEFT_IN_CHECK
 
-  
   useEffect(() => {
     if (squares.length === 2) { // player has clicked twice
       updateChess()
-    }
-    if (LEFT_IN_CHECK) {
-      setLastMove()
     }
   }, [squares])
 
 
   useEffect(() => {
-    if (IS_CHECK) {
+    if (IS_THREATENED) {
       const checkMate = isCheckMate() ? 'CHECK MATE' : 'NOT CHECK MATE'
       console.log(checkMate);
+    }
+    if (LEFT_IN_CHECK) {
+      setLastMove()
     }
   }, [turn])
 
@@ -142,7 +140,7 @@ export default function CheckContextProvider(props) {
       CONTRARY_MOVES,
       CURRENT_KING,
       CONTRARY_KING,
-      IS_CHECK
+      IS_THREATENED
     }}>
       {props.children}
     </CheckContext.Provider>
