@@ -17,7 +17,9 @@ const EDGES = [
 
 
 export const findColumn = currentCoord => {
-  return COLUMNS.findIndex(column => column.includes(currentCoord))
+  return COLUMNS.findIndex(column => {
+    return column.includes(currentCoord)
+  })
 }
 
 

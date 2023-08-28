@@ -1,6 +1,6 @@
 import { COLUMNS, findColumn } from "../Game Functions/auxiliar-functions";
 import { CHESS_BOARD } from "../Game Functions/board";
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 
 export const ChessContext = createContext()
@@ -63,9 +63,9 @@ export default function ChessContextProvider(props) {
     return board.filter(piece => {
       switch (player) {
         case current:
-          return isSamePlayer(piece)
+          return piece !== null && isSamePlayer(piece)
         case contrary:
-          return !isSamePlayer(piece)
+          return piece !== null && !isSamePlayer(piece)
       }
     })
   }
@@ -78,17 +78,21 @@ export default function ChessContextProvider(props) {
 
 
   function updateChess() {
-    const newBoard = updateBoard(...coords, currentSquare)
+    const clickedTwice = squares.length === 2
     const invalidMove = !colorizedMoves().includes(newCoord)
+    const newBoard = updateBoard(...coords, currentSquare)
 
-    if (isSamePlayer(newSquare) || invalidMove) {
-      resetMoves()
-    } else {
-      setCurrentBoard(newBoard)
-      setPreviousBoard(currentBoard)
-      setLastMovement(true)
-      setTurn(turn => !turn)
-      resetMoves()
+    if (clickedTwice) {
+      if (invalidMove || isSamePlayer(newSquare)) {
+        resetMoves()
+      } else {
+        setCurrentBoard(newBoard)
+        setPreviousBoard(currentBoard)
+        setLastMovement(true)
+        setTurn(turn => !turn)
+        recoverPiece()
+        resetMoves()
+      }
     }
   }
 
@@ -101,10 +105,20 @@ export default function ChessContextProvider(props) {
   }
 
 
-  // function recoverPiece() {
-  //   const c = findColumn(newCoord)
-  //   const C = COLUMNS[x]
-  // }
+  function recoverPiece() {
+    const c = findColumn(newCoord)
+    const C = COLUMNS[c]
+
+    const W = Math.min(...C) === newCoord
+    const B = Math.max(...C) === newCoord
+
+    console.log({ W, B });
+  }
+
+
+  useEffect(() => {
+    updateChess()
+  }, [squares])
 
 
   return (

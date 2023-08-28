@@ -45,7 +45,7 @@ export default function CheckContextProvider(props) {
 
     return threatenings.map(threat => {
       const currentCoord = board.indexOf(threat)
-      return threat?.getMoves(currentCoord, filledSquares(board))
+      return threat.getMoves(currentCoord, filledSquares(board))
     })
   }
 
@@ -74,7 +74,7 @@ export default function CheckContextProvider(props) {
 
   const isCheck = (threatsMoves, king) => {
     return threatsMoves.some(threatMove => {
-      return threatMove?.includes(king)
+      return threatMove.includes(king)
     })
   }
 
@@ -114,13 +114,6 @@ export default function CheckContextProvider(props) {
 
   const IS_THREATENED = isCheck(CONTRARY_MOVES, CURRENT_KING)
   const LEFT_IN_CHECK = isCheck(CURRENT_MOVES, CONTRARY_KING)
-
-
-  useEffect(() => {
-    if (squares.length === 2) { // player has clicked twice
-      updateChess()
-    }
-  }, [squares])
 
 
   useEffect(() => {
