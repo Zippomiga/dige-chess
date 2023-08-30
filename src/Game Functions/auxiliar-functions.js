@@ -30,11 +30,6 @@ const getRestOfEdges = coord => {
 }
 
 
-const isPieceInEdge = (coord, restOfEdges) => {
-  return restOfEdges.some(edge => edge.includes(coord))
-}
-
-
 const fixDirections = (directions, coord, restOfEdges) => {
   return directions.filter(direction => {
     const firstCalc = direction + coord
@@ -43,8 +38,8 @@ const fixDirections = (directions, coord, restOfEdges) => {
 }
 
 
-const notCollide = (newCoord, restOfEdges, board, currentCoord) => {
-  const isNotInEdge = !isPieceInEdge(newCoord, restOfEdges)
+const notCollide = (restOfEdges, newCoord, board, currentCoord) => {
+  const isNotInEdge = !restOfEdges.some(edge => edge.includes(newCoord))
   const isNotFilled = board[newCoord] === null
   const isSameCoord = currentCoord === newCoord
 
@@ -60,7 +55,9 @@ export function updateCoords(directions, currentCoord, board, isKing = false) {
   DIRECTIONS.forEach(direction => {
     let newCoord = currentCoord
 
-    while (notCollide(newCoord, restOfEdges, board, currentCoord)) {
+    while (
+      notCollide(restOfEdges, newCoord, board, currentCoord)
+    ) {
       newCoord += direction
       NEW_COORDS.push(newCoord)
 
