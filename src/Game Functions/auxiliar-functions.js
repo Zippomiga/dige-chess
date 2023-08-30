@@ -10,12 +10,6 @@ export const COLUMNS = [
 ]
 
 
-const EDGES = [
-  COLUMNS[0], // LEFT
-  COLUMNS[7]  // RIGHT
-]
-
-
 export const findColumn = currentCoord => {
   return COLUMNS.findIndex(column => {
     return column.includes(currentCoord)
@@ -30,26 +24,46 @@ export const validCoord = coord => {
 }
 
 
-export function updateCoords(directions, currentCoord, filledSquares, isKing = false) {
-  const fixedSquares = filledSquares.filter(square => square !== currentCoord)
-  const restOfEdges = EDGES.filter(edge => !edge.includes(currentCoord)).flat()
-  const pieceInEdge = EDGES.some(edge => edge.includes(currentCoord))
+const EDGES = [
+  COLUMNS[0], // LEFT
+  COLUMNS[7]  // RIGHT
+]
 
-  const COLLISIONS = [...fixedSquares, ...restOfEdges]
+
+const isPieceInEdge = (coord, edges) => {
+  return edges.some(edge => edge.includes(coord))
+}
+
+
+const getRestOfEdges = coord => {
+  return EDGES.filter(edge => !edge.includes(coord))
+}
+
+
+export function updateCoords(directions, currentCoord, board, isKing = false) {
+  const restOfEdges = getRestOfEdges(currentCoord)
   const NEW_COORDS = []
 
   for (let i = 0; i < directions.length; i++) {
     const direction = directions[i]
     const fristCalc = direction + currentCoord
-    const coordInContraryEdge = restOfEdges.includes(fristCalc)
 
-    if (pieceInEdge && coordInContraryEdge) { continue }
+    if (
+      isPieceInEdge(currentCoord, EDGES) &&
+      isPieceInEdge(fristCalc, restOfEdges)
+    ) { continue }
+
     let newCoord = currentCoord
 
-    while (!COLLISIONS.includes(newCoord)) {
+    while (
+      !isPieceInEdge(newCoord, restOfEdges) &&
+      board[newCoord] === null || 
+      currentCoord === newCoord
+    ) {
       newCoord += direction
       NEW_COORDS.push(newCoord)
-      if (!validCoord(newCoord) || isKing) { break }
+
+      if (isKing) { break }
     }
   }
 

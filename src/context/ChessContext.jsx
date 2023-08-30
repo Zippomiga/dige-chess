@@ -39,16 +39,9 @@ export default function ChessContextProvider(props) {
   }
 
 
-  const filledSquares = (board = currentBoard) => {
-    return board.map((filled, coord) => {
-      return filled && coord
-    })
-  }
-
-
   const colorizedMoves = () => {
     const movements = currentSquare?.
-      getMoves(currentCoord, filledSquares()) || []
+      getMoves(currentCoord, currentBoard) || []
 
     const colorized = movements.filter(move => {
       const square = currentBoard[move]
@@ -99,16 +92,14 @@ export default function ChessContextProvider(props) {
 
   function setLastMove() {
     setCurrentBoard(previousBoard)
-    setCurrentEated(previousEated)
+    // setCurrentEated(previousEated)
     setTurn(turn => !turn)
     resetMoves()
   }
 
 
   function recoverPiece() {
-    const c = findColumn(newCoord)
-    const C = COLUMNS[c]
-
+    const C = COLUMNS.find(column => column.includes(newCoord))
     const W = Math.min(...C) === newCoord
     const B = Math.max(...C) === newCoord
 
@@ -148,10 +139,9 @@ export default function ChessContextProvider(props) {
       contrary,
       updateBoard,
       isSamePlayer,
-      filledSquares,
       colorizedMoves,
       playerPieces,
-      // resetMoves,
+      resetMoves,
       updateChess,
       setLastMove
     }}>

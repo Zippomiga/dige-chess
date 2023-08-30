@@ -10,11 +10,11 @@ class King {
     this.directions = [-9, -8, -7, -1, 1, 7, 8, 9]
   }
 
-  getMoves(currentCoord, filledSquares) {
+  getMoves(currentCoord, board) {
     return updateCoords(
       this.directions,
       currentCoord,
-      filledSquares,
+      board,
       true // it's the King! :D
     )
   }

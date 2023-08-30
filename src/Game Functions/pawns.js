@@ -1,6 +1,6 @@
 import b_pawn from '../assets/chess-pieces/b-pawn.png'
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
-import { findColumn, validCoord } from './auxiliar-functions'
+import { COLUMNS, validCoord } from './auxiliar-functions'
 
 
 class Pawn {
@@ -10,26 +10,26 @@ class Pawn {
     this.initialCoord = initialCoord
   }
 
-  getMoves(currentCoord, filledSquares) {
+  getMoves(currentCoord, board) {
     return updateCoords(
       this.name.startsWith('W'),
       this.initialCoord === currentCoord,
       currentCoord,
-      filledSquares
+      board
     ).filter(validCoord)
   }
 }
 
 
-function updateCoords(isWhite, initialMove, currentCoord, filledSquares) {
-  return filledSquares.map((square, coord) => {
-    const FREE = (nextSquare = square) => nextSquare === null
-    const NEXT = diff => isWhite ? currentCoord - diff : currentCoord + diff
-    const EDGE = edge => findColumn(currentCoord) === edge
+function updateCoords(isWhite, initialMove, currentCoord, board) {
+  const FREE = next => next === null
+  const NEXT = next => isWhite ? currentCoord - next : currentCoord + next
+  const EDGE = edge => COLUMNS[edge].includes(currentCoord)
 
-    const VERT_NEXT = FREE(filledSquares[NEXT(8)])
+  return board.map((square, coord) => {
+    const VERT_NEXT = FREE(board[NEXT(8)])
     const DIAG_NEXT = [NEXT(7), NEXT(9)]
-    
+
     const VERT_COORDS = VERT_NEXT && initialMove
       ? [NEXT(8), NEXT(16)]
       : [NEXT(8)]
@@ -39,8 +39,8 @@ function updateCoords(isWhite, initialMove, currentCoord, filledSquares) {
       EDGE(7) ? [Math.min(...DIAG_NEXT)] : // COLUMN H
       DIAG_NEXT
 
-    const VERTICAL = VERT_COORDS.includes(coord) && FREE()
-    const DIAGONAL = DIAG_COORDS.includes(coord) && !FREE()
+    const VERTICAL = VERT_COORDS.includes(coord) && FREE(square)
+    const DIAGONAL = DIAG_COORDS.includes(coord) && !FREE(square)
 
     return VERTICAL || DIAGONAL ? coord : null
   })

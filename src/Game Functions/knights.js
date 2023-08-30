@@ -9,7 +9,7 @@ class Knight {
     this.pic = pic
   }
 
-  getMoves(currentCoord, filledSquares = null) {
+  getMoves(currentCoord, board = null) {
     return updateCoords(currentCoord).filter(validCoord)
   }
 }
@@ -17,20 +17,22 @@ class Knight {
 
 function updateCoords(currentCoord) {
   const newCoord = (axis, diff) => currentCoord + axis + diff
-  const [x, y] = [2, 16]
+
+  const [left_X, above_X, right_X, below_X] = [-2, -8, 2, 8]
+  const [left_Y, above_Y, right_Y, below_Y] = [-1, -16, 1, 16]
 
   const X = {
-    belowLeft: newCoord(-x, 8),
-    aboveLeft: newCoord(-x, -8),
-    aboveRight: newCoord(x, -8),
-    belowRight: newCoord(x, 8)
+    BL: newCoord(below_X, left_X),
+    AL: newCoord(above_X, left_X),
+    AR: newCoord(above_X, right_X),
+    BR: newCoord(below_X, right_X)
   }
 
   const Y = {
-    belowLeft: newCoord(y, -1),
-    aboveLeft: newCoord(-y, -1),
-    aboveRight: newCoord(-y, 1),
-    belowRight: newCoord(y, 1),
+    BL: newCoord(below_Y, left_Y),
+    AL: newCoord(above_Y, left_Y),
+    AR: newCoord(above_Y, right_Y),
+    BR: newCoord(below_Y, right_Y),
   }
 
   const COLUMN = findColumn(currentCoord)
@@ -38,23 +40,23 @@ function updateCoords(currentCoord) {
   switch (COLUMN) {
     case 0:  //knight at column A
       return [
-        X.aboveRight, X.belowRight,
-        Y.aboveRight, Y.belowRight
+        X.AR, X.BR,
+        Y.AR, Y.BR
       ]
     case 1:  //knight at column B
       return [
-        X.aboveRight, X.belowRight,
-        Y.aboveLeft, Y.aboveRight, Y.belowRight, Y.belowLeft
+        X.AR, X.BR,
+        Y.BL, Y.AL, Y.AR, Y.BR
       ]
     case 6:  //knight at column G
       return [
-        X.aboveLeft, X.belowLeft,
-        Y.aboveLeft, Y.aboveRight, Y.belowRight, Y.belowLeft
+        X.BL, X.AL,
+        Y.BL, Y.AL, Y.AR, Y.BR
       ]
     case 7:  //knight at column H
       return [
-        X.aboveLeft, X.belowLeft,
-        Y.aboveLeft, Y.belowLeft
+        X.BL, X.AL,
+        Y.BL, Y.AL
       ]
     default: //knight at column C || D || E || F
       return [

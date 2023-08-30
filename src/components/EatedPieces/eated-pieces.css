@@ -8,7 +8,7 @@
 .eated-player {
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
+  flex-wrap: wrap-reverse;
   gap: 1px;
   height: calc(15rem + 4px);
   /* outline: 1px solid lime; */

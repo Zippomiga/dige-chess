@@ -23,9 +23,9 @@ export default function PlayerTurn() {
     playerTurn,
     updateBoard,
     isSamePlayer,
-    filledSquares,
     colorizedMoves,
     playerPieces,
+    resetMoves,
     updateChess,
     setLastMove
   } = useContext(ChessContext)
@@ -43,7 +43,8 @@ export default function PlayerTurn() {
     CURRENT_KING,
     CONTRARY_KING,
     IS_THREATENED,
-    LEFT_IN_CHECK
+    LEFT_IN_CHECK,
+    // setLastMove
   } = useContext(CheckContext)
 
 

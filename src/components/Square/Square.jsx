@@ -31,9 +31,9 @@ export default function Square({ square, coord }) {
     contrary,
     updateBoard,
     isSamePlayer,
-    filledSquares,
     colorizedMoves,
     playerPieces,
+    resetMoves,
     updateChess,
     setLastMove
   } = useContext(ChessContext)
@@ -86,9 +86,9 @@ export default function Square({ square, coord }) {
           src={square?.pic}
           alt={square?.name}
         />
-        {/* <span className='square-index'>
+        <span className='square-index'>
           {coord}
-        </span> */}
+        </span>
       </div>
     </div>
   )

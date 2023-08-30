@@ -29,9 +29,9 @@ export default function EatedPieces() {
     contrary,
     updateBoard,
     isSamePlayer,
-    filledSquares,
     colorizedMoves,
     playerPieces,
+    resetMoves,
     updateChess,
     setLastMove
   } = useContext(ChessContext)

@@ -31,9 +31,9 @@ export default function CheckContextProvider(props) {
     contrary,
     updateBoard,
     isSamePlayer,
-    filledSquares,
     colorizedMoves,
     playerPieces,
+    resetMoves,
     updateChess,
     setLastMove
   } = useContext(ChessContext)
@@ -45,7 +45,7 @@ export default function CheckContextProvider(props) {
 
     return threatenings.map(threat => {
       const currentCoord = board.indexOf(threat)
-      return threat.getMoves(currentCoord, filledSquares(board))
+      return threat.getMoves(currentCoord, board)
     })
   }
 
@@ -87,18 +87,17 @@ export default function CheckContextProvider(props) {
 
       for (let j = 0; j < currentMoves.length; j++) {
         const newCoord = currentMoves[j]
-        const newPlace = currentBoard[newCoord]
-        if (isSamePlayer(newPlace)) { continue }
+        const newSquare = currentBoard[newCoord]
+        if (isSamePlayer(newSquare)) { continue }
 
         const newBoard = updateBoard(currentCoord, newCoord, currentPiece)
         const newContraryMoves = threatsMoves(contrary, newBoard)
         const newCurrentKing = kingPosition(current, newBoard)
-        const NOT_CHECK_MATE = !isCheck(newContraryMoves, newCurrentKing)
 
+        const NOT_CHECK_MATE = !isCheck(newContraryMoves, newCurrentKing)
         if (NOT_CHECK_MATE) { return false }
       }
     }
-    console.log('CHECK MATE');
     return true
   }
 
