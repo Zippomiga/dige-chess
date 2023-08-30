@@ -24,48 +24,49 @@ export const validCoord = coord => {
 }
 
 
-const EDGES = [
-  COLUMNS[0], // LEFT
-  COLUMNS[7]  // RIGHT
-]
-
-
-const isPieceInEdge = (coord, edges) => {
-  return edges.some(edge => edge.includes(coord))
+const getRestOfEdges = coord => {
+  const EDGES = [COLUMNS[0], COLUMNS[7]] // LEFT - RIGHT
+  return EDGES.filter(edge => !edge.includes(coord))
 }
 
 
-const getRestOfEdges = coord => {
-  return EDGES.filter(edge => !edge.includes(coord))
+const isPieceInEdge = (coord, restOfEdges) => {
+  return restOfEdges.some(edge => edge.includes(coord))
+}
+
+
+const fixDirections = (directions, coord, restOfEdges) => {
+  return directions.filter(direction => {
+    const firstCalc = direction + coord
+    return restOfEdges.some(edge => !edge.includes(firstCalc))
+  })
+}
+
+
+const notCollide = (newCoord, restOfEdges, board, currentCoord) => {
+  const isNotInEdge = !isPieceInEdge(newCoord, restOfEdges)
+  const isNotFilled = board[newCoord] === null
+  const isSameCoord = currentCoord === newCoord
+
+  return isNotInEdge && isNotFilled || isSameCoord
 }
 
 
 export function updateCoords(directions, currentCoord, board, isKing = false) {
   const restOfEdges = getRestOfEdges(currentCoord)
+  const DIRECTIONS = fixDirections(directions, currentCoord, restOfEdges)
   const NEW_COORDS = []
 
-  for (let i = 0; i < directions.length; i++) {
-    const direction = directions[i]
-    const fristCalc = direction + currentCoord
-
-    if (
-      isPieceInEdge(currentCoord, EDGES) &&
-      isPieceInEdge(fristCalc, restOfEdges)
-    ) { continue }
-
+  DIRECTIONS.forEach(direction => {
     let newCoord = currentCoord
 
-    while (
-      !isPieceInEdge(newCoord, restOfEdges) &&
-      board[newCoord] === null || 
-      currentCoord === newCoord
-    ) {
+    while (notCollide(newCoord, restOfEdges, board, currentCoord)) {
       newCoord += direction
       NEW_COORDS.push(newCoord)
 
       if (isKing) { break }
     }
-  }
+  })
 
   return NEW_COORDS.filter(validCoord)
 }
