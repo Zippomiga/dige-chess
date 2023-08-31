@@ -1,6 +1,5 @@
-import { COLUMNS, findColumn } from "../Game Functions/auxiliar-functions";
 import { CHESS_BOARD } from "../Game Functions/board";
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useLayoutEffect } from "react";
 
 
 export const ChessContext = createContext()
@@ -8,7 +7,7 @@ export const ChessContext = createContext()
 export default function ChessContextProvider(props) {
   const [currentBoard, setCurrentBoard] = useState(CHESS_BOARD)
   const [currentEated, setCurrentEated] = useState([])
-  const [previousBoard, setPreviousBoard] = useState([])
+  const [previousBoard, setPreviousBoard] = useState(currentBoard)
   const [previousEated, setPreviousEated] = useState([])
   const [lastMovement, setLastMovement] = useState(false)
 
@@ -71,44 +70,26 @@ export default function ChessContextProvider(props) {
 
 
   function updateChess() {
-    const clickedTwice = squares.length === 2
-    const invalidMove = !colorizedMoves().includes(newCoord)
+    const validMove = colorizedMoves().includes(newCoord)
     const newBoard = updateBoard(...coords, currentSquare)
 
-    if (clickedTwice) {
-      if (invalidMove || isSamePlayer(newSquare)) {
-        resetMoves()
-      } else {
-        setCurrentBoard(newBoard)
-        setPreviousBoard(currentBoard)
-        setLastMovement(true)
-        setTurn(turn => !turn)
-        recoverPiece()
-        resetMoves()
-      }
+    if (isSamePlayer(newSquare) || !validMove) {
+      resetMoves()
+    } else {
+      setCurrentBoard(newBoard)
+      setPreviousBoard(currentBoard)
+      setLastMovement(true)
+      setTurn(turn => !turn)
+      // recoverPiece()
+      resetMoves()
     }
   }
 
 
-  function setLastMove() {
-    setCurrentBoard(previousBoard)
-    // setCurrentEated(previousEated)
-    setTurn(turn => !turn)
-    resetMoves()
-  }
-
-
-  function recoverPiece() {
-    const C = COLUMNS.find(column => column.includes(newCoord))
-    const W = Math.min(...C) === newCoord
-    const B = Math.max(...C) === newCoord
-
-    console.log({ W, B });
-  }
-
-
   useEffect(() => {
-    updateChess()
+    if (squares.length === 2) { // player has clicked twice
+      updateChess()
+    }
   }, [squares])
 
 
@@ -143,7 +124,7 @@ export default function ChessContextProvider(props) {
       playerPieces,
       resetMoves,
       updateChess,
-      setLastMove
+      // setLastMove
     }}>
       {props.children}
     </ChessContext.Provider>

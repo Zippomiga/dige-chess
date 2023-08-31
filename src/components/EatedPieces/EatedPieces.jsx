@@ -1,4 +1,5 @@
 import './eated-pieces.css'
+import { COLUMNS } from '../../Game Functions/auxiliar-functions'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
@@ -35,6 +36,16 @@ export default function EatedPieces() {
     updateChess,
     setLastMove
   } = useContext(ChessContext)
+
+
+  function recoverPiece() {
+    const isPawn = currentSquare.name.includes('PAWN')
+    const C = COLUMNS.find(column => column.includes(newCoord))
+    const W = isPawn && Math.min(...C) === newCoord
+    const B = isPawn && Math.max(...C) === newCoord
+
+    console.log({ W, B });
+  }
 
 
   const eatedPieces = player => {

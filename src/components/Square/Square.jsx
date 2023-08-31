@@ -35,12 +35,12 @@ export default function Square({ square, coord }) {
     playerPieces,
     resetMoves,
     updateChess,
-    setLastMove
   } = useContext(ChessContext)
-
+  
   const {
+    setLastMove,
     threatsMoves,
-    kingPosition,
+    kingCoord,
     // isCheck,
     isCheckMate,
     CURRENT_PIECES,

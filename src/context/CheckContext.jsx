@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useLayoutEffect } from "react";
 import { ChessContext } from "./ChessContext";
 
 
@@ -35,9 +35,16 @@ export default function CheckContextProvider(props) {
     playerPieces,
     resetMoves,
     updateChess,
-    setLastMove
+    // setLastMove
   } = useContext(ChessContext)
 
+  
+  function setLastMove() {
+    setCurrentBoard(previousBoard)
+    setCurrentEated(previousEated)
+    setTurn(turn => !turn)
+    resetMoves()
+  }
 
 
   const threatsMoves = (player, board = currentBoard) => {
@@ -50,25 +57,11 @@ export default function CheckContextProvider(props) {
   }
 
 
-  const kingPosition = (player, board = currentBoard) => {
-    const currentKing = {
-      'W': 'W_KING',
-      'B': 'B_KING'
-    }
+  const kingCoord = (player, board = currentBoard) => {
+    const pieces = playerPieces(player, board)
+    const king = pieces.find(king => king.name.includes('KING'))
 
-    const contraryKing = {
-      'W': 'B_KING',
-      'B': 'W_KING'
-    }
-
-    return board.findIndex(king => {
-      switch (player) {
-        case current:
-          return king?.name === currentKing[playerTurn]
-        case contrary:
-          return king?.name === contraryKing[playerTurn]
-      }
-    })
+    return board.indexOf(king)
   }
 
 
@@ -92,12 +85,13 @@ export default function CheckContextProvider(props) {
 
         const newBoard = updateBoard(currentCoord, newCoord, currentPiece)
         const newContraryMoves = threatsMoves(contrary, newBoard)
-        const newCurrentKing = kingPosition(current, newBoard)
-
+        const newCurrentKing = kingCoord(current, newBoard)
         const NOT_CHECK_MATE = !isCheck(newContraryMoves, newCurrentKing)
+
         if (NOT_CHECK_MATE) { return false }
       }
     }
+    console.log('CHECK MATE');
     return true
   }
 
@@ -108,23 +102,34 @@ export default function CheckContextProvider(props) {
   const CURRENT_MOVES = threatsMoves(current)
   const CONTRARY_MOVES = threatsMoves(contrary)
 
-  const CURRENT_KING = kingPosition(current)
-  const CONTRARY_KING = kingPosition(contrary)
+  const CURRENT_KING = kingCoord(current)
+  const CONTRARY_KING = kingCoord(contrary)
 
   const IS_THREATENED = isCheck(CONTRARY_MOVES, CURRENT_KING)
   const LEFT_IN_CHECK = isCheck(CURRENT_MOVES, CONTRARY_KING)
 
 
   useEffect(() => {
-    if (IS_THREATENED) { isCheckMate() }
-    if (LEFT_IN_CHECK) { setLastMove() }
+    if (IS_THREATENED) {
+      console.log('THREATENED');
+      isCheckMate()
+    }
+  }, [turn])
+
+
+  useLayoutEffect(() => {
+    if (LEFT_IN_CHECK) {
+      console.log('LEFT_IN_CHECK');
+      setLastMove()
+    }
   }, [turn])
 
 
   return (
     <CheckContext.Provider value={{
+      setLastMove,
       threatsMoves,
-      kingPosition,
+      kingCoord,
       isCheck,
       isCheckMate,
       CURRENT_PIECES,

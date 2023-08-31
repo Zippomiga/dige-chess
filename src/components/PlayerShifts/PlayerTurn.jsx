@@ -27,13 +27,13 @@ export default function PlayerTurn() {
     playerPieces,
     resetMoves,
     updateChess,
-    setLastMove
   } = useContext(ChessContext)
 
 
   const {
+    setLastMove,
     threatsMoves,
-    kingPosition,
+    kingCoord,
     isCheck,
     isCheckMate,
     CURRENT_PIECES,
@@ -44,7 +44,6 @@ export default function PlayerTurn() {
     CONTRARY_KING,
     IS_THREATENED,
     LEFT_IN_CHECK,
-    // setLastMove
   } = useContext(CheckContext)
 
 
@@ -85,10 +84,13 @@ export default function PlayerTurn() {
   return (
     <section className='player-turn-panel'>
       {inCheck('B')}
-      {inCheck('W')}
-      <button onClick={handleLastMove}>
+      <button
+        className={lastMovement ? 'button-last-movement' : 'button-last-movement disabled'}
+        onClick={handleLastMove}
+      >
         Last Movement
       </button>
+      {inCheck('W')}
     </section>
   )
 }

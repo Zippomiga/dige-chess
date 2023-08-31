@@ -25,7 +25,7 @@ export const validCoord = coord => {
 
 
 const getRestOfEdges = coord => {
-  const EDGES = [COLUMNS[0], COLUMNS[7]] // LEFT - RIGHT
+  const EDGES = [COLUMNS[0], COLUMNS[7]] // BORDER LEFT - BORDER RIGHT
   return EDGES.filter(edge => !edge.includes(coord))
 }
 
