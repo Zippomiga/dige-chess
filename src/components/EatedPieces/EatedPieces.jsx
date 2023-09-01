@@ -55,13 +55,13 @@ export default function EatedPieces() {
 
     return (
       <div className='eated-player'>
-        {playerPieces.map((piece, i) => {
+        {playerPieces.map(piece => {
           return (
             <img
               className='eated-piece'
               src={piece.pic}
               alt={piece.name}
-              key={i}
+              key={piece.name}
             />
           )
         })}

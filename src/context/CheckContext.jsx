@@ -29,6 +29,7 @@ export default function CheckContextProvider(props) {
     playerTurn,
     current,
     contrary,
+    isEating,
     updateBoard,
     isSamePlayer,
     colorizedMoves,
@@ -38,7 +39,7 @@ export default function CheckContextProvider(props) {
     // setLastMove
   } = useContext(ChessContext)
 
-  
+
   function setLastMove() {
     setCurrentBoard(previousBoard)
     setCurrentEated(previousEated)
@@ -110,19 +111,24 @@ export default function CheckContextProvider(props) {
 
 
   useEffect(() => {
+    if (squares.length === 2) { // player has clicked twice
+      updateChess()
+    }
+
     if (IS_THREATENED) {
       console.log('THREATENED');
+      setPreviousEated(currentEated)
       isCheckMate()
     }
-  }, [turn])
 
-
-  useLayoutEffect(() => {
     if (LEFT_IN_CHECK) {
       console.log('LEFT_IN_CHECK');
-      setLastMove()
+      setCurrentEated(previousEated)
+      setCurrentBoard(previousBoard)
+      setTurn(turn => !turn)
+      resetMoves()
     }
-  }, [turn])
+  }, [squares, turn])
 
 
   return (

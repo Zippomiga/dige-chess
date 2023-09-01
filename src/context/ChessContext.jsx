@@ -21,6 +21,7 @@ export default function ChessContextProvider(props) {
   const playerTurn = turn ? 'W' : 'B'
   const current = 'current'
   const contrary = 'contrary'
+  const isEating = newSquare !== null
 
 
   const updateBoard = (oldCoord, newCoord, newPiece) => {
@@ -38,16 +39,14 @@ export default function ChessContextProvider(props) {
   }
 
 
-  const colorizedMoves = () => {
-    const movements = currentSquare?.
-      getMoves(currentCoord, currentBoard) || []
+  const isMoveValid = coord => {
+    const movements =
+      currentSquare?.getMoves(currentCoord, currentBoard) ?? []
 
-    const colorized = movements.filter(move => {
-      const square = currentBoard[move]
-      return !isSamePlayer(square)
-    })
+    const colorized =
+      movements.filter(move => !isSamePlayer(currentBoard[move]))
 
-    return [...colorized, currentCoord]
+    return [...colorized, currentCoord].includes(coord)
   } // not taken into account squares where there are pieces of the same player
 
 
@@ -63,6 +62,15 @@ export default function ChessContextProvider(props) {
   }
 
 
+  function updateEatedPieces() {
+    console.log({isEating});
+    if (isEating) {
+      setCurrentEated(currentEated => [...currentEated, newSquare])
+      setPreviousEated(currentEated)
+    }
+  }
+
+
   function resetMoves() {
     setSquares([])
     setCoords([])
@@ -70,27 +78,21 @@ export default function ChessContextProvider(props) {
 
 
   function updateChess() {
-    const validMove = colorizedMoves().includes(newCoord)
+    const invalidMove = !isMoveValid(newCoord)
+    const samePlayer = isSamePlayer(newSquare)
     const newBoard = updateBoard(...coords, currentSquare)
 
-    if (isSamePlayer(newSquare) || !validMove) {
+    if (invalidMove || samePlayer) {
       resetMoves()
     } else {
       setCurrentBoard(newBoard)
       setPreviousBoard(currentBoard)
       setLastMovement(true)
       setTurn(turn => !turn)
-      // recoverPiece()
+      updateEatedPieces()
       resetMoves()
     }
   }
-
-
-  useEffect(() => {
-    if (squares.length === 2) { // player has clicked twice
-      updateChess()
-    }
-  }, [squares])
 
 
   return (
@@ -118,9 +120,10 @@ export default function ChessContextProvider(props) {
       playerTurn,
       current,
       contrary,
+      isEating,
       updateBoard,
       isSamePlayer,
-      colorizedMoves,
+      isMoveValid,
       playerPieces,
       resetMoves,
       updateChess,

@@ -12,7 +12,7 @@ export default function ChessBoard() {
       {currentBoard.map((square, coord) => {
         return (
           <Square
-            key={coord}
+            key={square?.name ?? coord}
             square={square}
             coord={coord}
           />

@@ -49,8 +49,8 @@ export default function PlayerTurn() {
 
   function handleLastMove() {
     if (!lastMovement) return
-    setLastMove()
     setLastMovement(false)
+    setLastMove()
   }
 
 

@@ -31,12 +31,12 @@ export default function Square({ square, coord }) {
     contrary,
     updateBoard,
     isSamePlayer,
-    colorizedMoves,
+    isMoveValid,
     playerPieces,
     resetMoves,
     updateChess,
   } = useContext(ChessContext)
-  
+
   const {
     setLastMove,
     threatsMoves,
@@ -55,19 +55,14 @@ export default function Square({ square, coord }) {
 
 
   const isCheck = IS_THREATENED && CURRENT_KING === coord
-  const isMove = colorizedMoves().includes(coord)
+  const isMove = isMoveValid(coord)
 
 
   function handleSquare() {
     const startingMove = !squares.length
-    const currentPlayer = isSamePlayer(square)
-    const isPlayerEating = !currentPlayer && square !== null
+    const invalidPlayer = !isSamePlayer(square)
 
-    if (startingMove && !currentPlayer) { return }
-    if (isMove && isPlayerEating) {
-      setCurrentEated(currentEated => [...currentEated, square])
-      setPreviousEated(currentEated)
-    }
+    if (startingMove && invalidPlayer) { return }
 
     setSquares(squares => [...squares, square])
     setCoords(coords => [...coords, coord])
