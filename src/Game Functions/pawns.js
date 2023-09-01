@@ -10,13 +10,13 @@ class Pawn {
     this.initialCoord = initialCoord
   }
 
-  getMoves(currentCoord, board) {
+  getMoves(currentCoord, board, playerTurn) {
     return updateCoords(
       this.name.startsWith('W'),
       this.initialCoord === currentCoord,
       currentCoord,
       board
-    ).filter(validCoord)
+    ).filter(coord => validCoord(coord, board, playerTurn))
   }
 }
 

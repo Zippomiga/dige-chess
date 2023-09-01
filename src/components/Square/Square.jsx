@@ -1,57 +1,19 @@
 import './square.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { CheckContext } from '../../context/CheckContext'
+// import { CheckContext } from '../../context/CheckContext'
 
 
 export default function Square({ square, coord }) {
   const {
-    currentBoard,
-    setCurrentBoard,
-    currentEated,
-    setCurrentEated,
-    previousBoard,
-    setPreviousBoard,
-    previousEated,
-    setPreviousEated,
-    lastMovement,
-    setLastMovement,
     squares,
     setSquares,
-    coords,
     setCoords,
-    turn,
-    setTurn,
-    currentSquare,
-    newSquare,
-    currentCoord,
-    newCoord,
-    playerTurn,
-    current,
-    contrary,
-    updateBoard,
     isSamePlayer,
     isMoveValid,
-    playerPieces,
-    resetMoves,
-    updateChess,
-  } = useContext(ChessContext)
-
-  const {
-    setLastMove,
-    threatsMoves,
-    kingCoord,
-    // isCheck,
-    isCheckMate,
-    CURRENT_PIECES,
-    CONTRARY_PIECES,
-    CURRENT_MOVES,
-    CONTRARY_MOVES,
     CURRENT_KING,
-    CONTRARY_KING,
-    IS_THREATENED,
-    LEFT_IN_CHECK
-  } = useContext(CheckContext)
+    IS_THREATENED
+  } = useContext(ChessContext)
 
 
   const isCheck = IS_THREATENED && CURRENT_KING === coord

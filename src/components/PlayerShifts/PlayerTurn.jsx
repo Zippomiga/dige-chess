@@ -4,53 +4,32 @@ import whiteTurn from '../../assets/chess-pieces/w-shift.png'
 import kingInCheck from '../../assets/chess-pieces/exclamation.png'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { CheckContext } from '../../context/CheckContext'
+// import { CheckContext } from '../../context/CheckContext'
 
 export default function PlayerTurn() {
   const {
     currentBoard,
     setCurrentBoard,
+    setCurrentEated,
     previousBoard,
-    setPreviousBoard,
+    previousEated,
     lastMovement,
     setLastMovement,
-    squares,
-    setSquares,
-    coords,
-    setCoords,
     turn,
     setTurn,
-    playerTurn,
-    updateBoard,
-    isSamePlayer,
-    colorizedMoves,
-    playerPieces,
     resetMoves,
-    updateChess,
-  } = useContext(ChessContext)
-
-
-  const {
-    setLastMove,
-    threatsMoves,
-    kingCoord,
-    isCheck,
-    isCheckMate,
-    CURRENT_PIECES,
-    CONTRARY_PIECES,
-    CURRENT_MOVES,
-    CONTRARY_MOVES,
     CURRENT_KING,
-    CONTRARY_KING,
-    IS_THREATENED,
-    LEFT_IN_CHECK,
-  } = useContext(CheckContext)
+    IS_THREATENED
+  } = useContext(ChessContext)
 
 
   function handleLastMove() {
     if (!lastMovement) return
     setLastMovement(false)
-    setLastMove()
+    setCurrentBoard(previousBoard)
+    setCurrentEated(previousEated)
+    setTurn(turn => !turn)
+    resetMoves()
   }
 
 

@@ -5,36 +5,9 @@ import { ChessContext } from '../../context/ChessContext'
 
 export default function EatedPieces() {
   const {
-    currentBoard,
-    setCurrentBoard,
     currentEated,
-    setCurrentEated,
-    previousBoard,
-    setPreviousBoard,
-    previousEated,
-    setPreviousEated,
-    lastMovement,
-    setLastMovement,
-    squares,
-    setSquares,
-    coords,
-    setCoords,
-    turn,
-    setTurn,
     currentSquare,
-    newSquare,
-    currentCoord,
-    newCoord,
-    playerTurn,
-    current,
-    contrary,
-    updateBoard,
-    isSamePlayer,
-    colorizedMoves,
-    playerPieces,
-    resetMoves,
-    updateChess,
-    setLastMove
+    newCoord
   } = useContext(ChessContext)
 
 
