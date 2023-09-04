@@ -1,7 +1,6 @@
 import './square.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-// import { CheckContext } from '../../context/CheckContext'
 
 
 export default function Square({ square, coord }) {

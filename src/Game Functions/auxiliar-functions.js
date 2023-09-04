@@ -25,7 +25,11 @@ export const validCoord = coord => {
 
 
 const getRestOfEdges = coord => {
-  const EDGES = [COLUMNS[0], COLUMNS[7]] // BORDER LEFT - BORDER RIGHT
+  const EDGES = [
+    COLUMNS[0], // BORDER LEFT
+    COLUMNS[7]  // BORDER RIGHT
+  ]
+
   return EDGES.filter(edge => !edge.includes(coord))
 }
 
@@ -34,7 +38,7 @@ const fixDirections = (directions, currentCoord) => {
   const restOfEdges = getRestOfEdges(currentCoord)
 
   return directions.filter(direction => {
-    const firstCalc = direction + currentCoord
+    const firstCalc = currentCoord + direction
     return restOfEdges.some(edge => !edge.includes(firstCalc))
   })
 }
@@ -57,12 +61,15 @@ export function updateCoords(directions, currentCoord, board, isKing = false) {
   DIRECTIONS.forEach(direction => {
     let newCoord = currentCoord
 
-    while (notCollide(currentCoord, newCoord, board)) {
+    while (
+      notCollide(currentCoord, newCoord, board)
+    ) {
       newCoord += direction
       NEW_COORDS.push(newCoord)
+
       if (isKing) { break }
     }
   })
 
-  return NEW_COORDS.filter(validCoord)
+  return NEW_COORDS
 }

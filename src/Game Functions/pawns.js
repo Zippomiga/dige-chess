@@ -10,13 +10,15 @@ class Pawn {
     this.initialCoord = initialCoord
   }
 
-  getMoves(currentCoord, board, playerTurn) {
-    return updateCoords(
+  getMoves(currentCoord, board) {
+    const NEW_COORDS = updateCoords(
       this.name.startsWith('W'),
       this.initialCoord === currentCoord,
       currentCoord,
       board
-    ).filter(coord => validCoord(coord, board, playerTurn))
+    )
+
+    return NEW_COORDS.filter(validCoord)
   }
 }
 
@@ -36,8 +38,8 @@ function updateCoords(isWhite, initialMove, currentCoord, board) {
 
     const DIAG_COORDS =
       EDGE(0) ? [Math.max(...DIAG_NEXT)] : // COLUMN A
-      EDGE(7) ? [Math.min(...DIAG_NEXT)] : // COLUMN H
-      DIAG_NEXT
+        EDGE(7) ? [Math.min(...DIAG_NEXT)] : // COLUMN H
+          DIAG_NEXT
 
     const VERTICAL = VERT_COORDS.includes(coord) && FREE(square)
     const DIAGONAL = DIAG_COORDS.includes(coord) && !FREE(square)

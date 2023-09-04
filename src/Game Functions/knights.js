@@ -9,8 +9,10 @@ class Knight {
     this.pic = pic
   }
 
-  getMoves(currentCoord, board, isSamePlayer) {
-    return updateCoords(currentCoord).filter(coord => validCoord(coord, board, isSamePlayer))
+  getMoves(currentCoord, board) {
+    const NEW_COORDS = updateCoords(currentCoord)
+    
+    return NEW_COORDS.filter(validCoord)
   }
 }
 

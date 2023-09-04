@@ -1,6 +1,6 @@
 import b_queen from '../assets/chess-pieces/b-queen.png'
 import w_queen from '../assets/chess-pieces/w-queen.png'
-import { updateCoords } from './auxiliar-functions'
+import { updateCoords, validCoord } from './auxiliar-functions'
 
 
 class Queen {
@@ -11,11 +11,13 @@ class Queen {
   }
 
   getMoves(currentCoord, board) {
-    return updateCoords(
+    const NEW_COORDS = updateCoords(
       this.directions,
       currentCoord,
       board
     )
+
+    return NEW_COORDS.filter(validCoord)
   }
 }
 

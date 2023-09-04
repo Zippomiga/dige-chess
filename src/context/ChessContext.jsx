@@ -1,6 +1,6 @@
+import { COLUMNS } from "../Game Functions/auxiliar-functions";
 import { CHESS_BOARD } from "../Game Functions/board";
 import { createContext, useState, useEffect } from "react";
-
 
 export const ChessContext = createContext()
 
@@ -21,7 +21,6 @@ export default function ChessContextProvider(props) {
   const playerTurn = turn ? 'W' : 'B'
   const current = 'current'
   const contrary = 'contrary'
-  const isEating = newSquare !== null
 
 
   const updateBoard = (oldCoord, newCoord, newPiece) => {
@@ -52,25 +51,27 @@ export default function ChessContextProvider(props) {
 
 
   const isMoveValid = coord => {
-    const movements = currentSquare?.getMoves(currentCoord, currentBoard) ?? []
-    const colorized = movements.filter(move => {
-      const samePlayer = isSamePlayer(currentBoard[move])
-      
+    const PLAYER_MOVES = currentSquare
+      ?.getMoves(currentCoord, currentBoard) ?? []
+
+    const MOVEMENTS = PLAYER_MOVES.filter(move => {
       const newBoard = updateBoard(currentCoord, move, currentSquare)
       const newContraryMoves = threatsMoves(contrary, newBoard)
       const newCurrentKing = coordOfKing(current, newBoard)
-  
-      const leftInCheck = isCheck(newContraryMoves, newCurrentKing)
 
+      const samePlayer = isSamePlayer(currentBoard[move])
+      const leftInCheck = isCheck(newContraryMoves, newCurrentKing)
 
       return !samePlayer && !leftInCheck
     })
 
-    return [...colorized, currentCoord].includes(coord)
+    return [...MOVEMENTS, currentCoord].includes(coord)
   }
 
 
   function updateEatedPieces() {
+    const isEating = newSquare !== null
+
     if (isEating) {
       setCurrentEated(currentEated => [...currentEated, newSquare])
       setPreviousEated(currentEated)
@@ -112,6 +113,17 @@ export default function ChessContextProvider(props) {
   }
 
 
+  const playerCanRecover = () => {
+    const isPawn = currentSquare?.name.includes('PAWN')
+    const C = COLUMNS.find(column => column.includes(newCoord))
+    const W = isPawn && Math.min(...C) === newCoord
+    const B = isPawn && Math.max(...C) === newCoord
+
+    console.log({ currentSquare });
+    console.log({ W, B });
+  }
+
+
   const coordOfKing = (player, board = currentBoard) => {
     const pieces = playerPieces(player, board)
     const king = pieces.find(king => king.name.includes('KING'))
@@ -126,15 +138,6 @@ export default function ChessContextProvider(props) {
   }
 
 
-  // const keepInCheck = (currentCoord, newCoord, newSquare) => {
-  //   const newBoard = updateBoard(currentCoord, newCoord, newSquare)
-  //   const newContraryMoves = threatsMoves(contrary, newBoard)
-  //   const newCurrentKing = coordOfKing(current, newBoard)
-
-  //   return isCheck(newContraryMoves, newCurrentKing)
-  // }
-
-
   const isCheckMate = () => {
     for (let i = 0; i < CURRENT_PIECES.length; i++) {
       const currentPiece = CURRENT_PIECES[i]
@@ -144,13 +147,14 @@ export default function ChessContextProvider(props) {
       for (let j = 0; j < currentMoves.length; j++) {
         const newCoord = currentMoves[j]
         const newSquare = currentBoard[newCoord]
+
         if (isSamePlayer(newSquare)) { continue }
 
         const newBoard = updateBoard(currentCoord, newCoord, currentPiece)
         const newContraryMoves = threatsMoves(contrary, newBoard)
-        const newCurrentKing = coordOfKing(current, newBoard)        
-
+        const newCurrentKing = coordOfKing(current, newBoard)
         const NOT_CHECK_MATE = !isCheck(newContraryMoves, newCurrentKing)
+
         if (NOT_CHECK_MATE) { return false }
       }
     }
@@ -170,13 +174,14 @@ export default function ChessContextProvider(props) {
   useEffect(() => {
     if (squares.length === 2) { // player has clicked twice
       updateChess()
+      playerCanRecover()
     }
 
     if (IS_THREATENED) {
       console.log('THREATENED');
       isCheckMate()
     }
-  }, [squares, turn])
+  }, [squares])
 
 
   return (
@@ -204,7 +209,6 @@ export default function ChessContextProvider(props) {
       playerTurn,
       current,
       contrary,
-      isEating,
       updateBoard,
       isSamePlayer,
       isMoveValid,
@@ -215,7 +219,6 @@ export default function ChessContextProvider(props) {
       threatsMoves,
       coordOfKing,
       isCheck,
-      keepInCheck,
       isCheckMate,
       CURRENT_PIECES,
       CURRENT_MOVES,
