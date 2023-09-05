@@ -19,7 +19,7 @@ export default function PlayerTurn() {
     setTurn,
     resetMoves,
     CURRENT_KING,
-    IS_THREATENED
+    isCheck
   } = useContext(ChessContext)
 
 
@@ -43,7 +43,7 @@ export default function PlayerTurn() {
 
     return (
       <div>
-        {IS_THREATENED && isKing && (
+        {isCheck() && isKing && (
           <img
             src={kingInCheck}
             className='turn-check'

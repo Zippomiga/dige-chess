@@ -38,8 +38,8 @@ function updateCoords(isWhite, initialMove, currentCoord, board) {
 
     const DIAG_COORDS =
       EDGE(0) ? [Math.max(...DIAG_NEXT)] : // COLUMN A
-        EDGE(7) ? [Math.min(...DIAG_NEXT)] : // COLUMN H
-          DIAG_NEXT
+      EDGE(7) ? [Math.min(...DIAG_NEXT)] : // COLUMN H
+      DIAG_NEXT
 
     const VERTICAL = VERT_COORDS.includes(coord) && FREE(square)
     const DIAGONAL = DIAG_COORDS.includes(coord) && !FREE(square)

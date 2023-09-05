@@ -1,11 +1,30 @@
 import './chess-board.css'
 import Square from '../Square/Square'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 
 
 export default function ChessBoard() {
-  const { currentBoard } = useContext(ChessContext)
+  const {
+    currentBoard,
+    squares,
+    updateChess,
+    isCheckMate,
+    isCheck
+  } = useContext(ChessContext)
+
+
+  useEffect(() => {
+    if (squares.length === 2) { // player has clicked twice
+      updateChess()
+    }
+
+    if (isCheck()) {
+      console.log('THREATENED');
+      isCheckMate()
+    }
+  }, [squares])
+
 
   return (
     <section className='chess-board'>

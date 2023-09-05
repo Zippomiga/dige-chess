@@ -10,6 +10,7 @@ export default function ChessContextProvider(props) {
   const [previousBoard, setPreviousBoard] = useState(currentBoard)
   const [previousEated, setPreviousEated] = useState([])
   const [lastMovement, setLastMovement] = useState(false)
+  const [canRecover, setCanRecover] = useState(false)
 
   const [squares, setSquares] = useState([])
   const [coords, setCoords] = useState([])
@@ -23,7 +24,7 @@ export default function ChessContextProvider(props) {
   const contrary = 'contrary'
 
 
-  const updateBoard = (oldCoord, newCoord, newPiece) => {
+  const updateBoard = (oldCoord, newCoord, newPiece = null) => {
     const newBoard = [...currentBoard]
 
     newBoard[oldCoord] = null
@@ -50,22 +51,40 @@ export default function ChessContextProvider(props) {
   }
 
 
+  const playerMoves = (player, board = currentBoard) => {
+    const pieces = playerPieces(player, board)
+    return pieces.map(piece => {
+      const currentCoord = board.indexOf(piece)
+      return piece.getMoves(currentCoord, board)
+    })
+  }
+
+
   const isMoveValid = coord => {
+    if (!currentSquare) return
+
     const PLAYER_MOVES = currentSquare
-      ?.getMoves(currentCoord, currentBoard) ?? []
+      .getMoves(currentCoord, currentBoard)
+      .filter(move => !isSamePlayer(currentBoard[move]))
 
-    const MOVEMENTS = PLAYER_MOVES.filter(move => {
+    const newBoard = updateBoard(currentCoord, currentCoord)
+    const newContraryMoves = playerMoves(contrary, newBoard)
+    const newThreats = newContraryMoves
+      .filter(moves => moves.includes(CURRENT_KING))
+
+    if (!newThreats.length) {
+      return [...PLAYER_MOVES, currentCoord].includes(coord)
+    }
+
+    const FIXED_MOVEMENTS = PLAYER_MOVES.filter(move => {
       const newBoard = updateBoard(currentCoord, move, currentSquare)
-      const newContraryMoves = threatsMoves(contrary, newBoard)
       const newCurrentKing = coordOfKing(current, newBoard)
+      const newContraryMoves = playerMoves(contrary, newBoard)
 
-      const samePlayer = isSamePlayer(currentBoard[move])
-      const leftInCheck = isCheck(newContraryMoves, newCurrentKing)
-
-      return !samePlayer && !leftInCheck
+      return !isCheck(newCurrentKing, newContraryMoves)
     })
 
-    return [...MOVEMENTS, currentCoord].includes(coord)
+    return [...FIXED_MOVEMENTS, currentCoord].includes(coord)
   }
 
 
@@ -76,6 +95,14 @@ export default function ChessContextProvider(props) {
       setCurrentEated(currentEated => [...currentEated, newSquare])
       setPreviousEated(currentEated)
     }
+  }
+
+
+  const playerCanRecover = () => {
+    const isPawn = currentSquare?.name.includes('PAWN')
+    const C = COLUMNS.find(column => column.includes(newCoord))
+    const W = isPawn && Math.min(...C) === newCoord
+    const B = isPawn && Math.max(...C) === newCoord
   }
 
 
@@ -98,29 +125,9 @@ export default function ChessContextProvider(props) {
       setLastMovement(true)
       setTurn(turn => !turn)
       updateEatedPieces()
+      // playerCanRecover()
       resetMoves()
     }
-  }
-
-
-  const threatsMoves = (player, board = currentBoard) => {
-    const threatenings = playerPieces(player, board)
-
-    return threatenings.map(threat => {
-      const currentCoord = board.indexOf(threat)
-      return threat.getMoves(currentCoord, board)
-    })
-  }
-
-
-  const playerCanRecover = () => {
-    const isPawn = currentSquare?.name.includes('PAWN')
-    const C = COLUMNS.find(column => column.includes(newCoord))
-    const W = isPawn && Math.min(...C) === newCoord
-    const B = isPawn && Math.max(...C) === newCoord
-
-    console.log({ currentSquare });
-    console.log({ W, B });
   }
 
 
@@ -131,14 +138,17 @@ export default function ChessContextProvider(props) {
   }
 
 
-  const isCheck = (threatsMoves, king) => {
-    return threatsMoves.some(threatMove => {
-      return threatMove.includes(king)
-    })
+  const isCheck = (newCurrentKing = null, newContraryMoves = null) => {
+    const king = newCurrentKing ?? coordOfKing(current)
+    const threatenings = newContraryMoves ?? playerMoves(contrary)
+    return threatenings.some(threat => threat.includes(king))
   }
 
 
   const isCheckMate = () => {
+    const CURRENT_PIECES = playerPieces(current)
+    const CURRENT_MOVES = playerMoves(current)
+
     for (let i = 0; i < CURRENT_PIECES.length; i++) {
       const currentPiece = CURRENT_PIECES[i]
       const currentMoves = CURRENT_MOVES[i]
@@ -147,13 +157,12 @@ export default function ChessContextProvider(props) {
       for (let j = 0; j < currentMoves.length; j++) {
         const newCoord = currentMoves[j]
         const newSquare = currentBoard[newCoord]
-
         if (isSamePlayer(newSquare)) { continue }
 
         const newBoard = updateBoard(currentCoord, newCoord, currentPiece)
-        const newContraryMoves = threatsMoves(contrary, newBoard)
+        const newContraryMoves = playerMoves(contrary, newBoard)
         const newCurrentKing = coordOfKing(current, newBoard)
-        const NOT_CHECK_MATE = !isCheck(newContraryMoves, newCurrentKing)
+        const NOT_CHECK_MATE = !isCheck(newCurrentKing, newContraryMoves)
 
         if (NOT_CHECK_MATE) { return false }
       }
@@ -163,25 +172,7 @@ export default function ChessContextProvider(props) {
   }
 
 
-  const CURRENT_PIECES = playerPieces(current)
-  const CURRENT_MOVES = threatsMoves(current)
   const CURRENT_KING = coordOfKing(current)
-  const CONTRARY_MOVES = threatsMoves(contrary)
-
-  const IS_THREATENED = isCheck(CONTRARY_MOVES, CURRENT_KING)
-
-
-  useEffect(() => {
-    if (squares.length === 2) { // player has clicked twice
-      updateChess()
-      playerCanRecover()
-    }
-
-    if (IS_THREATENED) {
-      console.log('THREATENED');
-      isCheckMate()
-    }
-  }, [squares])
 
 
   return (
@@ -214,17 +205,14 @@ export default function ChessContextProvider(props) {
       isMoveValid,
       playerPieces,
       updateEatedPieces,
+      playerCanRecover,
       resetMoves,
       updateChess,
-      threatsMoves,
+      playerMoves,
       coordOfKing,
       isCheck,
       isCheckMate,
-      CURRENT_PIECES,
-      CURRENT_MOVES,
       CURRENT_KING,
-      CONTRARY_MOVES,
-      IS_THREATENED,
     }}>
       {props.children}
     </ChessContext.Provider>

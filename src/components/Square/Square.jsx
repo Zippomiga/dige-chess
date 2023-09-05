@@ -11,11 +11,11 @@ export default function Square({ square, coord }) {
     isSamePlayer,
     isMoveValid,
     CURRENT_KING,
-    IS_THREATENED
+    isCheck
   } = useContext(ChessContext)
 
 
-  const isCheck = IS_THREATENED && CURRENT_KING === coord
+  const inCheck = isCheck() && CURRENT_KING === coord
   const isMove = isMoveValid(coord)
 
 
@@ -32,7 +32,7 @@ export default function Square({ square, coord }) {
 
   return (
     <div
-      className={isCheck ? 'square check' : isMove ? 'square move' : 'square'}
+      className={inCheck ? 'square check' : isMove ? 'square move' : 'square'}
       id={coord}
       onClick={handleSquare}
     >
