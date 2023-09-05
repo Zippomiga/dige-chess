@@ -4,7 +4,7 @@ import whiteTurn from '../../assets/chess-pieces/w-shift.png'
 import kingInCheck from '../../assets/chess-pieces/exclamation.png'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-// import { CheckContext } from '../../context/CheckContext'
+
 
 export default function PlayerTurn() {
   const {
@@ -18,7 +18,7 @@ export default function PlayerTurn() {
     turn,
     setTurn,
     resetMoves,
-    CURRENT_KING,
+    currentKing,
     isCheck
   } = useContext(ChessContext)
 
@@ -34,7 +34,7 @@ export default function PlayerTurn() {
 
 
   const inCheck = player => {
-    const king = currentBoard[CURRENT_KING]
+    const king = currentBoard[currentKing()]
     const isKing = king.name.startsWith(player)
     const isWhite = player === 'W'
 

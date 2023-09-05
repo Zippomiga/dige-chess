@@ -10,12 +10,12 @@ export default function Square({ square, coord }) {
     setCoords,
     isSamePlayer,
     isMoveValid,
-    CURRENT_KING,
+    currentKing,
     isCheck
   } = useContext(ChessContext)
 
 
-  const inCheck = isCheck() && CURRENT_KING === coord
+  const inCheck = isCheck() && currentKing() === coord
   const isMove = isMoveValid(coord)
 
 
