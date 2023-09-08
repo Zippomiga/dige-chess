@@ -10,27 +10,27 @@ export default function PlayerTurn() {
   const {
     currentBoard,
     setCurrentBoard,
-    setCurrentEated,
     previousBoard,
+    setCurrentEated,
     previousEated,
     lastMovement,
     setLastMovement,
     turn,
-    setTurn,
-    resetMoves,
     currentKing,
-    isCheck
+    isCheck,
+    resetPlayerTurn
   } = useContext(ChessContext)
 
 
+  
   function handleLastMove() {
     if (!lastMovement) return
     setLastMovement(false)
     setCurrentBoard(previousBoard)
     setCurrentEated(previousEated)
-    setTurn(turn => !turn)
-    resetMoves()
+    resetPlayerTurn()
   }
+
 
 
   const inCheck = player => {
@@ -60,6 +60,7 @@ export default function PlayerTurn() {
   }
 
 
+  
   return (
     <section className='player-turn-panel'>
       {inCheck('B')}

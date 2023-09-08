@@ -1,6 +1,6 @@
 import b_king from '../assets/chess-pieces/b-king.png'
 import w_king from '../assets/chess-pieces/w-king.png'
-import { updateCoords, validCoord } from './auxiliar-functions'
+import { updateCoords } from './auxiliar-functions'
 
 
 class King {
@@ -11,14 +11,12 @@ class King {
   }
 
   getMoves(currentCoord, board) {
-    const NEW_COORDS = updateCoords(
+    return updateCoords(
       this.directions,
       currentCoord,
       board,
       true // it's the king, then it only will iterate once
     )
-
-    return NEW_COORDS.filter(validCoord)
   }
 }
 

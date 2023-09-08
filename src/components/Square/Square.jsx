@@ -5,40 +5,117 @@ import { ChessContext } from '../../context/ChessContext'
 
 export default function Square({ square, coord }) {
   const {
-    squares,
-    setSquares,
-    setCoords,
+    currentBoard,
+    setCurrentBoard,
+    setPreviousBoard,
+    currentEated,
+    setCurrentEated,
+    setPreviousEated,
+    setLastMovement,
+    currentMovements,
+    setCurrentMovements,
+    currentSquare,
+    setCurrentSquare,
+    currentCoord,
+    setCurrentCoord,
+    contrary,
+    updateBoard,
     isSamePlayer,
-    isMoveValid,
+    getMovements,
+    playerMoves,
     currentKing,
-    isCheck
+    isCheck,
+    resetPlayerTurn
   } = useContext(ChessContext)
 
 
-  const inCheck = isCheck() && currentKing() === coord
-  const isMove = isMoveValid(coord)
+  
+  const isPiece = square !== null
+  const isMoveValid = currentMovements.includes(coord)
+  const kingInCheck = isCheck() && currentKing() === coord
+
+
+
+  const pieceMovements = () => {
+    const allMoves = getMovements(square, coord)
+
+    const fixedMoves = allMoves.filter(move => {
+      const newSquare = currentBoard[move]
+      const newBoard = updateBoard(coord, move, square)
+      const newCurrentKing = currentKing(newBoard)
+      const newContraryMoves = playerMoves(contrary, newBoard)
+
+      const samePlayer = isSamePlayer(newSquare)
+      const leftInCheck = isCheck(newCurrentKing, newContraryMoves)
+
+      return !samePlayer && !leftInCheck
+    })
+
+    return fixedMoves.length === 0 ? [] : [...fixedMoves, coord]
+  }
+
+
+
+  function updateCurrentMovements() {
+    const newMovements = pieceMovements()
+    setCurrentMovements(newMovements)
+    setCurrentSquare(square)
+    setCurrentCoord(coord)
+  }
+
+
+
+  function updateEatedPieces() {
+    if (!isPiece) { return }
+    setCurrentEated(currentEated => [...currentEated, square])
+    setPreviousEated(currentEated)
+  }
+
+
+
+  function updateChess() {
+    const newBoard = updateBoard(currentCoord, coord, currentSquare)
+    setCurrentBoard(newBoard)
+    setPreviousBoard(currentBoard)
+    setLastMovement(true)
+    updateEatedPieces()
+    resetPlayerTurn()
+  }
+
 
 
   function handleSquare() {
-    const startingMove = !squares.length
-    const invalidPlayer = !isSamePlayer(square)
+    const samePlayer = isSamePlayer(square)
+    const validFirstClick = samePlayer && isPiece
+    const validSecondClick = !samePlayer && isMoveValid
 
-    if (startingMove && invalidPlayer) { return }
-
-    setSquares(squares => [...squares, square])
-    setCoords(coords => [...coords, coord])
+    if (validFirstClick) {
+      updateCurrentMovements()
+    }
+    if (validSecondClick) {
+      updateChess()
+    }
   }
+
 
 
   return (
     <div
-      className={inCheck ? 'square check' : isMove ? 'square move' : 'square'}
+      className={
+        kingInCheck ? 'square check' :
+          isMoveValid ? 'square move' :
+            'square'
+      }
       id={coord}
       onClick={handleSquare}
     >
       <div>
         <img
-          className={square?.name.includes('PAWN') ? 'pawn  ' : 'piece'}
+          className={
+            square?.name.includes('PAWN')
+              ? 'pawn  '
+              : 'piece'
+          }
           src={square?.pic}
           alt={square?.name}
         />

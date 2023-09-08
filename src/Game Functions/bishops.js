@@ -1,6 +1,6 @@
 import b_bishop from '../assets/chess-pieces/b-bishop.png'
 import w_bishop from '../assets/chess-pieces/w-bishop.png'
-import { updateCoords, validCoord } from './auxiliar-functions'
+import { updateCoords } from './auxiliar-functions'
 
 
 class Bishop {
@@ -11,13 +11,11 @@ class Bishop {
   }
 
   getMoves(currentCoord, board) {
-    const NEW_COORDS = updateCoords(
+    return updateCoords(
       this.directions,
       currentCoord,
       board
     )
-
-    return NEW_COORDS.filter(validCoord)
   }
 }
 

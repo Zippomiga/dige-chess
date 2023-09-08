@@ -1,6 +1,6 @@
 import b_knight_png from '../assets/chess-pieces/b-knight.png'
 import w_knight_png from '../assets/chess-pieces/w-knight.png'
-import { findColumn, validCoord } from './auxiliar-functions'
+import { findColumn } from './auxiliar-functions'
 
 
 class Knight {
@@ -10,9 +10,7 @@ class Knight {
   }
 
   getMoves(currentCoord, board) {
-    const NEW_COORDS = updateCoords(currentCoord)
-    
-    return NEW_COORDS.filter(validCoord)
+    return updateCoords(currentCoord)
   }
 }
 

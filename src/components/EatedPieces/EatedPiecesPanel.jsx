@@ -3,13 +3,17 @@ import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 import EatedPiece from './EatedPiece'
 
+
 export default function EatedPiecesPanel() {
   const { currentEated } = useContext(ChessContext)
 
+
+  
   const eatedPieces = player => {
     const playerPieces = currentEated.filter(piece => {
       return piece.name.startsWith(player)
     })
+
 
     return (
       <div className='eated-player'>
@@ -26,6 +30,7 @@ export default function EatedPiecesPanel() {
     )
   }
 
+  
 
   return (
     <section className='eated-pieces'>

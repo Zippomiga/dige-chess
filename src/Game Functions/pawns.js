@@ -1,6 +1,6 @@
 import b_pawn from '../assets/chess-pieces/b-pawn.png'
 import w_pawn from '../assets/chess-pieces/w-pawn.png'
-import { COLUMNS, validCoord } from './auxiliar-functions'
+import { COLUMNS } from './auxiliar-functions'
 
 
 class Pawn {
@@ -11,14 +11,12 @@ class Pawn {
   }
 
   getMoves(currentCoord, board) {
-    const NEW_COORDS = updateCoords(
+    return updateCoords(
       this.name.startsWith('W'),
       this.initialCoord === currentCoord,
       currentCoord,
       board
     )
-
-    return NEW_COORDS.filter(validCoord)
   }
 }
 

@@ -1,6 +1,6 @@
 import b_rook_png from '../assets/chess-pieces/b-rook.png'
 import w_rook_png from '../assets/chess-pieces/w-rook.png'
-import { updateCoords, validCoord } from './auxiliar-functions'
+import { updateCoords } from './auxiliar-functions'
 
 
 class Rook {
@@ -11,13 +11,11 @@ class Rook {
   }
 
   getMoves(currentCoord, board) {
-    const NEW_COORDS = updateCoords(
+    return updateCoords(
       this.directions,
       currentCoord,
       board
     )
-
-    return NEW_COORDS.filter(validCoord)
   }
 }
 
