@@ -6,7 +6,9 @@ import { CHESS_BOARD } from '../../Game Functions/board'
 
 export default function EatedPiece({ pic, name }) {
   const {
+    setCurrentBoard,
     updateBoard,
+    currentEated,
     setCurrentEated,
     setPreviousEated
   } = useContext(ChessContext)
@@ -16,7 +18,10 @@ export default function EatedPiece({ pic, name }) {
   function recoverPiece(e) {
     const pieceName = e.target.id
     const recoveredPiece = CHESS_BOARD.find(piece => piece?.name === pieceName)
+    // const newBoard = updateBoard('coord', 'coord', recoverPiece)
 
+    // setCurrentBoard(newBoard)
+    setPreviousEated(currentEated)
     setCurrentEated(currentEated => {
       const newCurrentEated = [...currentEated]
       return newCurrentEated.filter(eatedPiece => eatedPiece.name !== pieceName)

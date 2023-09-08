@@ -29,36 +29,29 @@ export default function Square({ square, coord }) {
   } = useContext(ChessContext)
 
 
-  
+
   const isPiece = square !== null
   const isMoveValid = currentMovements.includes(coord)
   const kingInCheck = isCheck() && currentKing() === coord
 
 
 
-  const pieceMovements = () => {
+  function updateCurrent() {
     const allMoves = getMovements(square, coord)
-
-    const fixedMoves = allMoves.filter(move => {
+    const newMoves = allMoves.filter(move => {
       const newSquare = currentBoard[move]
       const newBoard = updateBoard(coord, move, square)
       const newCurrentKing = currentKing(newBoard)
       const newContraryMoves = playerMoves(contrary, newBoard)
-
+      
       const samePlayer = isSamePlayer(newSquare)
       const leftInCheck = isCheck(newCurrentKing, newContraryMoves)
-
+      
       return !samePlayer && !leftInCheck
     })
 
-    return fixedMoves.length === 0 ? [] : [...fixedMoves, coord]
-  }
-
-
-
-  function updateCurrentMovements() {
-    const newMovements = pieceMovements()
-    setCurrentMovements(newMovements)
+    const pieceMoves = newMoves.length === 0 ? [] : [...newMoves, coord]
+    setCurrentMovements(pieceMoves)
     setCurrentSquare(square)
     setCurrentCoord(coord)
   }
@@ -67,8 +60,8 @@ export default function Square({ square, coord }) {
 
   function updateEatedPieces() {
     if (!isPiece) { return }
-    setCurrentEated(currentEated => [...currentEated, square])
     setPreviousEated(currentEated)
+    setCurrentEated(currentEated => [...currentEated, square])
   }
 
 
@@ -89,12 +82,8 @@ export default function Square({ square, coord }) {
     const validFirstClick = samePlayer && isPiece
     const validSecondClick = !samePlayer && isMoveValid
 
-    if (validFirstClick) {
-      updateCurrentMovements()
-    }
-    if (validSecondClick) {
-      updateChess()
-    }
+    if (validFirstClick) { updateCurrent() }
+    if (validSecondClick) { updateChess() }
   }
 
 
