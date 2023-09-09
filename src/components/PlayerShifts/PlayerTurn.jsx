@@ -22,9 +22,9 @@ export default function PlayerTurn() {
   } = useContext(ChessContext)
 
 
-  
+
   function handleLastMove() {
-    if (!lastMovement) return
+    if (!lastMovement) { return }
     setLastMovement(false)
     setCurrentBoard(previousBoard)
     setCurrentEated(previousEated)
@@ -60,7 +60,7 @@ export default function PlayerTurn() {
   }
 
 
-  
+
   return (
     <section className='player-turn-panel'>
       {inCheck('B')}

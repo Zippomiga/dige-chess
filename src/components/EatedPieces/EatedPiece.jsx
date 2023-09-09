@@ -1,42 +1,51 @@
 import './eated-piece.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { CHESS_BOARD } from '../../Game Functions/board'
+import { getCoordToReplace, getPieceToReplace } from '../../Game Functions/auxiliar-functions'
 
 
 export default function EatedPiece({ pic, name }) {
   const {
     setCurrentBoard,
-    updateBoard,
-    currentEated,
+    setLastMovement,
+    currentBoard,
+    isSamePlayer,
     setCurrentEated,
-    setPreviousEated
   } = useContext(ChessContext)
 
 
 
-  function recoverPiece(e) {
-    const pieceName = e.target.id
-    const recoveredPiece = CHESS_BOARD.find(piece => piece?.name === pieceName)
-    // const newBoard = updateBoard('coord', 'coord', recoverPiece)
+  function restorePiece(e) {
+    const pieceName = e.target.alt
+    const pieceToReplace = getPieceToReplace(pieceName)
+    const coordToReplace = getCoordToReplace(currentBoard)
 
-    // setCurrentBoard(newBoard)
-    setPreviousEated(currentEated)
-    setCurrentEated(currentEated => {
-      const newCurrentEated = [...currentEated]
-      return newCurrentEated.filter(eatedPiece => eatedPiece.name !== pieceName)
+    const notContrary = isSamePlayer(pieceToReplace)
+    const notPawnAtEdge = coordToReplace === -1
+
+    if (notContrary || notPawnAtEdge) { return }
+
+    setCurrentBoard(currentBoard => {
+      return [...currentBoard]
+        .fill(pieceToReplace, coordToReplace, coordToReplace + 1)
     })
+
+    setCurrentEated(currentEated => {
+      return [...currentEated]
+        .filter(eatedPiece => eatedPiece.name !== pieceName)
+    })
+
+    setLastMovement(true)
   }
 
 
 
   return (
     <img
-      onClick={recoverPiece}
+      onClick={restorePiece}
       className='eated-piece'
       src={pic}
       alt={name}
-      id={name}
     />
   )
 }

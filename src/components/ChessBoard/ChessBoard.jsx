@@ -34,6 +34,7 @@ export default function ChessBoard() {
       for (let j = 0; j < currentMoves.length; j++) {
         const newCoord = currentMoves[j]
         const newSquare = currentBoard[newCoord]
+        
         if (isSamePlayer(newSquare)) { continue }
 
         const newBoard = updateBoard(currentCoord, newCoord, currentPiece)

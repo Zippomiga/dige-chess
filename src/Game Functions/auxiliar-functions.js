@@ -1,3 +1,5 @@
+import { CHESS_BOARD } from "./board"
+
 export const COLUMNS = [
   [0, 8, 16, 24, 32, 40, 48, 56],   // A
   [1, 9, 17, 25, 33, 41, 49, 57],   // B
@@ -7,6 +9,17 @@ export const COLUMNS = [
   [5, 13, 21, 29, 37, 45, 53, 61],  // F
   [6, 14, 22, 30, 38, 46, 54, 62],  // G
   [7, 15, 23, 31, 39, 47, 55, 63]   // H
+]
+
+
+const BORDER_COLUMNS = [
+  [0, 8, 16, 24, 32, 40, 48, 56],  // BORDER LEFT
+  [7, 15, 23, 31, 39, 47, 55, 63]  // BORDER RIGHT
+]
+
+const BORDER_ROWS = [
+  [0, 1, 2, 3, 4, 5, 6, 7],        // BORDER AVOBE
+  [56, 57, 58, 59, 60, 61, 62, 63] // BORDER BOTTOM
 ]
 
 
@@ -24,22 +37,30 @@ export const validCoord = coord => {
 }
 
 
-const EDGES = [
-  COLUMNS[0], // BORDER LEFT
-  COLUMNS[7]  // BORDER RIGHT
-]
-
-
-const fixDirections = (directions, currentCoord, restOfEdges) => {
-  return directions.filter(direction => {
-    const firstCalc = currentCoord + direction
-    return restOfEdges.some(edge => !edge.includes(firstCalc))
+export const getCoordToReplace = currentBoard => {
+  return currentBoard.findIndex((piece, coord) => {
+    const inEdge = BORDER_ROWS.some(border => border.includes(coord))
+    const isPawn = piece?.name.includes('PAWN')
+    return inEdge && isPawn
   })
 }
 
 
-const notCollide = (currentCoord, newCoord, board, restOfEdges) => {
-  const isNotInEdge = restOfEdges.every(edge => !edge.includes(newCoord))
+export const getPieceToReplace = pieceName => {
+  return CHESS_BOARD.find(piece => piece?.name === pieceName)
+}
+
+
+const fixDirections = (directions, currentCoord, borders) => {
+  return directions.filter(direction => {
+    const firstCalc = currentCoord + direction
+    return borders.some(edge => !edge.includes(firstCalc))
+  })
+}
+
+
+const notCollide = (currentCoord, newCoord, board, borders) => {
+  const isNotInEdge = borders.every(edge => !edge.includes(newCoord))
   const isNotFilled = board[newCoord] === null
   const isSameCoord = currentCoord === newCoord
 
@@ -48,15 +69,15 @@ const notCollide = (currentCoord, newCoord, board, restOfEdges) => {
 
 
 export function updateCoords(directions, currentCoord, board, isKing = false) {
-  const restOfEdges = EDGES.filter(edge => !edge.includes(currentCoord))
-  const DIRECTIONS = fixDirections(directions, currentCoord, restOfEdges)
+  const borders = BORDER_COLUMNS.filter(border => !border.includes(currentCoord))
+  const DIRECTIONS = fixDirections(directions, currentCoord, borders)
   const NEW_COORDS = []
 
   DIRECTIONS.forEach(direction => {
     let newCoord = currentCoord
 
     while (
-      notCollide(currentCoord, newCoord, board, restOfEdges)
+      notCollide(currentCoord, newCoord, board, borders)
     ) {
       newCoord += direction
       NEW_COORDS.push(newCoord)
