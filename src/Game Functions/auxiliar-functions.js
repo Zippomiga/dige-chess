@@ -11,15 +11,21 @@ export const COLUMNS = [
   [7, 15, 23, 31, 39, 47, 55, 63]   // H
 ]
 
-
-const BORDER_COLUMNS = [
-  [0, 8, 16, 24, 32, 40, 48, 56],  // BORDER LEFT
-  [7, 15, 23, 31, 39, 47, 55, 63]  // BORDER RIGHT
+const BOARD_LIMITS = [
+  [0],                              // CORNER_TOP_LEFT
+  [7],                              // CORNER_TOP_RIGHT
+  [57],                             // CORNER_BOTTOM_LEFT
+  [60],                             // CORNER_BOTTOM_RIGHT
+  [0, 1, 2, 3, 4, 5, 6, 7],         // ROW_AVOBE
+  [56, 57, 58, 59, 60, 61, 62, 63], // ROW_BOTTOM
+  [0, 8, 16, 24, 32, 40, 48, 56],   // COLUMN_LEFT
+  [7, 15, 23, 31, 39, 47, 55, 56]   // COLUMN_RIGHT
 ]
 
+
 const BORDER_ROWS = [
-  [0, 1, 2, 3, 4, 5, 6, 7],        // BORDER AVOBE
-  [56, 57, 58, 59, 60, 61, 62, 63] // BORDER BOTTOM
+  BOARD_LIMITS[4],
+  BOARD_LIMITS[5],
 ]
 
 
@@ -51,37 +57,26 @@ export const getPieceToReplace = pieceName => {
 }
 
 
-const fixDirections = (directions, currentCoord, borders) => {
-  return directions.filter(direction => {
-    const firstCalc = currentCoord + direction
-    return borders.some(edge => !edge.includes(firstCalc))
-  })
-}
-
-
-const notCollide = (currentCoord, newCoord, board, borders) => {
-  const isNotInEdge = borders.every(edge => !edge.includes(newCoord))
-  const isNotFilled = board[newCoord] === null
-  const isSameCoord = currentCoord === newCoord
-
-  return isNotInEdge && isNotFilled || isSameCoord
-}
-
-
 export function updateCoords(directions, currentCoord, board, isKing = false) {
-  const borders = BORDER_COLUMNS.filter(border => !border.includes(currentCoord))
-  const DIRECTIONS = fixDirections(directions, currentCoord, borders)
+  const index = BOARD_LIMITS
+    .findIndex(limit => limit.includes(currentCoord))
+
+  const limits = BOARD_LIMITS
+    .filter(limit => !limit.includes(currentCoord))
+
+  const DIRECTIONS = directions.at(index)
   const NEW_COORDS = []
 
   DIRECTIONS.forEach(direction => {
     let newCoord = currentCoord
 
     while (
-      notCollide(currentCoord, newCoord, board, borders)
+      !limits.some(limit => limit.includes(newCoord)) &&
+      board[newCoord] === null ||
+      currentCoord === newCoord
     ) {
       newCoord += direction
       NEW_COORDS.push(newCoord)
-
       if (isKing) { break }
     }
   })

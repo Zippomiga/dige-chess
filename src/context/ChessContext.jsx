@@ -55,7 +55,7 @@ export default function ChessContextProvider(props) {
 
 
 
-  const getMovements = (piece, coord, board = currentBoard) => {
+  const getMovements = (piece, coord, board) => {
     const movements = piece.getMoves(coord, board)
     return movements.filter(validCoord)
   }

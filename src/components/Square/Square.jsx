@@ -37,7 +37,7 @@ export default function Square({ square, coord }) {
 
 
   function updateCurrent() {
-    const allMoves = getMovements(square, coord)
+    const allMoves = getMovements(square, coord, currentBoard)
     const newMoves = allMoves.filter(move => {
       const newSquare = currentBoard[move]
       const newBoard = updateBoard(coord, move, square)
