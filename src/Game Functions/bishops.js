@@ -18,7 +18,7 @@ class Bishop {
       [-7, 9],       // COLUMN_LEFT
       [-9, 7],       // COLUMN_RIGHT
 
-      [-8, -7, 7, 9] // DEFAULT
+      [-9, -7, 7, 9] // DEFAULT
     ]
   }
 

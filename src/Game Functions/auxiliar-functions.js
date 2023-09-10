@@ -1,5 +1,6 @@
 import { CHESS_BOARD } from "./board"
 
+
 export const COLUMNS = [
   [0, 8, 16, 24, 32, 40, 48, 56],   // A
   [1, 9, 17, 25, 33, 41, 49, 57],   // B
@@ -11,21 +12,22 @@ export const COLUMNS = [
   [7, 15, 23, 31, 39, 47, 55, 63]   // H
 ]
 
+
 const BOARD_LIMITS = [
   [0],                              // CORNER TOP LEFT
   [7],                              // CORNER TOP RIGHT
-  [57],                             // CORNER BOTTOM LEFT
-  [60],                             // CORNER BOTTOM RIGHT
+  [56],                             // CORNER BOTTOM LEFT
+  [63],                             // CORNER BOTTOM RIGHT
   [0, 1, 2, 3, 4, 5, 6, 7],         // ROW AVOBE
   [56, 57, 58, 59, 60, 61, 62, 63], // ROW BOTTOM
   [0, 8, 16, 24, 32, 40, 48, 56],   // COLUMN LEFT
-  [7, 15, 23, 31, 39, 47, 55, 56]   // COLUMN RIGHT
+  [7, 15, 23, 31, 39, 47, 55, 63]   // COLUMN RIGHT
 ]
 
 
 const BORDER_ROWS = [
-  BOARD_LIMITS[4],
-  BOARD_LIMITS[5],
+  ...BOARD_LIMITS[4],
+  ...BOARD_LIMITS[5],
 ]
 
 
@@ -45,7 +47,7 @@ export const validCoord = coord => {
 
 export const getCoordToReplace = currentBoard => {
   return currentBoard.findIndex((piece, coord) => {
-    const inEdge = BORDER_ROWS.some(border => border.includes(coord))
+    const inEdge = BORDER_ROWS.includes(coord)
     const isPawn = piece?.name.includes('PAWN')
     return inEdge && isPawn
   })
@@ -57,29 +59,42 @@ export const getPieceToReplace = pieceName => {
 }
 
 
-export function updateCoords(directions, currentCoord, board, isKing = false) {
+export function updateCoords(directions, coord, board, isKing = false) {
   const LIMITS = BOARD_LIMITS
-    .filter(limit => !limit.includes(currentCoord))
+    .filter(limits => !limits.includes(coord))
+    .flat()
 
   const INDEX = BOARD_LIMITS
-    .findIndex(limit => limit.includes(currentCoord))
+    .findIndex(limits => limits.includes(coord))
 
   const DIRECTIONS = directions.at(INDEX)
   const NEW_COORDS = []
 
   DIRECTIONS.forEach(direction => {
-    let newCoord = currentCoord
+    let nextCoord = coord
 
     while (
-      !LIMITS.some(limit => limit.includes(newCoord)) &&
-      board[newCoord] === null ||
-      currentCoord === newCoord
+      !LIMITS.includes(nextCoord) &&
+      board[nextCoord] === null ||
+      nextCoord === coord
     ) {
-      newCoord += direction
-      NEW_COORDS.push(newCoord)
+      nextCoord += direction
+      NEW_COORDS.push(nextCoord)
       if (isKing) { break }
     }
   })
 
   return NEW_COORDS
 }
+
+
+// MOVEMENTS REFERENCES
+
+// VERTICAL AVOBE:   -8
+// VERTICAL BELOW:   +8
+// HORIZONTAL LEFT:  -1
+// HORIZONTAL RIGHT: +1
+// DIAG LEFT AVOBE:  -9
+// DIAG LEFT BELOW:  +7
+// DIAG RIGHT AVOBE: -7
+// DIAG RIGHT BELOW: +9

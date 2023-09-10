@@ -43,10 +43,10 @@ export default function Square({ square, coord }) {
       const newBoard = updateBoard(coord, move, square)
       const newCurrentKing = currentKing(newBoard)
       const newContraryMoves = playerMoves(contrary, newBoard)
-      
+
       const samePlayer = isSamePlayer(newSquare)
       const leftInCheck = isCheck(newCurrentKing, newContraryMoves)
-      
+
       return !samePlayer && !leftInCheck
     })
 
@@ -98,20 +98,15 @@ export default function Square({ square, coord }) {
       id={coord}
       onClick={handleSquare}
     >
-      <div>
-        <img
-          className={
-            square?.name.includes('PAWN')
-              ? 'pawn  '
-              : 'piece'
-          }
-          src={square?.pic}
-          alt={square?.name}
-        />
-        <span className='square-index'>
-          {coord}
-        </span>
-      </div>
+      <img
+        className={
+          square?.name.includes('PAWN')
+            ? 'pawn'
+            : 'piece'
+        }
+        src={square?.pic}
+        alt={square?.name}
+      />
     </div>
   )
 }
