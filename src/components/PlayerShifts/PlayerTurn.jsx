@@ -68,7 +68,7 @@ export default function PlayerTurn() {
         className={lastMovement ? 'button-last-movement' : 'button-last-movement disabled'}
         onClick={handleLastMove}
       >
-        Last Movement
+        Last Move
       </button>
       {inCheck('W')}
     </section>
