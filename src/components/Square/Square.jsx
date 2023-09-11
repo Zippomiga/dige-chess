@@ -12,8 +12,8 @@ export default function Square({ square, coord }) {
     setCurrentEated,
     setPreviousEated,
     setLastMovement,
-    currentMovements,
-    setCurrentMovements,
+    currentMoves,
+    setCurrentMoves,
     currentSquare,
     setCurrentSquare,
     currentCoord,
@@ -31,7 +31,7 @@ export default function Square({ square, coord }) {
 
 
   const isPiece = square !== null
-  const isMoveValid = currentMovements.includes(coord)
+  const isMoveValid = currentMoves.includes(coord)
   const kingInCheck = isCheck() && currentKing() === coord
 
 
@@ -53,9 +53,9 @@ export default function Square({ square, coord }) {
 
     const pieceMoves = newMoves.length === 0 ? [] : [...newMoves, coord]
     
-    setCurrentMovements(pieceMoves)
-    setCurrentSquare(square)
+    setCurrentMoves(pieceMoves)
     setCurrentCoord(coord)
+    setCurrentSquare(square)
   }
 
 

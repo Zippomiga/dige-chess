@@ -7,17 +7,16 @@ export const ChessContext = createContext()
 
 export default function ChessContextProvider(props) {
   const [currentBoard, setCurrentBoard] = useState(CHESS_BOARD)
-  const [previousBoard, setPreviousBoard] = useState(currentBoard)
-
   const [currentEated, setCurrentEated] = useState([])
-  const [previousEated, setPreviousEated] = useState([])
+  const [currentMoves, setCurrentMoves] = useState([])
+  const [currentCoord, setCurrentCoord] = useState(null)
+  const [currentSquare, setCurrentSquare] = useState(null)
 
+  const [previousBoard, setPreviousBoard] = useState(currentBoard)
+  const [previousEated, setPreviousEated] = useState([])
   const [lastMovement, setLastMovement] = useState(false)
   const [turn, setTurn] = useState(true)
 
-  const [currentMovements, setCurrentMovements] = useState([])
-  const [currentSquare, setCurrentSquare] = useState(null)
-  const [currentCoord, setCurrentCoord] = useState(null)
 
   const playerTurn = turn ? 'W' : 'B'
   const current = 'current'
@@ -87,9 +86,9 @@ export default function ChessContextProvider(props) {
 
 
   function resetPlayerTurn() {
-    setCurrentMovements([])
-    setCurrentSquare(null)
+    setCurrentMoves([])
     setCurrentCoord(null)
+    setCurrentSquare(null)
     setTurn(turn => !turn)
   }
 
@@ -109,8 +108,8 @@ export default function ChessContextProvider(props) {
       setLastMovement,
       turn,
       setTurn,
-      currentMovements,
-      setCurrentMovements,
+      currentMoves,
+      setCurrentMoves,
       currentSquare,
       setCurrentSquare,
       currentCoord,
