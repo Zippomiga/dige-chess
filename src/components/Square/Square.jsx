@@ -51,9 +51,9 @@ export default function Square({ square, coord }) {
       return !samePlayer && !leftInCheck
     })
 
-    const pieceMoves = newMoves.length === 0 ? [] : [...newMoves, coord]
+    const moves = newMoves.length === 0 ? [] : [...newMoves, coord]
     
-    setCurrentMoves(pieceMoves)
+    setCurrentMoves(moves)
     setCurrentCoord(coord)
     setCurrentSquare(square)
   }

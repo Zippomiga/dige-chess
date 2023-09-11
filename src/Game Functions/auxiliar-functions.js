@@ -1,6 +1,3 @@
-import { CHESS_BOARD } from "./board"
-
-
 export const COLUMNS = [
   [0, 8, 16, 24, 32, 40, 48, 56],   // A
   [1, 9, 17, 25, 33, 41, 49, 57],   // B
@@ -25,12 +22,6 @@ const BOARD_LIMITS = [
 ]
 
 
-export const BORDER_ROWS = [
-  ...BOARD_LIMITS[4],
-  ...BOARD_LIMITS[5],
-]
-
-
 export const findColumn = currentCoord => {
   return COLUMNS.findIndex(column => {
     return column.includes(currentCoord)
@@ -42,20 +33,6 @@ export const validCoord = coord => {
   const isValid = coord !== null
   const inBoard = coord > -1 && coord < 64
   return isValid && inBoard
-}
-
-
-export const getCoordToReplace = currentBoard => {
-  return currentBoard.findIndex((piece, coord) => {
-    const inEdge = BORDER_ROWS.includes(coord)
-    const isPawn = piece?.name.includes('PAWN')
-    return inEdge && isPawn
-  })
-}
-
-
-export const getPieceToReplace = pieceName => {
-  return CHESS_BOARD.find(piece => piece?.name === pieceName)
 }
 
 
@@ -76,7 +53,7 @@ export function updateCoords(directions, coord, board, isKing = false) {
     while (
       !LIMITS.includes(nextCoord) &&
       board[nextCoord] === null ||
-      nextCoord === coord
+      coord === nextCoord
     ) {
       nextCoord += direction
       NEW_COORDS.push(nextCoord)

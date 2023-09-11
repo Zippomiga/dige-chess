@@ -1,14 +1,13 @@
 import './eated-piece.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { getCoordToReplace, getPieceToReplace } from '../../Game Functions/auxiliar-functions'
+import { CHESS_BOARD } from '../../Game Functions/board'
 
 
-export default function EatedPiece({ pic, name }) {
+export default function EatedPiece({ pic, name, pawnCoord }) {
   const {
     setCurrentBoard,
     setLastMovement,
-    currentBoard,
     isSamePlayer,
     setCurrentEated,
   } = useContext(ChessContext)
@@ -17,17 +16,14 @@ export default function EatedPiece({ pic, name }) {
 
   function restorePiece(e) {
     const pieceName = e.target.alt
-    const pieceToReplace = getPieceToReplace(pieceName)
-    const coordToReplace = getCoordToReplace(currentBoard)
-
-    const notContrary = isSamePlayer(pieceToReplace)
-    const notPawnAtEdge = coordToReplace === -1
-
-    if (notContrary || notPawnAtEdge) { return }
+    const pieceToRestore = CHESS_BOARD.find(piece => piece?.name === pieceName)
+    const notContrary = isSamePlayer(pieceToRestore)
+    
+    if (notContrary) { return }
 
     setCurrentBoard(currentBoard => {
       return [...currentBoard]
-        .fill(pieceToReplace, coordToReplace, coordToReplace + 1)
+        .fill(pieceToRestore, pawnCoord, pawnCoord + 1)
     })
 
     setCurrentEated(currentEated => {

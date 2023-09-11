@@ -1,46 +1,51 @@
 import './eated-pieces-panel.css'
-import { useContext, useLayoutEffect, useState } from 'react'
+import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 import EatedPiece from './EatedPiece'
-import { BORDER_ROWS } from '../../Game Functions/auxiliar-functions'
+import { COLUMNS } from '../../Game Functions/auxiliar-functions'
+
+
+const edgeTop = COLUMNS.map(column => Math.min(...column))
+const edgeBottom = COLUMNS.map(column => Math.max(...column))
+const boardEdges = [...edgeTop, ...edgeBottom]
 
 
 export default function EatedPiecesPanel() {
   const {
     currentEated,
     currentBoard,
-    turn,
     playerTurn,
     isSamePlayer
   } = useContext(ChessContext)
 
-  const [canRestore, setCanRestore] = useState(false)
-
-
-
-  useLayoutEffect(() => {
-    const x = currentBoard.findIndex((piece, coord) => {
-      const inEdge = BORDER_ROWS.includes(coord)
-      const isPawn = piece?.name.includes('PAWN')
-      return !isSamePlayer(piece) && inEdge && isPawn
-    })
-
-    const canRestorePiece = x !== -1
-    setCanRestore(canRestorePiece)
-  }, [turn])
-
 
 
   const eatedPieces = player => {
-    const playerPieces = currentEated.filter(piece => {
-      return piece.name.startsWith(player)
+    const pawnCoord = currentBoard.findIndex((piece, coord) => {
+      const notContraryPawn = !isSamePlayer(piece)
+      const isPawn = piece?.name.includes('PAWN')
+      const inEdge = boardEdges.includes(coord)
+
+      return notContraryPawn && isPawn && inEdge
     })
 
-    const contraryTurn = playerTurn !== player
+
+    const playerPieces = currentEated.filter(piece => {
+      const playerPiece = piece.name.startsWith(player)
+      const isNotPawn = !piece.name.includes('PAWN') // panws can not be restored
+  
+      return playerPiece && isNotPawn
+    })
+
+
+    const isPawnAtBorder = pawnCoord !== -1
+    const hasEatedPieces = playerPieces.length !== 0
+    const isContraryTurn = playerTurn !== player
+
 
     return (
       <div className={
-        contraryTurn && canRestore
+        isPawnAtBorder && hasEatedPieces && isContraryTurn
           ? 'eated-player restore'
           : 'eated-player'
       }>
@@ -49,6 +54,7 @@ export default function EatedPiecesPanel() {
             <EatedPiece
               pic={piece.pic}
               name={piece.name}
+              pawnCoord={pawnCoord}
               key={piece.name}
             />
           )
