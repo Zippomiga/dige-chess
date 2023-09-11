@@ -9,11 +9,11 @@
 
 .player-turn {
   background-color: #dcdcdc;
-  box-shadow: 0 0 8px #fff;
-  border-radius: 50%;
-  height: 7rem;
-  width: 7rem;
-  padding: 1rem;
+  box-shadow: 0 0 4px #fff;
+  border-radius: 0.4rem;
+  height: 6rem;
+  width: 6rem;
+  padding: 0.5rem;
 }
 
 .current {
@@ -23,7 +23,8 @@
 .turn-check {
   height: 1.5rem;
   position: absolute;
-  right: 0;
+  right: -8px;
+  top: -8px;
   width: 1.5rem;
   /* -webkit-animation: heartbeat 1.5s ease-in-out infinite both; */
   /* animation: heartbeat 1.5s ease-in-out infinite both; */
@@ -31,23 +32,22 @@
 
 .button-last-movement {
   background-color: #dcdcdc;
-  box-shadow: 0 0 8px #fff;
+  box-shadow: 0 0 4px #fff;
   border: none;
-  border-radius: 50%;
+  border-radius: 0.4rem;
+  color: #140014;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 500;
-  height: 6rem;
+  height: 3rem;
   width: 6rem;
   transition: 0.1s;
 }
 
 .button-last-movement:hover {
-  background-color: #c0c0c0;
+  background-color: #dbc5a7;
 }
 
 .button-last-movement:active {
-  background-color: #dbc5a7;
-  box-shadow: 0 0 8px #dbc5a7;
   transform: scale(0.9);
 }
 

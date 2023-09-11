@@ -1,22 +1,49 @@
 import './eated-pieces-panel.css'
-import { useContext } from 'react'
+import { useContext, useLayoutEffect, useState } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 import EatedPiece from './EatedPiece'
+import { BORDER_ROWS } from '../../Game Functions/auxiliar-functions'
 
 
 export default function EatedPiecesPanel() {
-  const { currentEated } = useContext(ChessContext)
+  const {
+    currentEated,
+    currentBoard,
+    turn,
+    playerTurn,
+    isSamePlayer
+  } = useContext(ChessContext)
+
+  const [canRestore, setCanRestore] = useState(false)
 
 
-  
+
+  useLayoutEffect(() => {
+    const x = currentBoard.findIndex((piece, coord) => {
+      const inEdge = BORDER_ROWS.includes(coord)
+      const isPawn = piece?.name.includes('PAWN')
+      return !isSamePlayer(piece) && inEdge && isPawn
+    })
+
+    const canRestorePiece = x !== -1
+    setCanRestore(canRestorePiece)
+  }, [turn])
+
+
+
   const eatedPieces = player => {
     const playerPieces = currentEated.filter(piece => {
       return piece.name.startsWith(player)
     })
 
+    const contraryTurn = playerTurn !== player
 
     return (
-      <div className='eated-player'>
+      <div className={
+        contraryTurn && canRestore
+          ? 'eated-player restore'
+          : 'eated-player'
+      }>
         {playerPieces.map(piece => {
           return (
             <EatedPiece
@@ -30,7 +57,7 @@ export default function EatedPiecesPanel() {
     )
   }
 
-  
+
 
   return (
     <section className='eated-pieces'>

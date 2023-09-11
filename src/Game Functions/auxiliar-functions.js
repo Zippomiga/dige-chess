@@ -18,14 +18,14 @@ const BOARD_LIMITS = [
   [7],                              // CORNER TOP RIGHT
   [56],                             // CORNER BOTTOM LEFT
   [63],                             // CORNER BOTTOM RIGHT
-  [0, 1, 2, 3, 4, 5, 6, 7],         // ROW AVOBE
-  [56, 57, 58, 59, 60, 61, 62, 63], // ROW BOTTOM
-  [0, 8, 16, 24, 32, 40, 48, 56],   // COLUMN LEFT
-  [7, 15, 23, 31, 39, 47, 55, 63]   // COLUMN RIGHT
+  [0, 1, 2, 3, 4, 5, 6, 7],         // BORDER TOP
+  [56, 57, 58, 59, 60, 61, 62, 63], // BORDER BOTTOM
+  [0, 8, 16, 24, 32, 40, 48, 56],   // BORDER LEFT
+  [7, 15, 23, 31, 39, 47, 55, 63]   // BORDER RIGHT
 ]
 
 
-const BORDER_ROWS = [
+export const BORDER_ROWS = [
   ...BOARD_LIMITS[4],
   ...BOARD_LIMITS[5],
 ]
@@ -90,11 +90,13 @@ export function updateCoords(directions, coord, board, isKing = false) {
 
 // MOVEMENTS REFERENCES
 
-// VERTICAL AVOBE:   -8
-// VERTICAL BELOW:   +8
-// HORIZONTAL LEFT:  -1
-// HORIZONTAL RIGHT: +1
-// DIAG LEFT AVOBE:  -9
-// DIAG LEFT BELOW:  +7
-// DIAG RIGHT AVOBE: -7
-// DIAG RIGHT BELOW: +9
+// VERTICAL       AVOBE: -8
+// VERTICAL       BELOW: +8
+
+// HORIZONTAL     LEFT:  -1
+// HORIZONTAL     RIGHT: +1
+
+// DIAGONAL LEFT  AVOBE: -9
+// DIAGONAL LEFT  BELOW: +7
+// DIAGONAL RIGHT AVOBE: -7
+// DIAGONAL RIGHT BELOW: +9

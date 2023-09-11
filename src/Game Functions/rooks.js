@@ -8,16 +8,14 @@ class Rook {
     this.name = name
     this.pic = pic
     this.directions = [
-      [1, 8],        // CORNER_TOP_LEFT
-      [-1, 8],       // CORNER_TOP_RIGHT
-      [-8, 1],       // CORNER_BOTTOM_LEFT
-      [-8, -1],      // CORNER_BOTTOM_RIGHT
-
-      [-1, 1, 8],    // ROW_AVOBE
-      [-8, -1, 1],   // ROW_BOTTOM
-      [-8, 1, 8],    // COLUMN_LEFT
-      [-8, -1, 8],   // COLUMN_RIGHT
-
+      [1, 8],        // CORNER TOP LEFT
+      [-1, 8],       // CORNER TOP RIGHT
+      [-8, 1],       // CORNER BOTTOM LEFT
+      [-8, -1],      // CORNER BOTTOM RIGHT
+      [-1, 1, 8],    // BORDER TOP
+      [-8, -1, 1],   // BORDER BOTTOM
+      [-8, 1, 8],    // BORDER LEFT
+      [-8, -1, 8],   // BORDER RIGHT
       [-8, -1, 1, 8] // DEFAULT
     ]
   }

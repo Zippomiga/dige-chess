@@ -1,6 +1,7 @@
 .eated-pieces {
   display: flex;
   flex-direction: column;
+  align-items: center;
   height: 90vh;
   justify-content: space-between;
 }
@@ -9,7 +10,10 @@
   display: flex;
   flex-direction: column;
   flex-wrap: wrap-reverse;
-  gap: 1px;
-  height: calc(15rem + 4px);
-  width: calc(9rem + 2px);
+  height: 12rem;
+  width: 9rem;
+}
+
+.restore {
+  border: 1px dashed lime;
 }

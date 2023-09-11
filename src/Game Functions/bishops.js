@@ -8,16 +8,14 @@ class Bishop {
     this.name = name
     this.pic = pic
     this.directions = [
-      [9],           // CORNER_TOP_LEFT
-      [8],           // CORNER_TOP_RIGHT
-      [-7],          // CORNER_BOTTOM_LEFT
-      [-9],          // CORNER_BOTTOM_RIGHT
-
-      [7, 9],        // ROW_AVOBE
-      [-9, -7],      // ROW_BOTTOM
-      [-7, 9],       // COLUMN_LEFT
-      [-9, 7],       // COLUMN_RIGHT
-
+      [9],           // CORNER TOP LEFT
+      [8],           // CORNER TOP RIGHT
+      [-7],          // CORNER BOTTOM LEFT
+      [-9],          // CORNER BOTTOM RIGHT
+      [7, 9],        // BORDER TOP
+      [-9, -7],      // BORDER BOTTOM
+      [-7, 9],       // BORDER LEFT
+      [-9, 7],       // BORDER RIGHT
       [-9, -7, 7, 9] // DEFAULT
     ]
   }

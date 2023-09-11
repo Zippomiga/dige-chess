@@ -43,7 +43,11 @@ export default function EatedPiece({ pic, name }) {
   return (
     <img
       onClick={restorePiece}
-      className='eated-piece'
+      className={
+        name.includes('PAWN')
+          ? 'eated-pawn'
+          : 'eated-piece'
+      }
       src={pic}
       alt={name}
     />
