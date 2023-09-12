@@ -4,13 +4,16 @@ import './square.css'
 export default function Square({
   square,
   coord,
+  currentMoves,
   isSamePlayer,
+  isCheck,
+  currentKing,
   updateCurrent,
-  updateChess,
-  kingInCheck,
-  isMoveValid
+  updateChess
 }) {
 
+  const isMoveValid = currentMoves.includes(coord)
+  const kingInCheck = isCheck() && currentKing() === coord
 
   function handleSquare() {
     const isPiece = square !== null
@@ -23,22 +26,26 @@ export default function Square({
   }
 
 
+
+  const classNameSquare =
+    kingInCheck ? 'square check' :
+      isMoveValid ? 'square move' :
+        'square'
+
+
+  const classNamePiece = square?.name.includes('PAWN')
+    ? 'pawn'
+    : 'piece'
+
+
   return (
     <div
-      className={
-        kingInCheck ? 'square check' :
-          isMoveValid ? 'square move' :
-            'square'
-      }
+      className={classNameSquare}
       id={coord}
       onClick={handleSquare}
     >
       <img
-        className={
-          square?.name.includes('PAWN')
-            ? 'pawn'
-            : 'piece'
-        }
+        className={classNamePiece}
         src={square?.pic}
         alt={square?.name}
       />

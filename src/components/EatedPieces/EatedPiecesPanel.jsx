@@ -1,13 +1,20 @@
+import { CHESS_BOARD } from '../../Game Functions/chessBoard'
 import './eated-pieces-panel.css'
 import EatedPiece from './EatedPiece'
+import { useEffect } from 'react'
 
 
 export default function EatedPiecesPanel({
   currentBoard,
+  currentCoord,
   setCurrentBoard,
   currentEated,
   setCurrentEated,
+  setPreviousEated,
+  previousBoard,
+  lastMovement,
   setLastMovement,
+  turn,
   playerTurn
 }) {
 
@@ -31,9 +38,21 @@ export default function EatedPiecesPanel({
   })
 
 
-  const playerEatedPieces = player => {
+  function updateEatedPieces() {
+    const previousSquare = previousBoard[currentCoord]
+    const isEmpty = previousSquare === null
+    const isPawn = previousSquare?.name.includes('PAWN') // pawns can not be restored
+    const isPrevious = lastMovement === false
+
+    if (isEmpty || isPawn || isPrevious) { return }
+
+    setCurrentEated(currentEated => [...currentEated, previousSquare])
+  }
+
+
+  const PlayerEatedPieces = ({ player }) => {
     const eatedPieces = currentEated.filter(piece => {
-      return piece.name.startsWith(player)
+      return piece?.name.startsWith(player)
     })
 
     const hasEatedPieces = eatedPieces.length !== 0
@@ -41,23 +60,40 @@ export default function EatedPiecesPanel({
     const isPawnAtBorder = pawnCoord !== -1
 
 
+    function restorePiece(e) {
+      if (!isPawnAtBorder) { return }
+
+      const pieceName = e.target.alt
+      const pieceToRestore = CHESS_BOARD.find(piece => piece?.name === pieceName)
+
+      setCurrentBoard(currentBoard => {
+        return [...currentBoard]
+          .fill(pieceToRestore, pawnCoord, pawnCoord + 1)
+      })
+
+      setCurrentEated(currentEated => {
+        return [...currentEated]
+          .filter(eatedPiece => eatedPiece.name !== pieceName)
+      })
+
+      setLastMovement(true)
+    }
+
+
+    const className = hasEatedPieces && isContraryTurn && isPawnAtBorder
+      ? 'eated-player'
+      : 'eated-player blocked'
+
+
     return (
-      <div className={
-        hasEatedPieces && isContraryTurn && isPawnAtBorder
-          ? 'eated-player'
-          : 'eated-player blocked'
-      }>
+      <div className={className}>
         {eatedPieces.map(piece => {
           return (
             <EatedPiece
-              setCurrentBoard={setCurrentBoard}
-              setCurrentEated={setCurrentEated}
-              setLastMovement={setLastMovement}
               pic={piece.pic}
               name={piece.name}
-              pawnCoord={pawnCoord}
-              isPawnAtBorder={isPawnAtBorder}
               key={piece.name}
+              restorePiece={restorePiece}
             />
           )
         })}
@@ -66,11 +102,16 @@ export default function EatedPiecesPanel({
   }
 
 
+  useEffect(() => {
+    updateEatedPieces()
+    setPreviousEated(currentEated)
+  }, [turn])
+
 
   return (
     <section className='eated-pieces-panel'>
-      {playerEatedPieces('B')}
-      {playerEatedPieces('W')}
+      <PlayerEatedPieces player='B' />
+      <PlayerEatedPieces player='W' />
     </section>
 
   )

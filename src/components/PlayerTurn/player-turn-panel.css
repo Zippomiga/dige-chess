@@ -18,7 +18,7 @@
 }
 
 
-.button-last-movement {
+.last-move {
   background-color: #dcdcdc;
   box-shadow: 0 0 4px #fff;
   border: none;
@@ -32,12 +32,12 @@
 }
 
 
-.button-last-movement:hover {
+.last-move:hover {
   background-color: #dbc5a7;
 }
 
 
-.button-last-movement:active {
+.last-move:active {
   transform: scale(0.9);
 }
 
@@ -48,7 +48,7 @@
 }
 
 
-.button-restart-chess {
+.restart-chess {
   background-color: #dcdcdc;
   box-shadow: 0 0 4px #fff;
   border: none;
@@ -62,12 +62,12 @@
 }
 
 
-.button-restart-chess:hover {
+.restart-chess:hover {
   background-color: #ff6969;
   box-shadow: 0 0 4px #ff6969;
 }
 
 
-.button-restart-chess:active {
+.restart-chess:active {
   transform: scale(0.9);
 }

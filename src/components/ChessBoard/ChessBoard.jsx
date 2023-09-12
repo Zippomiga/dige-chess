@@ -6,8 +6,6 @@ import { useEffect } from 'react'
 export default function ChessBoard({
   currentBoard,
   setCurrentBoard,
-  currentEated,
-  setCurrentEated,
   currentMoves,
   setCurrentMoves,
   currentCoord,
@@ -15,9 +13,7 @@ export default function ChessBoard({
   currentSquare,
   setCurrentSquare,
   setPreviousBoard,
-  setPreviousEated,
   setLastMovement,
-  turn,
   setTurn,
   current,
   contrary,
@@ -101,17 +97,6 @@ export default function ChessBoard({
   }
 
 
-  function updateEatedPieces(square) {
-    const isEmpty = square === null
-    const isPawn = square?.name.includes('PAWN')
-
-    if (isEmpty || isPawn) { return }
-
-    setCurrentEated(currentEated => [...currentEated, square])
-    setPreviousEated(currentEated)
-  }
-
-
   function updateChess(square, coord) {
     const newBoard = updateBoard(currentCoord, coord, currentSquare)
     setCurrentBoard(newBoard)
@@ -121,18 +106,12 @@ export default function ChessBoard({
     setPreviousBoard(currentBoard)
     setLastMovement(true)
     setTurn(turn => !turn)
-    updateEatedPieces(square)
   }
 
 
   useEffect(() => {
     isCheckMate()
   }, [isCheck()])
-
-
-  useEffect(() => {
-    console.log({ currentMoves, currentCoord, currentSquare, });
-  }, [currentSquare])
 
 
   return (
@@ -142,12 +121,13 @@ export default function ChessBoard({
           <Square
             square={square}
             coord={coord}
+            key={square?.name ?? coord}
+            currentMoves={currentMoves}
             isSamePlayer={isSamePlayer}
+            isCheck={isCheck}
+            currentKing={currentKing}
             updateCurrent={updateCurrent}
             updateChess={updateChess}
-            kingInCheck={isCheck() && currentKing() === coord}
-            isMoveValid={currentMoves.includes(coord)}
-            key={square?.name ?? coord}
           />
         )
       })}

@@ -43,37 +43,48 @@ export default function PlayerTurnPanel({
   }
 
 
-  const inCheck = player => {
+  const PlayerTurn = ({ player }) => {
     const isWhite = player === 'W'
     const playerPic = isWhite ? whiteTurn : blackTurn
     const playerTurn = isWhite ? turn : !turn
+    const className = playerTurn ? 'player-turn' : 'player-turn disabled'
 
     return (
       <img
         src={playerPic}
-        className={playerTurn ? 'player-turn' : 'player-turn disabled'}
+        className={className}
         alt={player + ' turn'}
       />
     )
   }
 
 
+  const Button = ({ className, onClick, legend }) => {
+    return (
+      <button
+        className={className}
+        onClick={onClick}
+      >
+        {legend}
+      </button>
+    )
+  }
+
+
   return (
     <section className='player-turn-panel'>
-      {inCheck('B')}
-      <button
-        className={lastMovement ? 'button-last-movement' : 'button-last-movement disabled'}
+      <PlayerTurn player='B' />
+      <Button
+        className={lastMovement ? 'last-move' : 'last-move disabled'}
         onClick={handleLastMove}
-      >
-        Last Movement
-      </button>
-      <button
-        className='button-restart-chess'
+        legend='Last Move'
+      />
+      <Button
+        className={'restart-chess'}
         onClick={restartChess}
-      >
-        Restart Chess
-      </button>
-      {inCheck('W')}
+        legend='Restart Chess'
+      />
+      <PlayerTurn player='W' />
     </section>
   )
 }
