@@ -1,9 +1,10 @@
 import './square.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
+import { validCoord } from '../../Game Functions/auxiliar-functions'
 
 
-export default function Square({ square, coord }) {
+export default function Square({ square, coord, contrary, isCheck, updateBoard, playerMoves, currentKing }) {
   const {
     currentBoard,
     setCurrentBoard,
@@ -18,13 +19,7 @@ export default function Square({ square, coord }) {
     setCurrentSquare,
     currentCoord,
     setCurrentCoord,
-    contrary,
-    updateBoard,
     isSamePlayer,
-    getMovements,
-    playerMoves,
-    currentKing,
-    isCheck,
     resetPlayerTurn
   } = useContext(ChessContext)
 
@@ -37,7 +32,9 @@ export default function Square({ square, coord }) {
 
 
   function updateCurrent() {
-    const allMoves = getMovements(square, coord, currentBoard)
+    const allMoves = square
+      .getMoves(coord, currentBoard)
+      .filter(validCoord)
 
     const newMoves = allMoves.filter(move => {
       const newSquare = currentBoard[move]
@@ -52,7 +49,7 @@ export default function Square({ square, coord }) {
     })
 
     const moves = newMoves.length === 0 ? [] : [...newMoves, coord]
-    
+
     setCurrentMoves(moves)
     setCurrentCoord(coord)
     setCurrentSquare(square)

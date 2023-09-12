@@ -1,4 +1,4 @@
-.eated-pieces {
+.eated-pieces-panel {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,8 +10,8 @@
   display: flex;
   flex-direction: column;
   flex-wrap: wrap-reverse;
-  height: 12rem;
-  width: 9rem;
+  height: calc(12rem + 2px);
+  width: 6rem;
 }
 
 .restore {

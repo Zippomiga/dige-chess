@@ -2,44 +2,44 @@ import './eated-pieces-panel.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
 import EatedPiece from './EatedPiece'
-import { COLUMNS } from '../../Game Functions/auxiliar-functions'
 
 
-const edgeTop = COLUMNS.map(column => Math.min(...column))
-const edgeBottom = COLUMNS.map(column => Math.max(...column))
-const boardEdges = [...edgeTop, ...edgeBottom]
+const boardBorders = [
+  0, 1, 2, 3, 4, 5, 6, 7,
+  56, 57, 58, 59, 60, 61, 62, 63
+]
 
 
 export default function EatedPiecesPanel() {
   const {
-    currentEated,
     currentBoard,
+    currentEated,
     playerTurn,
     isSamePlayer
   } = useContext(ChessContext)
 
 
 
-  const eatedPieces = player => {
+  const playerEatedPieces = player => {
+    const eatedPieces = currentEated.filter(piece => {
+      const playerPiece = piece.name.startsWith(player)
+      const isNotPawn = !piece.name.includes('PAWN') // pawns can not be restored
+
+      return playerPiece && isNotPawn
+    })
+
+
     const pawnCoord = currentBoard.findIndex((piece, coord) => {
       const notContraryPawn = !isSamePlayer(piece)
       const isPawn = piece?.name.includes('PAWN')
-      const inEdge = boardEdges.includes(coord)
+      const inEdge = boardBorders.includes(coord)
 
       return notContraryPawn && isPawn && inEdge
     })
 
 
-    const playerPieces = currentEated.filter(piece => {
-      const playerPiece = piece.name.startsWith(player)
-      const isNotPawn = !piece.name.includes('PAWN') // panws can not be restored
-  
-      return playerPiece && isNotPawn
-    })
-
-
     const isPawnAtBorder = pawnCoord !== -1
-    const hasEatedPieces = playerPieces.length !== 0
+    const hasEatedPieces = eatedPieces.length !== 0
     const isContraryTurn = playerTurn !== player
 
 
@@ -49,12 +49,13 @@ export default function EatedPiecesPanel() {
           ? 'eated-player restore'
           : 'eated-player'
       }>
-        {playerPieces.map(piece => {
+        {eatedPieces.map(piece => {
           return (
             <EatedPiece
               pic={piece.pic}
               name={piece.name}
               pawnCoord={pawnCoord}
+              isPawnAtBorder={isPawnAtBorder}
               key={piece.name}
             />
           )
@@ -66,9 +67,9 @@ export default function EatedPiecesPanel() {
 
 
   return (
-    <section className='eated-pieces'>
-      {eatedPieces('B')}
-      {eatedPieces('W')}
+    <section className='eated-pieces-panel'>
+      {playerEatedPieces('B')}
+      {playerEatedPieces('W')}
     </section>
 
   )

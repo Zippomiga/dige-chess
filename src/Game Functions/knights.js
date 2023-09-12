@@ -1,6 +1,6 @@
 import b_knight_png from '../assets/chess-pieces/b-knight.png'
 import w_knight_png from '../assets/chess-pieces/w-knight.png'
-import { findColumn } from './auxiliar-functions'
+import { COLUMNS } from './auxiliar-functions'
 
 
 class Knight {
@@ -35,7 +35,13 @@ function updateCoords(currentCoord) {
     BR: newCoord(below_Y, right_Y),
   }
 
-  const COLUMN = findColumn(currentCoord)
+  
+  const COLUMN = currentCoord => {
+    return COLUMNS.findIndex(column => {
+      return column.includes(currentCoord)
+    })
+  }
+
 
   switch (COLUMN) {
     case 0:  //knight at column A

@@ -1,10 +1,10 @@
 import './eated-piece.css'
 import { useContext } from 'react'
 import { ChessContext } from '../../context/ChessContext'
-import { CHESS_BOARD } from '../../Game Functions/board'
+import { CHESS_BOARD } from '../../Game Functions/chessBoard'
 
 
-export default function EatedPiece({ pic, name, pawnCoord }) {
+export default function EatedPiece({ pic, name, pawnCoord, isPawnAtBorder }) {
   const {
     setCurrentBoard,
     setLastMovement,
@@ -19,7 +19,7 @@ export default function EatedPiece({ pic, name, pawnCoord }) {
     const pieceToRestore = CHESS_BOARD.find(piece => piece?.name === pieceName)
     const notContrary = isSamePlayer(pieceToRestore)
     
-    if (notContrary) { return }
+    if (notContrary || !isPawnAtBorder) { return }
 
     setCurrentBoard(currentBoard => {
       return [...currentBoard]
@@ -39,11 +39,7 @@ export default function EatedPiece({ pic, name, pawnCoord }) {
   return (
     <img
       onClick={restorePiece}
-      className={
-        name.includes('PAWN')
-          ? 'eated-pawn'
-          : 'eated-piece'
-      }
+      className='eated-piece'
       src={pic}
       alt={name}
     />

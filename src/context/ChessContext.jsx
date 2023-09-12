@@ -1,5 +1,4 @@
-import { validCoord } from "../Game Functions/auxiliar-functions";
-import { CHESS_BOARD } from "../Game Functions/board";
+import { CHESS_BOARD } from "../Game Functions/chessBoard";
 import { createContext, useState } from "react";
 
 
@@ -17,72 +16,12 @@ export default function ChessContextProvider(props) {
   const [lastMovement, setLastMovement] = useState(false)
   const [turn, setTurn] = useState(true)
 
-
   const playerTurn = turn ? 'W' : 'B'
-  const current = 'current'
-  const contrary = 'contrary'
-
-
-
-  const updateBoard = (oldCoord, newCoord, newPiece) => {
-    const newBoard = [...currentBoard]
-
-    newBoard[oldCoord] = null
-    newBoard[newCoord] = newPiece
-
-    return newBoard
-  }
-
 
 
   const isSamePlayer = square => {
     return square?.name.startsWith(playerTurn)
   }
-
-
-
-  const playerPieces = (player, board = currentBoard) => {
-    return board.filter(piece => {
-      switch (player) {
-        case current:
-          return piece !== null && isSamePlayer(piece)
-        case contrary:
-          return piece !== null && !isSamePlayer(piece)
-      }
-    })
-  }
-
-
-
-  const getMovements = (piece, coord, board) => {
-    const movements = piece.getMoves(coord, board)
-    return movements.filter(validCoord)
-  }
-
-
-
-  const playerMoves = (player, board = currentBoard) => {
-    const pieces = playerPieces(player, board)
-    return pieces.map(piece => {
-      const currentCoord = board.indexOf(piece)
-      return getMovements(piece, currentCoord, board)
-    })
-  }
-
-
-
-  const currentKing = (board = currentBoard) => {
-    const currentPieces = playerPieces(current, board)
-    const currentKing = currentPieces.find(king => king.name.includes('KING'))
-    return board.indexOf(currentKing)
-  }
-
-
-
-  const isCheck = (king = currentKing(), movements = playerMoves(contrary)) => {
-    return movements.some(moves => moves.includes(king))
-  }
-
 
 
   function resetPlayerTurn() {
@@ -93,37 +32,28 @@ export default function ChessContextProvider(props) {
   }
 
 
-
   return (
     <ChessContext.Provider value={{
       currentBoard,
       setCurrentBoard,
-      previousBoard,
-      setPreviousBoard,
       currentEated,
       setCurrentEated,
+      currentMoves,
+      setCurrentMoves,
+      currentCoord,
+      setCurrentCoord,
+      currentSquare,
+      setCurrentSquare,
+      previousBoard,
+      setPreviousBoard,
       previousEated,
       setPreviousEated,
       lastMovement,
       setLastMovement,
       turn,
       setTurn,
-      currentMoves,
-      setCurrentMoves,
-      currentSquare,
-      setCurrentSquare,
-      currentCoord,
-      setCurrentCoord,
       playerTurn,
-      current,
-      contrary,
-      updateBoard,
       isSamePlayer,
-      playerPieces,
-      getMovements,
-      playerMoves,
-      currentKing,
-      isCheck,
       resetPlayerTurn
     }}>
       {props.children}

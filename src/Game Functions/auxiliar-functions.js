@@ -22,13 +22,6 @@ const BOARD_LIMITS = [
 ]
 
 
-export const findColumn = currentCoord => {
-  return COLUMNS.findIndex(column => {
-    return column.includes(currentCoord)
-  })
-}
-
-
 export const validCoord = coord => {
   const isValid = coord !== null
   const inBoard = coord > -1 && coord < 64

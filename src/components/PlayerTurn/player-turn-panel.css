@@ -16,9 +16,6 @@
   padding: 0.5rem;
 }
 
-.current {
-  opacity: 0.2;
-}
 
 .turn-check {
   height: 1.5rem;
@@ -52,7 +49,7 @@
 }
 
 .disabled {
-  opacity: 0.5;
+  opacity: 0.2;
   pointer-events: none;
 }
 
