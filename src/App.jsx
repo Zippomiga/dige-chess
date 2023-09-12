@@ -5,6 +5,7 @@ import PlayerTurnPanel from './components/PlayerTurn/PlayerTurnPanel'
 import EatedPiecesPanel from './components/EatedPieces/EatedPiecesPanel'
 import { useState } from 'react'
 import { CHESS_BOARD } from './Game Functions/chessBoard'
+import { validCoord } from './Game Functions/auxiliar-functions'
 
 
 export default function App() {
@@ -20,6 +21,40 @@ export default function App() {
   const [turn, setTurn] = useState(true)
 
   const playerTurn = turn ? 'W' : 'B'
+  const current = 'current'
+  const contrary = 'contrary'
+
+
+  const isSamePlayer = square => {
+    return square?.name.startsWith(playerTurn)
+  }
+
+
+  const playerPieces = (player, board = currentBoard) => {
+    return board.filter(piece => {
+      switch (player) {
+        case current:
+          return piece !== null && isSamePlayer(piece)
+        case contrary:
+          return piece !== null && !isSamePlayer(piece)
+      }
+    })
+  }
+
+
+  const getMovements = (piece, coord, board = currentBoard) => {
+    return piece?.getMoves(coord, board).filter(validCoord)
+  }
+
+
+  const playerMoves = (player, board = currentBoard) => {
+    const pieces = playerPieces(player, board)
+    return pieces.map(piece => {
+      const currentCoord = board.indexOf(piece)
+      return getMovements(piece, currentCoord, board)
+    })
+  }
+
 
   const PROPS = {
     currentBoard,
@@ -40,8 +75,15 @@ export default function App() {
     setLastMovement,
     turn,
     setTurn,
-    playerTurn
+    playerTurn,
+    current,
+    contrary,
+    isSamePlayer,
+    playerPieces,
+    getMovements,
+    playerMoves
   }
+
 
   return (
     <main>

@@ -1,7 +1,6 @@
 import './chess-board.css'
 import Square from '../Square/Square'
 import { useEffect } from 'react'
-import { validCoord } from '../../Game Functions/auxiliar-functions'
 
 
 export default function ChessBoard({
@@ -19,16 +18,13 @@ export default function ChessBoard({
   setPreviousEated,
   setLastMovement,
   setTurn,
-  playerTurn
+  current,
+  contrary,
+  isSamePlayer,
+  playerPieces,
+  getMovements,
+  playerMoves
 }) {
-
-  const current = 'current'
-  const contrary = 'contrary'
-
-
-  const isSamePlayer = square => {
-    return square?.name.startsWith(playerTurn)
-  }
 
 
   const updateBoard = (oldCoord, newCoord, newPiece) => {
@@ -38,29 +34,6 @@ export default function ChessBoard({
     newBoard[newCoord] = newPiece
 
     return newBoard
-  }
-
-
-  const playerPieces = (player, board = currentBoard) => {
-    return board.filter(piece => {
-      switch (player) {
-        case current:
-          return piece !== null && isSamePlayer(piece)
-        case contrary:
-          return piece !== null && !isSamePlayer(piece)
-      }
-    })
-  }
-
-
-  const playerMoves = (player, board = currentBoard) => {
-    const pieces = playerPieces(player, board)
-    return pieces.map(piece => {
-      const currentCoord = board.indexOf(piece)
-      return piece
-        .getMoves(currentCoord, board)
-        .filter(validCoord)
-    })
   }
 
 
@@ -131,6 +104,7 @@ export default function ChessBoard({
             square={square}
             coord={coord}
             isSamePlayer={isSamePlayer}
+            getMovements={getMovements}
             contrary={contrary}
             updateBoard={updateBoard}
             playerMoves={playerMoves}

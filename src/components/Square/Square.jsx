@@ -1,5 +1,4 @@
 import './square.css'
-import { validCoord } from '../../Game Functions/auxiliar-functions'
 
 
 export default function Square({
@@ -20,6 +19,7 @@ export default function Square({
   square,
   coord,
   isSamePlayer,
+  getMovements,
   contrary,
   updateBoard,
   playerMoves,
@@ -33,9 +33,7 @@ export default function Square({
 
 
   function updateCurrent() {
-    const allMoves = square
-      .getMoves(coord, currentBoard)
-      .filter(validCoord)
+    const allMoves = getMovements(square, coord)
 
     const newMoves = allMoves.filter(move => {
       const newSquare = currentBoard[move]
