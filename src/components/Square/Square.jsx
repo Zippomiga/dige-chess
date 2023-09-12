@@ -1,34 +1,35 @@
 import './square.css'
-import { useContext } from 'react'
-import { ChessContext } from '../../context/ChessContext'
 import { validCoord } from '../../Game Functions/auxiliar-functions'
 
 
-export default function Square({ square, coord, contrary, isCheck, updateBoard, playerMoves, currentKing }) {
-  const {
-    currentBoard,
-    setCurrentBoard,
-    setPreviousBoard,
-    currentEated,
-    setCurrentEated,
-    setPreviousEated,
-    setLastMovement,
-    currentMoves,
-    setCurrentMoves,
-    currentSquare,
-    setCurrentSquare,
-    currentCoord,
-    setCurrentCoord,
-    isSamePlayer,
-    resetPlayerTurn
-  } = useContext(ChessContext)
-
-
+export default function Square({
+  currentBoard,
+  setCurrentBoard,
+  currentEated,
+  setCurrentEated,
+  currentMoves,
+  setCurrentMoves,
+  currentCoord,
+  setCurrentCoord,
+  currentSquare,
+  setCurrentSquare,
+  setPreviousBoard,
+  setPreviousEated,
+  setLastMovement,
+  setTurn,
+  square,
+  coord,
+  isSamePlayer,
+  contrary,
+  updateBoard,
+  playerMoves,
+  currentKing,
+  isCheck
+}) {
 
   const isPiece = square !== null
   const isMoveValid = currentMoves.includes(coord)
   const kingInCheck = isCheck() && currentKing() === coord
-
 
 
   function updateCurrent() {
@@ -56,24 +57,25 @@ export default function Square({ square, coord, contrary, isCheck, updateBoard, 
   }
 
 
-
   function updateEatedPieces() {
-    if (!isPiece) { return }
-    setPreviousEated(currentEated)
+    const isPawn = square?.name.includes('PAWN')
+    if (!isPiece || isPawn) { return }
     setCurrentEated(currentEated => [...currentEated, square])
+    setPreviousEated(currentEated)
   }
-
 
 
   function updateChess() {
     const newBoard = updateBoard(currentCoord, coord, currentSquare)
     setCurrentBoard(newBoard)
+    setCurrentMoves([])
+    setCurrentCoord(null)
+    setCurrentSquare(null)
     setPreviousBoard(currentBoard)
     setLastMovement(true)
+    setTurn(turn => !turn)
     updateEatedPieces()
-    resetPlayerTurn()
   }
-
 
 
   function handleSquare() {
@@ -84,7 +86,6 @@ export default function Square({ square, coord, contrary, isCheck, updateBoard, 
     if (validFirstClick) { updateCurrent() }
     if (validSecondClick) { updateChess() }
   }
-
 
 
   return (

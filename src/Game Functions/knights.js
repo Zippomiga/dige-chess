@@ -35,12 +35,9 @@ function updateCoords(currentCoord) {
     BR: newCoord(below_Y, right_Y),
   }
 
-  
-  const COLUMN = currentCoord => {
-    return COLUMNS.findIndex(column => {
-      return column.includes(currentCoord)
-    })
-  }
+
+  const COLUMN = COLUMNS
+    .findIndex(column => column.includes(currentCoord))
 
 
   switch (COLUMN) {

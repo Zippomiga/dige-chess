@@ -3,7 +3,15 @@
   background-color: #dcdcdc;
   border-radius: 0.4rem;
   height: 3rem;
-  margin: 0 0 0 -12px;
   padding: 0.2rem;
+  transition: 0.1s;
   width: 3rem;
+}
+
+.eated-piece:hover {
+  background-color: #aaffaa;
+}
+
+.eated-piece:active {
+  transform: scale(0.9);
 }

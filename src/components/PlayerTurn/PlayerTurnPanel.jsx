@@ -1,22 +1,36 @@
 import './player-turn-panel.css'
 import blackTurn from '../../assets/chess-pieces/b-shift.png'
 import whiteTurn from '../../assets/chess-pieces/w-shift.png'
-import { useContext } from 'react'
-import { ChessContext } from '../../context/ChessContext'
+import { CHESS_BOARD } from '../../Game Functions/chessBoard'
 
 
-export default function PlayerTurnPanel() {
-  const {
-    setCurrentBoard,
-    previousBoard,
-    setCurrentEated,
-    previousEated,
-    lastMovement,
-    setLastMovement,
-    turn,
-    resetPlayerTurn
-  } = useContext(ChessContext)
+export default function PlayerTurnPanel({
+  setCurrentBoard,
+  setCurrentEated,
+  setCurrentMoves,
+  setCurrentCoord,
+  setCurrentSquare,
+  previousBoard,
+  setPreviousBoard,
+  previousEated,
+  setPreviousEated,
+  lastMovement,
+  setLastMovement,
+  turn,
+  setTurn
+}) {
 
+  function restartChess() {
+    setCurrentBoard(CHESS_BOARD)
+    setCurrentEated([])
+    setCurrentMoves([])
+    setCurrentCoord([])
+    setCurrentSquare(null)
+    setPreviousBoard([])
+    setPreviousEated([])
+    setLastMovement(false)
+    setTurn(true)
+  }
 
 
   function handleLastMove() {
@@ -24,9 +38,11 @@ export default function PlayerTurnPanel() {
     setLastMovement(false)
     setCurrentBoard(previousBoard)
     setCurrentEated(previousEated)
-    resetPlayerTurn()
+    setCurrentMoves([])
+    setCurrentCoord(null)
+    setCurrentSquare(null)
+    setTurn(turn => !turn)
   }
-
 
 
   const inCheck = player => {
@@ -44,7 +60,6 @@ export default function PlayerTurnPanel() {
   }
 
 
-
   return (
     <section className='player-turn-panel'>
       {inCheck('B')}
@@ -52,7 +67,13 @@ export default function PlayerTurnPanel() {
         className={lastMovement ? 'button-last-movement' : 'button-last-movement disabled'}
         onClick={handleLastMove}
       >
-        Last Move
+        Last Movement
+      </button>
+      <button
+        className='button-restart-chess'
+        onClick={restartChess}
+      >
+        Restart Chess
       </button>
       {inCheck('W')}
     </section>

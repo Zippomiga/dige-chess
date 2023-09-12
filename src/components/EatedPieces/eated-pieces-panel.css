@@ -7,13 +7,18 @@
 }
 
 .eated-player {
+  border: 1px solid transparent;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
   flex-wrap: wrap-reverse;
-  height: calc(12rem + 2px);
-  width: 6rem;
+  height: calc(12rem + 5px);
+  width: calc(6rem + 3px);
 }
 
-.restore {
-  border: 1px dashed lime;
+
+.blocked {
+  pointer-events: none;
 }

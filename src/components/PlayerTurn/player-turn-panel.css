@@ -7,6 +7,7 @@
   position: relative;
 }
 
+
 .player-turn {
   background-color: #dcdcdc;
   box-shadow: 0 0 4px #fff;
@@ -16,16 +17,6 @@
   padding: 0.5rem;
 }
 
-
-.turn-check {
-  height: 1.5rem;
-  position: absolute;
-  right: -8px;
-  top: -8px;
-  width: 1.5rem;
-  /* -webkit-animation: heartbeat 1.5s ease-in-out infinite both; */
-  /* animation: heartbeat 1.5s ease-in-out infinite both; */
-}
 
 .button-last-movement {
   background-color: #dcdcdc;
@@ -40,13 +31,16 @@
   transition: 0.1s;
 }
 
+
 .button-last-movement:hover {
   background-color: #dbc5a7;
 }
 
+
 .button-last-movement:active {
   transform: scale(0.9);
 }
+
 
 .disabled {
   opacity: 0.2;
@@ -54,41 +48,26 @@
 }
 
 
-@keyframes heartbeat {
-  from {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    -webkit-transform-origin: center center;
-    transform-origin: center center;
-    -webkit-animation-timing-function: ease-out;
-    animation-timing-function: ease-out;
-  }
+.button-restart-chess {
+  background-color: #dcdcdc;
+  box-shadow: 0 0 4px #fff;
+  border: none;
+  border-radius: 0.4rem;
+  color: #140014;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
+  height: 3rem;
+  width: 6rem;
+  transition: 0.1s;
+}
 
-  10% {
-    -webkit-transform: scale(0.91);
-    transform: scale(0.91);
-    -webkit-animation-timing-function: ease-in;
-    animation-timing-function: ease-in;
-  }
 
-  17% {
-    -webkit-transform: scale(0.98);
-    transform: scale(0.98);
-    -webkit-animation-timing-function: ease-out;
-    animation-timing-function: ease-out;
-  }
+.button-restart-chess:hover {
+  background-color: #ff6969;
+  box-shadow: 0 0 4px #ff6969;
+}
 
-  33% {
-    -webkit-transform: scale(0.87);
-    transform: scale(0.87);
-    -webkit-animation-timing-function: ease-in;
-    animation-timing-function: ease-in;
-  }
 
-  45% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    -webkit-animation-timing-function: ease-out;
-    animation-timing-function: ease-out;
-  }
+.button-restart-chess:active {
+  transform: scale(0.9);
 }
