@@ -40,6 +40,7 @@ export default function EatedPiecesPanel({
     const isContraryTurn = playerTurn !== player
     const isPawnAtBorder = pawnCoord !== -1
 
+
     return (
       <div className={
         hasEatedPieces && isContraryTurn && isPawnAtBorder
@@ -63,6 +64,7 @@ export default function EatedPiecesPanel({
       </div>
     )
   }
+
 
 
   return (

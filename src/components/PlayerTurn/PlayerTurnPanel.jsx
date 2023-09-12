@@ -39,8 +39,6 @@ export default function PlayerTurnPanel({
     setCurrentBoard(previousBoard)
     setCurrentEated(previousEated)
     setCurrentMoves([])
-    setCurrentCoord(null)
-    setCurrentSquare(null)
     setTurn(turn => !turn)
   }
 

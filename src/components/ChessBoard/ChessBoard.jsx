@@ -17,6 +17,7 @@ export default function ChessBoard({
   setPreviousBoard,
   setPreviousEated,
   setLastMovement,
+  turn,
   setTurn,
   current,
   contrary,
@@ -77,9 +78,61 @@ export default function ChessBoard({
   }
 
 
+  function updateCurrent(square, coord) {
+    const allMoves = getMovements(square, coord)
+
+    const newMoves = allMoves.filter(move => {
+      const newSquare = currentBoard[move]
+      const newBoard = updateBoard(coord, move, square)
+      const newCurrentKing = currentKing(newBoard)
+      const newContraryMoves = playerMoves(contrary, newBoard)
+
+      const samePlayer = isSamePlayer(newSquare)
+      const leftInCheck = isCheck(newCurrentKing, newContraryMoves)
+
+      return !samePlayer && !leftInCheck
+    })
+
+    const moves = newMoves.length === 0 ? [] : [...newMoves, coord]
+
+    setCurrentMoves(moves)
+    setCurrentCoord(coord)
+    setCurrentSquare(square)
+  }
+
+
+  function updateEatedPieces(square) {
+    const isEmpty = square === null
+    const isPawn = square?.name.includes('PAWN')
+
+    if (isEmpty || isPawn) { return }
+
+    setCurrentEated(currentEated => [...currentEated, square])
+    setPreviousEated(currentEated)
+  }
+
+
+  function updateChess(square, coord) {
+    const newBoard = updateBoard(currentCoord, coord, currentSquare)
+    setCurrentBoard(newBoard)
+    setCurrentMoves([])
+    setCurrentCoord(coord)
+    setCurrentSquare(square)
+    setPreviousBoard(currentBoard)
+    setLastMovement(true)
+    setTurn(turn => !turn)
+    updateEatedPieces(square)
+  }
+
+
   useEffect(() => {
     isCheckMate()
   }, [isCheck()])
+
+
+  useEffect(() => {
+    console.log({ currentMoves, currentCoord, currentSquare, });
+  }, [currentSquare])
 
 
   return (
@@ -87,29 +140,13 @@ export default function ChessBoard({
       {currentBoard.map((square, coord) => {
         return (
           <Square
-            currentBoard={currentBoard}
-            setCurrentBoard={setCurrentBoard}
-            currentEated={currentEated}
-            setCurrentEated={setCurrentEated}
-            currentMoves={currentMoves}
-            setCurrentMoves={setCurrentMoves}
-            currentCoord={currentCoord}
-            setCurrentCoord={setCurrentCoord}
-            currentSquare={currentSquare}
-            setCurrentSquare={setCurrentSquare}
-            setPreviousBoard={setPreviousBoard}
-            setPreviousEated={setPreviousEated}
-            setLastMovement={setLastMovement}
-            setTurn={setTurn}
             square={square}
             coord={coord}
             isSamePlayer={isSamePlayer}
-            getMovements={getMovements}
-            contrary={contrary}
-            updateBoard={updateBoard}
-            playerMoves={playerMoves}
-            currentKing={currentKing}
-            isCheck={isCheck}
+            updateCurrent={updateCurrent}
+            updateChess={updateChess}
+            kingInCheck={isCheck() && currentKing() === coord}
+            isMoveValid={currentMoves.includes(coord)}
             key={square?.name ?? coord}
           />
         )
