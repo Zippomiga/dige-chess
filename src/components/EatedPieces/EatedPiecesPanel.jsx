@@ -1,53 +1,41 @@
-import { CHESS_BOARD } from '../../Game Functions/chessBoard'
 import './eated-pieces-panel.css'
+import { ChessContext } from '../../context/chessContext'
+import { COLUMNS } from '../../Game Functions/auxiliar-functions'
+import { useEffect, useContext } from 'react'
 import EatedPiece from './EatedPiece'
-import { useEffect } from 'react'
 
 
-export default function EatedPiecesPanel({
-  currentBoard,
-  currentCoord,
-  setCurrentBoard,
-  currentEated,
-  setCurrentEated,
-  setPreviousEated,
-  previousBoard,
-  lastMovement,
-  setLastMovement,
-  turn,
-  playerTurn
-}) {
-
-  const boardBorders = [
-    0, 1, 2, 3, 4, 5, 6, 7,         // BORDER TOP
-    56, 57, 58, 59, 60, 61, 62, 63  // BORDER BOTTOM
-  ]
+export default function EatedPiecesPanel() {
+  const {
+    currentBoard,
+    currentEated,
+    setCurrentEated,
+    currentCoord,
+    previousBoard,
+    setPreviousEated,
+    lastMovement,
+    turn,
+    playerTurn
+  } = useContext(ChessContext)
 
 
-  const contraryPawn = {
-    'W': 'B_PAWN',
-    'B': 'W_PAWN'
-  }
+  const coordOfPawn = currentBoard.findIndex((piece, coord) => {
+    const contrary = {
+      'W': 'B_PAWN',
+      'B': 'W_PAWN'
+    }
 
+    const contraryPawn = contrary[playerTurn]
+    const isPawn = piece?.name.includes(contraryPawn)
 
-  const pawnCoord = currentBoard.findIndex((piece, coord) => {
-    const inEdge = boardBorders.includes(coord)
-    const isPawn = piece?.name.includes(contraryPawn[playerTurn])
+    const atEdge = COLUMNS.some(column => {
+      const atTop = Math.min(...column) === coord
+      const atBottom = Math.max(...column) === coord
+      return atTop || atBottom
+    })
 
-    return inEdge && isPawn
+    return isPawn && atEdge
   })
-
-
-  function updateEatedPieces() {
-    const previousSquare = previousBoard[currentCoord]
-    const isEmpty = previousSquare === null
-    const isPawn = previousSquare?.name.includes('PAWN') // pawns can not be restored
-    const isPrevious = lastMovement === false
-
-    if (isEmpty || isPawn || isPrevious) { return }
-
-    setCurrentEated(currentEated => [...currentEated, previousSquare])
-  }
 
 
   const PlayerEatedPieces = ({ player }) => {
@@ -57,27 +45,7 @@ export default function EatedPiecesPanel({
 
     const hasEatedPieces = eatedPieces.length !== 0
     const isContraryTurn = playerTurn !== player
-    const isPawnAtBorder = pawnCoord !== -1
-
-
-    function restorePiece(e) {
-      if (!isPawnAtBorder) { return }
-
-      const pieceName = e.target.alt
-      const pieceToRestore = CHESS_BOARD.find(piece => piece?.name === pieceName)
-
-      setCurrentBoard(currentBoard => {
-        return [...currentBoard]
-          .fill(pieceToRestore, pawnCoord, pawnCoord + 1)
-      })
-
-      setCurrentEated(currentEated => {
-        return [...currentEated]
-          .filter(eatedPiece => eatedPiece.name !== pieceName)
-      })
-
-      setLastMovement(true)
-    }
+    const isPawnAtBorder = coordOfPawn !== -1
 
 
     const className = hasEatedPieces && isContraryTurn && isPawnAtBorder
@@ -93,7 +61,8 @@ export default function EatedPiecesPanel({
               pic={piece.pic}
               name={piece.name}
               key={piece.name}
-              restorePiece={restorePiece}
+              isPawnAtBorder={isPawnAtBorder}
+              coordOfPawn={coordOfPawn}
             />
           )
         })}
@@ -101,6 +70,16 @@ export default function EatedPiecesPanel({
     )
   }
 
+
+  function updateEatedPieces() {
+    const previousSquare = previousBoard[currentCoord]
+    const wasEmpty = previousSquare === null
+
+    if (wasEmpty || !lastMovement) { return }
+
+    setCurrentEated(currentEated => [...currentEated, previousSquare])
+  }
+  
 
   useEffect(() => {
     updateEatedPieces()

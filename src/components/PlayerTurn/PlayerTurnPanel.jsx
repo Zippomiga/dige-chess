@@ -1,24 +1,28 @@
 import './player-turn-panel.css'
+import { CHESS_BOARD } from '../../Game Functions/chessBoard'
+import { ChessContext } from '../../context/chessContext'
+import { useContext } from 'react'
 import blackTurn from '../../assets/chess-pieces/b-shift.png'
 import whiteTurn from '../../assets/chess-pieces/w-shift.png'
-import { CHESS_BOARD } from '../../Game Functions/chessBoard'
 
 
-export default function PlayerTurnPanel({
-  setCurrentBoard,
-  setCurrentEated,
-  setCurrentMoves,
-  setCurrentCoord,
-  setCurrentSquare,
-  previousBoard,
-  setPreviousBoard,
-  previousEated,
-  setPreviousEated,
-  lastMovement,
-  setLastMovement,
-  turn,
-  setTurn
-}) {
+export default function PlayerTurnPanel() {
+  const {
+    setCurrentBoard,
+    setCurrentEated,
+    setCurrentMoves,
+    setCurrentCoord,
+    setCurrentSquare,
+    previousBoard,
+    setPreviousBoard,
+    previousEated,
+    setPreviousEated,
+    lastMovement,
+    setLastMovement,
+    turn,
+    setTurn
+  } = useContext(ChessContext)
+
 
   function restartChess() {
     setCurrentBoard(CHESS_BOARD)

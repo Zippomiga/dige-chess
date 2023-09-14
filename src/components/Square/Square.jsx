@@ -4,16 +4,13 @@ import './square.css'
 export default function Square({
   square,
   coord,
-  currentMoves,
   isSamePlayer,
-  isCheck,
-  currentKing,
+  isMoveValid,
+  kingInCheck,
   updateCurrent,
   updateChess
 }) {
 
-  const isMoveValid = currentMoves.includes(coord)
-  const kingInCheck = isCheck() && currentKing() === coord
 
   function handleSquare() {
     const isPiece = square !== null
@@ -24,7 +21,6 @@ export default function Square({
     if (validFirstClick) { updateCurrent(square, coord) }
     if (validSecondClick) { updateChess(square, coord) }
   }
-
 
 
   const classNameSquare =

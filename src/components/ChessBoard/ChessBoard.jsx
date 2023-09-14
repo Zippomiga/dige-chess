@@ -1,27 +1,60 @@
 import './chess-board.css'
+import { ChessContext } from '../../context/chessContext'
+import { useEffect, useContext } from 'react'
+import { validCoord } from '../../Game Functions/auxiliar-functions'
 import Square from '../Square/Square'
-import { useEffect } from 'react'
 
 
-export default function ChessBoard({
-  currentBoard,
-  setCurrentBoard,
-  currentMoves,
-  setCurrentMoves,
-  currentCoord,
-  setCurrentCoord,
-  currentSquare,
-  setCurrentSquare,
-  setPreviousBoard,
-  setLastMovement,
-  setTurn,
-  current,
-  contrary,
-  isSamePlayer,
-  playerPieces,
-  getMovements,
-  playerMoves
-}) {
+export default function ChessBoard() {
+  const {
+    currentBoard,
+    currentMoves,
+    setCurrentBoard,
+    setCurrentMoves,
+    currentCoord,
+    setCurrentCoord,
+    currentSquare,
+    setCurrentSquare,
+    setPreviousBoard,
+    setLastMovement,
+    setTurn,
+    playerTurn
+  } = useContext(ChessContext)
+
+
+  const current = 'current'
+  const contrary = 'contrary'
+
+
+  const isSamePlayer = square => {
+    return square?.name.startsWith(playerTurn)
+  }
+
+
+  const getMovements = (piece, coord, board) => {
+    return piece?.getMoves(coord, board).filter(validCoord)
+  }
+
+
+  const playerPieces = (player, board = currentBoard) => {
+    return board.filter(piece => {
+      switch (player) {
+        case current:
+          return piece !== null && isSamePlayer(piece)
+        case contrary:
+          return piece !== null && !isSamePlayer(piece)
+      }
+    })
+  }
+
+
+  const playerMoves = (player, board = currentBoard) => {
+    const pieces = playerPieces(player, board)
+    return pieces.map(piece => {
+      const currentCoord = board.indexOf(piece)
+      return getMovements(piece, currentCoord, board)
+    })
+  }
 
 
   const updateBoard = (oldCoord, newCoord, newPiece) => {
@@ -75,7 +108,7 @@ export default function ChessBoard({
 
 
   function updateCurrent(square, coord) {
-    const allMoves = getMovements(square, coord)
+    const allMoves = getMovements(square, coord, currentBoard)
 
     const newMoves = allMoves.filter(move => {
       const newSquare = currentBoard[move]
@@ -99,6 +132,7 @@ export default function ChessBoard({
 
   function updateChess(square, coord) {
     const newBoard = updateBoard(currentCoord, coord, currentSquare)
+    
     setCurrentBoard(newBoard)
     setCurrentMoves([])
     setCurrentCoord(coord)
@@ -117,15 +151,17 @@ export default function ChessBoard({
   return (
     <section className='chess-board'>
       {currentBoard.map((square, coord) => {
+        const isMoveValid = currentMoves.includes(coord)
+        const kingInCheck = isCheck() && currentKing() === coord
+
         return (
           <Square
             square={square}
             coord={coord}
             key={square?.name ?? coord}
-            currentMoves={currentMoves}
             isSamePlayer={isSamePlayer}
-            isCheck={isCheck}
-            currentKing={currentKing}
+            isMoveValid={isMoveValid}
+            kingInCheck={kingInCheck}
             updateCurrent={updateCurrent}
             updateChess={updateChess}
           />
