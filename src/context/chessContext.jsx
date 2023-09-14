@@ -18,7 +18,6 @@ export default function ChessContextProvider({ children }) {
 
   const playerTurn = turn ? 'W' : 'B'
 
-
   return (
     <ChessContext.Provider value={{
       currentBoard,
