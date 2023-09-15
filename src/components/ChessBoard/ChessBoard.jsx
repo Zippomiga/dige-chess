@@ -18,6 +18,7 @@ export default function ChessBoard() {
     setPreviousBoard,
     setLastMovement,
     setTurn,
+    turn,
     playerTurn
   } = useContext(ChessContext)
 
@@ -132,7 +133,7 @@ export default function ChessBoard() {
 
   function updateChess(square, coord) {
     const newBoard = updateBoard(currentCoord, coord, currentSquare)
-    
+
     setCurrentBoard(newBoard)
     setCurrentMoves([])
     setCurrentCoord(coord)

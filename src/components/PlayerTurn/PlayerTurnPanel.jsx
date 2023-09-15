@@ -28,7 +28,7 @@ export default function PlayerTurnPanel() {
     setCurrentBoard(CHESS_BOARD)
     setCurrentEated([])
     setCurrentMoves([])
-    setCurrentCoord([])
+    setCurrentCoord(null)
     setCurrentSquare(null)
     setPreviousBoard([])
     setPreviousEated([])

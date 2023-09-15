@@ -1,22 +1,24 @@
 import { CHESS_BOARD } from "../Game Functions/chessBoard";
 import { createContext, useState } from "react";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 
 export const ChessContext = createContext()
 
 export default function ChessContextProvider({ children }) {
-  const [currentBoard, setCurrentBoard] = useState(CHESS_BOARD)
+  const [currentBoard, setCurrentBoard] = useLocalStorage('currentBoard', CHESS_BOARD)
   const [currentEated, setCurrentEated] = useState([])
-  const [currentMoves, setCurrentMoves] = useState([])
-  const [currentCoord, setCurrentCoord] = useState(null)
-  const [currentSquare, setCurrentSquare] = useState(null)
+  const [currentMoves, setCurrentMoves] = useLocalStorage('currentMoves', [])
+  const [currentCoord, setCurrentCoord] = useLocalStorage('currentCoord', null)
+  const [currentSquare, setCurrentSquare] = useLocalStorage('currentSquare', null)
 
-  const [previousBoard, setPreviousBoard] = useState([])
+  const [previousBoard, setPreviousBoard] = useLocalStorage('previousBoard', [])
   const [previousEated, setPreviousEated] = useState([])
-  const [lastMovement, setLastMovement] = useState(false)
-  const [turn, setTurn] = useState(true)
+  const [lastMovement, setLastMovement] = useLocalStorage('lastMovement', false)
+  const [turn, setTurn] = useLocalStorage('turn', true)
 
   const playerTurn = turn ? 'W' : 'B'
+
 
   return (
     <ChessContext.Provider value={{
