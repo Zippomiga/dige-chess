@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { CHESS_BOARD } from "../Game Functions/chessBoard"
 
 
 export default function useLocalStorage(key, initialValue) {
@@ -13,21 +14,22 @@ export default function useLocalStorage(key, initialValue) {
 
   switch (key) {
     case 'currentBoard':
-      const fixedBoard = parsedValue?.map(square => {
-        const fixedPiece = initialValue.find(piece => piece?.name === square?.name)
+    case 'previousBoard':
+    case 'currentEated':
+    case 'previousEated':
+      const fixedValue = parsedValue?.map(parsedSquare => {
+        const fixedPiece = CHESS_BOARD.find(piece => piece?.name === parsedSquare?.name)
         return fixedPiece
       })
-      initialState = setInitial(fixedBoard)
+      initialState = setInitial(fixedValue)
       break;
-    // case 'currentMoves':
-      // initialState = setInitial([])
-      // break;
     default:
       initialState = setInitial(parsedValue)
   }
 
   const [value, setValue] = useState(initialState)
 
+  
   useEffect(() => {
     localStorage.setItem(key, JSON.stringify(value))
   }, [key, value])

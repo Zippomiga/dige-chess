@@ -1,7 +1,7 @@
 import './eated-pieces-panel.css'
 import { ChessContext } from '../../context/chessContext'
 import { COLUMNS } from '../../Game Functions/auxiliar-functions'
-import { useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import EatedPiece from './EatedPiece'
 
 
@@ -9,12 +9,6 @@ export default function EatedPiecesPanel() {
   const {
     currentBoard,
     currentEated,
-    setCurrentEated,
-    currentCoord,
-    previousBoard,
-    setPreviousEated,
-    lastMovement,
-    turn,
     playerTurn
   } = useContext(ChessContext)
 
@@ -69,22 +63,6 @@ export default function EatedPiecesPanel() {
       </div>
     )
   }
-
-
-  function updateEatedPieces() {
-    const previousSquare = previousBoard[currentCoord]
-    const wasEmpty = previousSquare === null
-
-    if (wasEmpty || !lastMovement) { return }
-
-    setCurrentEated(currentEated => [...currentEated, previousSquare])
-  }
-  
-
-  useEffect(() => {
-    updateEatedPieces()
-    setPreviousEated(currentEated)
-  }, [turn])
 
 
   return (

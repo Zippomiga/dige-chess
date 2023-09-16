@@ -1,4 +1,6 @@
 import './square.css'
+import { ChessContext } from '../../context/chessContext'
+import { useContext } from 'react'
 
 
 export default function Square({
@@ -11,6 +13,8 @@ export default function Square({
   updateChess
 }) {
 
+  const { setCurrentEated } = useContext(ChessContext)
+
 
   function handleSquare() {
     const isPiece = square !== null
@@ -18,8 +22,16 @@ export default function Square({
     const validFirstClick = samePlayer && isPiece
     const validSecondClick = !samePlayer && isMoveValid
 
-    if (validFirstClick) { updateCurrent(square, coord) }
-    if (validSecondClick) { updateChess(square, coord) }
+    if (validFirstClick) {
+      updateCurrent(square, coord)
+    }
+
+    if (validSecondClick) {
+      if (isPiece) { // is eating
+        setCurrentEated(currentEated => [...currentEated, square])
+      }
+      updateChess(square, coord)
+    }
   }
 
 

@@ -7,15 +7,15 @@ export const ChessContext = createContext()
 
 export default function ChessContextProvider({ children }) {
   const [currentBoard, setCurrentBoard] = useLocalStorage('currentBoard', CHESS_BOARD)
-  const [currentEated, setCurrentEated] = useState([])
-  const [currentMoves, setCurrentMoves] = useLocalStorage('currentMoves', [])
-  const [currentCoord, setCurrentCoord] = useLocalStorage('currentCoord', null)
-  const [currentSquare, setCurrentSquare] = useLocalStorage('currentSquare', null)
-
+  const [currentEated, setCurrentEated] = useLocalStorage('currentEated', [])
   const [previousBoard, setPreviousBoard] = useLocalStorage('previousBoard', [])
-  const [previousEated, setPreviousEated] = useState([])
+  const [previousEated, setPreviousEated] = useLocalStorage('previousEated', [])
   const [lastMovement, setLastMovement] = useLocalStorage('lastMovement', false)
   const [turn, setTurn] = useLocalStorage('turn', true)
+
+  const [currentMoves, setCurrentMoves] = useState([])
+  const [currentCoord, setCurrentCoord] = useState(null)
+  const [currentSquare, setCurrentSquare] = useState(null)
 
   const playerTurn = turn ? 'W' : 'B'
 
@@ -26,12 +26,6 @@ export default function ChessContextProvider({ children }) {
       setCurrentBoard,
       currentEated,
       setCurrentEated,
-      currentMoves,
-      setCurrentMoves,
-      currentCoord,
-      setCurrentCoord,
-      currentSquare,
-      setCurrentSquare,
       previousBoard,
       setPreviousBoard,
       previousEated,
@@ -40,6 +34,12 @@ export default function ChessContextProvider({ children }) {
       setLastMovement,
       turn,
       setTurn,
+      currentMoves,
+      setCurrentMoves,
+      currentCoord,
+      setCurrentCoord,
+      currentSquare,
+      setCurrentSquare,
       playerTurn
     }}>
       {children}

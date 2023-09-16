@@ -10,9 +10,6 @@ export default function PlayerTurnPanel() {
   const {
     setCurrentBoard,
     setCurrentEated,
-    setCurrentMoves,
-    setCurrentCoord,
-    setCurrentSquare,
     previousBoard,
     setPreviousBoard,
     previousEated,
@@ -20,7 +17,10 @@ export default function PlayerTurnPanel() {
     lastMovement,
     setLastMovement,
     turn,
-    setTurn
+    setTurn,
+    setCurrentMoves,
+    setCurrentCoord,
+    setCurrentSquare
   } = useContext(ChessContext)
 
 
