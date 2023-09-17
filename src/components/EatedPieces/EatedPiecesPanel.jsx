@@ -56,7 +56,6 @@ export default function EatedPiecesPanel() {
               name={piece.name}
               key={piece.name}
               coordOfPawn={coordOfPawn}
-              isPawnAtBorder={isPawnAtBorder}
             />
           )
         })}

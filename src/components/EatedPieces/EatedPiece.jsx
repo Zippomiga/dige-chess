@@ -4,17 +4,12 @@ import { getPiece } from '../../Game Functions/auxiliar-functions'
 import { useContext } from 'react'
 
 
-export default function EatedPiece({ pic, name, coordOfPawn, isPawnAtBorder }) {
-  const {
-    setCurrentBoard,
-    setCurrentEated
-  } = useContext(ChessContext)
+export default function EatedPiece({ pic, name, coordOfPawn }) {
+  const { setCurrentBoard, setCurrentEated } = useContext(ChessContext)
 
 
   function restorePiece() {
-    if (!isPawnAtBorder || name.includes('PAWN')) { // pawns can not be restored
-      return
-    }
+    if (name.includes('PAWN')) { return } // pawns can not be restored
 
     const pieceToRestore = getPiece(name)
 
