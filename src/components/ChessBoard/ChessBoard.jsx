@@ -8,18 +8,18 @@ import Square from '../Square/Square'
 export default function ChessBoard() {
   const {
     currentBoard,
-    currentEated,
-    currentMoves,
     setCurrentBoard,
+    currentEated,
+    setPreviousBoard,
+    setPreviousEated,
+    setLastMovement,
+    setTurn,
+    currentMoves,
     setCurrentMoves,
     currentCoord,
     setCurrentCoord,
     currentSquare,
     setCurrentSquare,
-    setPreviousBoard,
-    setPreviousEated,
-    setLastMovement,
-    setTurn,
     playerTurn
   } = useContext(ChessContext)
 
@@ -132,13 +132,11 @@ export default function ChessBoard() {
   }
 
 
-  function updateChess(square, coord) {
+  function updateChess(coord) {
     const newBoard = updateBoard(currentCoord, coord, currentSquare)
 
     setCurrentBoard(newBoard)
     setCurrentMoves([])
-    setCurrentCoord(coord)
-    setCurrentSquare(square)
     setPreviousBoard(currentBoard)
     setPreviousEated(currentEated)
     setLastMovement(true)

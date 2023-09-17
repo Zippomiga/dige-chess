@@ -1,24 +1,22 @@
 import './eated-piece.css'
-import { CHESS_BOARD } from '../../Game Functions/chessBoard'
 import { ChessContext } from '../../context/chessContext'
+import { getPiece } from '../../Game Functions/auxiliar-functions'
 import { useContext } from 'react'
 
 
-export default function EatedPiece({ pic, name, isPawnAtBorder, coordOfPawn }) {
+export default function EatedPiece({ pic, name, coordOfPawn, isPawnAtBorder }) {
   const {
     setCurrentBoard,
-    setCurrentEated,
-    setLastMovement
+    setCurrentEated
   } = useContext(ChessContext)
 
 
   function restorePiece() {
-    if (!isPawnAtBorder || name.includes('PAWN')) {
+    if (!isPawnAtBorder || name.includes('PAWN')) { // pawns can not be restored
       return
     }
 
-    const pieceToRestore = CHESS_BOARD
-      .find(piece => piece?.name === name)
+    const pieceToRestore = getPiece(name)
 
     setCurrentBoard(currentBoard => {
       return [...currentBoard]
@@ -29,8 +27,6 @@ export default function EatedPiece({ pic, name, isPawnAtBorder, coordOfPawn }) {
       return [...currentEated]
         .filter(eatedPiece => eatedPiece.name !== name)
     })
-
-    setLastMovement(true)
   }
 
 

@@ -30,7 +30,7 @@ export default function Square({
       if (isPiece) { // is eating
         setCurrentEated(currentEated => [...currentEated, square])
       }
-      updateChess(square, coord)
+      updateChess(coord)
     }
   }
 
