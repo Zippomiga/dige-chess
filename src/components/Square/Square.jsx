@@ -35,10 +35,11 @@ export default function Square({
   }
 
 
-  const classNameSquare =
-    kingInCheck ? 'square check' :
-      isMoveValid ? 'square move' :
-        'square'
+  const classNameSquare = kingInCheck
+    ? 'square check'
+    : isMoveValid
+      ? 'square move'
+      : 'square'
 
 
   const classNamePiece = square?.name.includes('PAWN')

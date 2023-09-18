@@ -70,9 +70,10 @@ export default function ChessBoard() {
 
 
   const currentKing = (board = currentBoard) => {
-    const currentPieces = playerPieces(current, board)
-    const currentKing = currentPieces.find(king => king.name.includes('KING'))
-    return board.indexOf(currentKing)
+    return board.findIndex(square => {
+      const kingName = playerTurn + '_KING'
+      return square?.name === kingName
+    })
   }
 
 
