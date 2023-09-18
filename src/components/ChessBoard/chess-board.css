@@ -1,4 +1,4 @@
-.chess-board {
+.chess-board-screen {
   background-color: #fff;
   box-shadow: 0 0 6px #fff;
   border-radius: 0.4rem;
@@ -7,4 +7,24 @@
   grid-template-columns: repeat(8, auto);
   grid-template-rows: repeat(8, auto);
   padding: 1px;
+}
+
+.check-mate-screen {
+  background-color: #14001480;
+  border-radius: 0.4rem;
+  display: grid;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
+  height: calc(4.5rem * 8 + 9px);
+  place-items: center;
+  position: absolute;
+  width: calc(4.5rem * 8 + 9px);
+  z-index: 1;
+}
+
+.check-mate-legend {
+  background-color: #140014;
+  border-radius: 0.4rem;
+  color: #ffffff;
+  padding: 1rem;
 }

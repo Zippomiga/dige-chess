@@ -1,6 +1,6 @@
 import './chess-board.css'
 import { ChessContext } from '../../context/chessContext'
-import { useEffect, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { validCoord } from '../../Game Functions/auxiliar-functions'
 import Square from '../Square/Square'
 
@@ -23,6 +23,7 @@ export default function ChessBoard() {
     playerTurn
   } = useContext(ChessContext)
 
+  const [checkMate, setCheckMate] = useState(false)
 
   const current = 'current'
   const contrary = 'contrary'
@@ -82,7 +83,7 @@ export default function ChessBoard() {
   }
 
 
-  const isCheckMate = () => {
+  function isCheckMate() {
     const CURRENT_PIECES = playerPieces(current)
     const CURRENT_MOVES = playerMoves(current)
 
@@ -102,11 +103,13 @@ export default function ChessBoard() {
         const newContraryMoves = playerMoves(contrary, newBoard)
         const NOT_CHECK_MATE = !isCheck(newCurrentKing, newContraryMoves)
 
-        if (NOT_CHECK_MATE) { return false }
+        if (NOT_CHECK_MATE) {
+          setCheckMate(false)
+          return
+        }
       }
     }
-    console.log('CHECK MATE');
-    return true
+    setCheckMate(true)
   }
 
 
@@ -150,25 +153,48 @@ export default function ChessBoard() {
   }, [isCheck()])
 
 
-  return (
-    <section className='chess-board'>
-      {currentBoard.map((square, coord) => {
-        const isMoveValid = currentMoves.includes(coord)
-        const kingInCheck = isCheck() && currentKing() === coord
+  const CheckMateScreen = () => {
+    return checkMate && (
+      <div className='check-mate-screen'>
+        <span className='check-mate-legend'>
+          Check Mate!
+        </span>
+      </div>
+    )
+  }
 
-        return (
-          <Square
-            square={square}
-            coord={coord}
-            key={square?.name ?? coord}
-            isSamePlayer={isSamePlayer}
-            isMoveValid={isMoveValid}
-            kingInCheck={kingInCheck}
-            updateCurrent={updateCurrent}
-            updateChess={updateChess}
-          />
-        )
-      })}
-    </section>
+
+  const ChessBoardScreen = () => {
+    return (
+      <section className='chess-board-screen'>
+        {
+          currentBoard.map((square, coord) => {
+            const isMoveValid = currentMoves.includes(coord)
+            const kingInCheck = isCheck() && currentKing() === coord
+
+            return (
+              <Square
+                square={square}
+                coord={coord}
+                key={square?.name ?? coord}
+                isSamePlayer={isSamePlayer}
+                isMoveValid={isMoveValid}
+                kingInCheck={kingInCheck}
+                updateCurrent={updateCurrent}
+                updateChess={updateChess}
+              />
+            )
+          })
+        }
+      </section>
+    )
+  }
+
+
+  return (
+    <div>
+      <CheckMateScreen />
+      <ChessBoardScreen />
+    </div>
   )
 }
