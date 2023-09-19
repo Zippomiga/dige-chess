@@ -3,7 +3,6 @@
   display: grid;
   height: 4.5rem;
   place-items: center;
-  position: relative;
   transition: 0.2s all;
   width: 4.5rem;
 }
@@ -18,7 +17,7 @@
 }
 
 .square:active {
-  transform: scale(0.9);
+  transform: scale(0.95);
 }
 
 .square:nth-child(2),
@@ -100,14 +99,6 @@
 .pawn {
   height: auto;
   width: 2.8rem;
-}
-
-.square-index {
-  position: absolute;
-  font-size: 0.6rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  bottom: 0;
-  right: 2px;
 }
 
 .check {

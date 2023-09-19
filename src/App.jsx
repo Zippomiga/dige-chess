@@ -1,8 +1,8 @@
 import './normalize.css'
 import './app.css'
 import ChessBoard from './components/ChessBoard/ChessBoard'
-import PlayerTurnPanel from './components/PlayerTurn/PlayerTurnPanel'
-import EatedPiecesPanel from './components/EatedPieces/EatedPiecesPanel'
+import PlayerTurnPanel from './components/PlayerTurnPanel/PlayerTurnPanel'
+import EatedPiecesPanel from './components/EatedPiecesPanel/EatedPiecesPanel'
 
 
 export default function App() {

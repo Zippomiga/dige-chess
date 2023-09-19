@@ -1,8 +1,9 @@
 import './chess-board.css'
+import './square.css'
 import { ChessContext } from '../../context/chessContext'
-import { useState, useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import { validCoord } from '../../Game Functions/auxiliar-functions'
-import Square from '../Square/Square'
+import Square from './Square'
 
 
 export default function ChessBoard() {
@@ -23,7 +24,6 @@ export default function ChessBoard() {
     playerTurn
   } = useContext(ChessContext)
 
-  const [checkMate, setCheckMate] = useState(false)
 
   const current = 'current'
   const contrary = 'contrary'
@@ -34,8 +34,10 @@ export default function ChessBoard() {
   }
 
 
-  const getMovements = (piece, coord, board) => {
-    return piece?.getMoves(coord, board).filter(validCoord)
+  const getMovements = (piece, coord, board = currentBoard) => {
+    return piece
+      ?.getMoves(coord, board)
+      .filter(validCoord)
   }
 
 
@@ -71,9 +73,9 @@ export default function ChessBoard() {
 
 
   const currentKing = (board = currentBoard) => {
-    return board.findIndex(square => {
+    return board.findIndex(king => {
       const kingName = playerTurn + '_KING'
-      return square?.name === kingName
+      return king?.name === kingName
     })
   }
 
@@ -83,7 +85,7 @@ export default function ChessBoard() {
   }
 
 
-  function isCheckMate() {
+  const isCheckMate = () => {
     const CURRENT_PIECES = playerPieces(current)
     const CURRENT_MOVES = playerMoves(current)
 
@@ -103,18 +105,15 @@ export default function ChessBoard() {
         const newContraryMoves = playerMoves(contrary, newBoard)
         const NOT_CHECK_MATE = !isCheck(newCurrentKing, newContraryMoves)
 
-        if (NOT_CHECK_MATE) {
-          setCheckMate(false)
-          return
-        }
+        if (NOT_CHECK_MATE) { return false }
       }
     }
-    setCheckMate(true)
+    return true
   }
 
 
   function updateCurrent(square, coord) {
-    const allMoves = getMovements(square, coord, currentBoard)
+    const allMoves = getMovements(square, coord)
 
     const newMoves = allMoves.filter(move => {
       const newSquare = currentBoard[move]
@@ -148,13 +147,8 @@ export default function ChessBoard() {
   }
 
 
-  useEffect(() => {
-    isCheckMate()
-  }, [isCheck()])
-
-
   const CheckMateScreen = () => {
-    return checkMate && (
+    return isCheckMate() && (
       <div className='check-mate-screen'>
         <span className='check-mate-legend'>
           Check Mate!
@@ -167,25 +161,21 @@ export default function ChessBoard() {
   const ChessBoardScreen = () => {
     return (
       <section className='chess-board-screen'>
-        {
-          currentBoard.map((square, coord) => {
-            const isMoveValid = currentMoves.includes(coord)
-            const kingInCheck = isCheck() && currentKing() === coord
-
-            return (
-              <Square
-                square={square}
-                coord={coord}
-                key={square?.name ?? coord}
-                isSamePlayer={isSamePlayer}
-                isMoveValid={isMoveValid}
-                kingInCheck={kingInCheck}
-                updateCurrent={updateCurrent}
-                updateChess={updateChess}
-              />
-            )
-          })
-        }
+        {currentBoard.map((square, coord) => {
+          return (
+            <Square
+              square={square}
+              coord={coord}
+              key={square?.name ?? coord}
+              currentMoves={currentMoves}
+              isSamePlayer={isSamePlayer}
+              currentKing={currentKing}
+              isCheck={isCheck}
+              updateCurrent={updateCurrent}
+              updateChess={updateChess}
+            />
+          )
+        })}
       </section>
     )
   }

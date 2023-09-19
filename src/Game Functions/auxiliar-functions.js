@@ -39,11 +39,11 @@ export const validCoord = coord => {
 
 export function updateCoords(directions, currentCoord, board, isKing = false) {
   const LIMITS = BOARD_LIMITS
-    .filter(limits => !limits.includes(currentCoord))
+    .filter(limit => !limit.includes(currentCoord))
     .flat()
 
   const INDEX = BOARD_LIMITS
-    .findIndex(limits => limits.includes(currentCoord))
+    .findIndex(limit => limit.includes(currentCoord))
 
   const DIRECTIONS = directions.at(INDEX)
   const NEW_COORDS = []
