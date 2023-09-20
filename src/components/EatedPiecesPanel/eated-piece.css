@@ -14,3 +14,12 @@
 .eated-piece:active {
   transform: scale(0.9);
 }
+
+
+@media screen and (max-width: 425px) {
+  .eated-piece {
+    border-radius: 0.4rem;
+    height: 2rem;
+    width: 2rem;
+  }
+}

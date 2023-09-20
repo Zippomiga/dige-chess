@@ -104,3 +104,19 @@
 .check {
   background-color: #ff6969 !important;
 }
+
+
+@media screen and (max-width: 425px) {
+  .square {
+    height: 3.2rem;
+    width: 3.2rem;
+  }
+
+  .piece {
+    width: 2.5rem;
+  }
+
+  .pawn {
+    width: 1.9rem;
+  }
+}

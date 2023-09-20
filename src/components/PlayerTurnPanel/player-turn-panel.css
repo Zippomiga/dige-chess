@@ -71,3 +71,29 @@
 .restart-chess:active {
   transform: scale(0.9);
 }
+
+
+@media screen and (max-width: 425px) {
+  .player-turn-panel {
+    flex-direction: row;
+    height: initial;
+    width: 90%;
+  }
+
+  .player-turn {
+    border-radius: 0.4rem;
+    height: 4rem;
+    width: 4rem;
+    padding: 0.4rem;
+  }
+
+  .last-move {
+    height: 2.5rem;
+    width: 4rem;
+  }
+
+  .restart-chess {
+    height: 2.5rem;
+    width: 4rem;
+  }
+}

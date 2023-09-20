@@ -21,3 +21,18 @@
 .blocked {
   pointer-events: none;
 }
+
+
+@media screen and (max-width: 425px) {
+  .eated-pieces-panel {
+    height: 4.4rem;
+  }
+
+  .eated-player {
+    flex-direction: row;
+    flex-wrap: wrap-reverse;
+    gap: 2px;
+    height: auto;
+    width: auto;
+  }
+}
