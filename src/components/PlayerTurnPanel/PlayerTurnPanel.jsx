@@ -63,13 +63,13 @@ export default function PlayerTurnPanel() {
   }
 
 
-  const Button = ({ className, onClick, legend }) => {
+  const Button = ({ className, onClick, children }) => {
     return (
       <button
         className={className}
         onClick={onClick}
       >
-        {legend}
+        {children}
       </button>
     )
   }
@@ -81,13 +81,15 @@ export default function PlayerTurnPanel() {
       <Button
         className={lastMovement ? 'last-move' : 'last-move disabled'}
         onClick={handleLastMove}
-        legend='Last Move'
-      />
+      >
+        Last Move
+      </Button>
       <Button
-        className={'restart-chess'}
+        className='restart-chess'
         onClick={restartChess}
-        legend='Restart Chess'
-      />
+      >
+        Restart Chess
+      </Button>
       <PlayerTurn player='W' />
     </section>
   )
