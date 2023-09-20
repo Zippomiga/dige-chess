@@ -147,19 +147,15 @@ export default function ChessBoard() {
   }
 
 
-  const CheckMateScreen = () => {
-    return isCheckMate() && (
-      <div className='check-mate-screen'>
-        <span className='check-mate-legend'>
-          Check Mate!
-        </span>
-      </div>
-    )
-  }
-
-
-  const ChessBoardScreen = () => {
-    return (
+  return (
+    <div>
+      {isCheckMate() && (
+        <div className='check-mate-screen'>
+          <span className='check-mate-legend'>
+            Check Mate!
+          </span>
+        </div>
+      )}
       <section className='chess-board-screen'>
         {currentBoard.map((square, coord) => {
           return (
@@ -177,14 +173,6 @@ export default function ChessBoard() {
           )
         })}
       </section>
-    )
-  }
-
-
-  return (
-    <div>
-      <CheckMateScreen />
-      <ChessBoardScreen />
     </div>
   )
 }
