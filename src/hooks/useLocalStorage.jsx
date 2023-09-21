@@ -8,11 +8,10 @@ export default function useLocalStorage(key, initialValue) {
 
   let initialState = storedValue ? parsedValue : initialValue
 
-  if (
-    storedValue &&
+  if (storedValue && (
     key === 'currentBoard' ||
     key === 'previousBoard'
-  ) {
+  )) {
     initialState = parsedValue.map(parsedSquare => {
       return getPiece(parsedSquare?.name)
     })
