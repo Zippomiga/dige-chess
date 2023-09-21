@@ -1,14 +1,3 @@
-.chess-board-screen {
-  background-color: #fff;
-  box-shadow: 0 0 6px #fff;
-  border-radius: 0.4rem;
-  display: grid;
-  gap: 1px;
-  grid-template-columns: repeat(8, auto);
-  grid-template-rows: repeat(8, auto);
-  padding: 1px;
-}
-
 .check-mate-screen {
   background-color: #14001480;
   border-radius: 0.4rem;
