@@ -30,7 +30,7 @@
 .square:nth-child(59),
 .square:nth-child(61),
 .square:nth-child(63) {
-  background-color: rgba(202, 139, 4, 0.3);
+  background-color: #e5e7eb;
 }
 
 .square:nth-child(1),

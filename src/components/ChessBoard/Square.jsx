@@ -42,10 +42,10 @@ export default function Square({
 
   return (
     <div
-      className={'rounded grid place-items-center h-20 w-20 transition duration-200 hover:bg-yellow-600/70 active:scale-90' + ' ' + (kingInCheck
+      className={'grid place-items-center h-20 w-20 transition duration-200 hover:bg-gray-400 active:scale-90' + ' ' + (kingInCheck
         ? 'bg-red-400'
         : isMoveValid
-          ? 'bg-yellow-600/50'
+          ? 'bg-gray-400/70'
           : 'square')}
       id={coord}
       onClick={handleSquare}
