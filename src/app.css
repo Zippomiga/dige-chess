@@ -3,19 +3,6 @@
 @tailwind utilities;
 
 main {
-  background-color: #140014;
-  display: flex;
-  gap: 2rem;
-  justify-content: center;
-  min-height: 100vh;
-  place-items: center;
-  user-select: none;
-}
-
-@media screen and (max-width: 425px) {
-  main {
-    flex-direction: column;
-    gap: 1rem;
-    height: initial;
-  }
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
 }

@@ -42,18 +42,16 @@ export default function Square({
 
   return (
     <div
-      className={
-        'rounded grid place-items-center h-16 w-16 transition duration-200 hover:bg-emerald-300 active:scale-90' + ' ' + (kingInCheck
-          ? 'bg-red-400'
-          : isMoveValid
-            ? 'bg-emerald-200'
-            : 'square')
-      }
+      className={'rounded grid place-items-center h-20 w-20 transition duration-200 hover:bg-yellow-600/70 active:scale-90' + ' ' + (kingInCheck
+        ? 'bg-red-400'
+        : isMoveValid
+          ? 'bg-yellow-600/50'
+          : 'square')}
       id={coord}
       onClick={handleSquare}
     >
       <img
-        className={square?.name.includes('PAWN') ? 'w-10 h-auto' : 'w-12 h-auto'}
+        className={square?.name.includes('PAWN') ? 'w-12 h-auto' : 'w-16 h-auto'}
         src={square?.pic}
         alt={square?.name}
       />
