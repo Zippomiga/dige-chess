@@ -32,20 +32,21 @@ export default function Square({
     }
 
     if (validSecondClick) {
+      updateChess(coord)
+
       if (isPiece) { // is eating
         setCurrentEated(currentEated => [...currentEated, square])
       }
-      updateChess(coord)
     }
   }
 
 
   return (
     <div
-      className={'grid place-items-center h-20 w-20 transition duration-200 hover:bg-gray-400 active:scale-90' + ' ' + (kingInCheck
-        ? 'bg-red-400'
+      className={'grid place-items-center h-20 w-20 transition duration-200 hover:bg-gray-400/75 active:scale-90' + ' ' + (kingInCheck
+        ? 'bg-orange-700'
         : isMoveValid
-          ? 'bg-gray-400/70'
+          ? 'bg-gray-400/50'
           : 'square')}
       id={coord}
       onClick={handleSquare}

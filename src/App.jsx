@@ -7,7 +7,7 @@ import EatedPiecesPanel from './components/EatedPiecesPanel/EatedPiecesPanel'
 
 export default function App() {
   return (
-    <main className='min-h-screen flex justify-center items-center gap-8 bg-neutral-950 select-none'>
+    <main className='flex justify-center items-center gap-8 bg-slate-950 select-none'>
       <EatedPiecesPanel />
       <ChessBoard />
       <PlayerTurnPanel />

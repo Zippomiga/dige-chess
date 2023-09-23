@@ -156,7 +156,7 @@ export default function ChessBoard() {
           </span>
         </div>
       )}
-      <section className={'bg-white grid grid-cols-8 gap-px p-px'}>
+      <section className={'bg-gray-300 grid grid-cols-8 gap-px p-px border-4 border-solid border-orange-700'}>
         {currentBoard.map((square, coord) => {
           return (
             <Square

@@ -1,4 +1,3 @@
-import './eated-pieces-panel.css'
 import { ChessContext } from '../../context/chessContext'
 import { COLUMNS } from '../../Game Functions/auxiliar-functions'
 import { useContext } from 'react'
@@ -40,15 +39,11 @@ export default function EatedPiecesPanel() {
     const hasEatedPieces = eatedPieces.length !== 0
     const isContraryTurn = playerTurn !== player
     const isPawnAtBorder = coordOfPawn !== -1
-
-
-    const className = hasEatedPieces && isContraryTurn && isPawnAtBorder
-      ? 'eated-player'
-      : 'eated-player blocked'
+    const canRestore = hasEatedPieces && isContraryTurn && isPawnAtBorder
 
 
     return (
-      <div className={className}>
+      <div className={'flex flex-col items-center justify-center flex-wrap-reverse gap-px w-[calc(9rem+2px)] h-[calc(15rem+6px)]' + ' ' + (canRestore ? 'pointer-events-auto' : 'pointer-events-none')}>
         {eatedPieces.map(piece => {
           return (
             <EatedPiece
@@ -65,7 +60,7 @@ export default function EatedPiecesPanel() {
 
 
   return (
-    <section className='eated-pieces-panel'>
+    <section className={'flex flex-col items-center justify-between gap-8'}>
       <PlayerEatedPieces player='B' />
       <PlayerEatedPieces player='W' />
     </section>

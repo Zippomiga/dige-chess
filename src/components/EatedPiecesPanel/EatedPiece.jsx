@@ -1,4 +1,3 @@
-import './eated-piece.css'
 import { ChessContext } from '../../context/chessContext'
 import { getPiece } from '../../Game Functions/auxiliar-functions'
 import { useContext } from 'react'
@@ -27,7 +26,7 @@ export default function EatedPiece({ pic, name, coordOfPawn }) {
 
   return (
     <img
-      className='eated-piece'
+      className={'bg-gray-200 h-12 w-12 p-1 hover:bg-gray-400 active:scale-90 transition duration-75'}
       onClick={restorePiece}
       src={pic}
       alt={name}
