@@ -1,4 +1,3 @@
-import './player-turn-panel.css'
 import { CHESS_BOARD } from '../../Game Functions/chessBoard'
 import { ChessContext } from '../../context/chessContext'
 import { useContext } from 'react'
@@ -16,11 +15,11 @@ export default function PlayerTurnPanel() {
     setPreviousEated,
     lastMovement,
     setLastMovement,
-    turn,
     setTurn,
     setCurrentMoves,
     setCurrentCoord,
-    setCurrentSquare
+    setCurrentSquare,
+    playerTurn
   } = useContext(ChessContext)
 
 
@@ -47,16 +46,11 @@ export default function PlayerTurnPanel() {
   }
 
 
-  const PlayerTurn = ({ player }) => {
-    const isWhite = player === 'W'
-    const playerPic = isWhite ? whiteTurn : blackTurn
-    const playerTurn = isWhite ? turn : !turn
-    const className = playerTurn ? 'player-turn' : 'player-turn disabled'
-
+  const PlayerTurn = ({ player, pic }) => {
     return (
       <img
-        src={playerPic}
-        className={className}
+        src={pic}
+        className={'bg-gray-200 w-24 h-24 p-2 ' + (playerTurn === player ? 'opacity-100' : 'opacity-20')}
         alt={player + ' turn'}
       />
     )
@@ -74,23 +68,23 @@ export default function PlayerTurnPanel() {
     )
   }
 
-
+  
   return (
-    <section className='player-turn-panel'>
-      <PlayerTurn player='B' />
+    <section className={'flex flex-col justify-between items-center gap-8'}>
+      <PlayerTurn player='B' pic={blackTurn} />
       <Button
-        className={lastMovement ? 'last-move' : 'last-move disabled'}
+        className={'bg-gray-200 text-slate-950 h-12 w-24 transition duration-75 hover:bg-gray-400/75 active:scale-95 ' + (lastMovement ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20')}
         onClick={handleLastMove}
       >
         Last Move
       </Button>
       <Button
-        className='restart-chess'
+        className={'bg-gray-200 text-slate-950 h-12 w-24 transition duration-75 hover:bg-orange-700 active:scale-95'}
         onClick={restartChess}
       >
         Restart Chess
       </Button>
-      <PlayerTurn player='W' />
+      <PlayerTurn player='W' pic={whiteTurn} />
     </section>
   )
 }

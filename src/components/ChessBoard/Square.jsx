@@ -43,7 +43,7 @@ export default function Square({
 
   return (
     <div
-      className={'grid place-items-center h-20 w-20 transition duration-200 hover:bg-gray-400/75 active:scale-90' + ' ' + (kingInCheck
+      className={'grid place-items-center h-20 w-20 transition duration-200 hover:bg-gray-400/75 active:scale-95 ' + (kingInCheck
         ? 'bg-orange-700'
         : isMoveValid
           ? 'bg-gray-400/50'

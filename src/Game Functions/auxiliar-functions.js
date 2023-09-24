@@ -51,11 +51,10 @@ export function updateCoords(directions, currentCoord, board, isKing = false) {
   DIRECTIONS.forEach(direction => {
     let nextCoord = currentCoord
 
-    while (
-      !LIMITS.includes(nextCoord) &&
+    while (!LIMITS.includes(nextCoord) && (
       board[nextCoord] === null ||
       currentCoord === nextCoord
-    ) {
+    )) {
       nextCoord += direction
       NEW_COORDS.push(nextCoord)
       if (isKing) { break }

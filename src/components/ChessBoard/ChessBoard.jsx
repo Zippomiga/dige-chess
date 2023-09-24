@@ -25,8 +25,8 @@ export default function ChessBoard() {
   } = useContext(ChessContext)
 
 
-  const current = 'current'
-  const contrary = 'contrary'
+  const current = 'currentPlayer'
+  const contrary = 'contraryPlayer'
 
 
   const isSamePlayer = square => {
@@ -44,9 +44,9 @@ export default function ChessBoard() {
   const playerPieces = (player, board = currentBoard) => {
     return board.filter(piece => {
       switch (player) {
-        case current:
+        case 'currentPlayer':
           return piece !== null && isSamePlayer(piece)
-        case contrary:
+        case 'contraryPlayer':
           return piece !== null && !isSamePlayer(piece)
       }
     })
