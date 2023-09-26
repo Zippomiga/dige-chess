@@ -50,7 +50,7 @@ export default function PlayerTurnPanel() {
     return (
       <img
         src={pic}
-        className={'bg-gray-200 w-24 h-24 p-2 ' + (playerTurn === player ? 'opacity-100' : 'opacity-20')}
+        className={`rounded-md bg-gray-200 w-24 h-24 p-2 ${playerTurn === player ? 'opacity-100' : 'opacity-20'}`}
         alt={player + ' turn'}
       />
     )
@@ -68,18 +68,18 @@ export default function PlayerTurnPanel() {
     )
   }
 
-  
+
   return (
     <section className={'flex flex-col justify-between items-center gap-8'}>
       <PlayerTurn player='B' pic={blackTurn} />
       <Button
-        className={'bg-gray-200 text-slate-950 h-12 w-24 transition duration-75 hover:bg-gray-400/75 active:scale-95 ' + (lastMovement ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20')}
+        className={`rounded-md bg-gray-200 text-slate-950 h-12 w-24 transition duration-75 hover:bg-slate-400 active:scale-95 ${lastMovement ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20'}`}
         onClick={handleLastMove}
       >
         Last Move
       </Button>
       <Button
-        className={'bg-gray-200 text-slate-950 h-12 w-24 transition duration-75 hover:bg-orange-700 active:scale-95'}
+        className={'rounded-md bg-gray-200 text-slate-950 h-12 w-24 transition duration-75 hover:bg-red-300 active:scale-95'}
         onClick={restartChess}
       >
         Restart Chess

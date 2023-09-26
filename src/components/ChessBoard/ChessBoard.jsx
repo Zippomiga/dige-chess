@@ -1,4 +1,3 @@
-import './chess-board.css'
 import './square.css'
 import { ChessContext } from '../../context/chessContext'
 import { useContext } from 'react'
@@ -148,15 +147,15 @@ export default function ChessBoard() {
 
 
   return (
-    <div>
+    <div className='relative'>
       {isCheckMate() && (
-        <div className='check-mate-screen'>
-          <span className='check-mate-legend'>
+        <div className={'rounded-md grid items-center justify-center absolute h-[calc(5rem*8+9px)] w-[calc(5rem*8+9px)] bg-white bg-opacity-50'}>
+          <span className={'rounded-md bg-slate-950 text-white p-4'}>
             Check Mate!
           </span>
         </div>
       )}
-      <section className={'bg-gray-300 grid grid-cols-8 gap-px p-px border-4 border-solid border-orange-700'}>
+      <section className={'rounded-md bg-white grid grid-cols-8 gap-px p-px'}>
         {currentBoard.map((square, coord) => {
           return (
             <Square

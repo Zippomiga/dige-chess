@@ -32,7 +32,7 @@ export default function EatedPiecesPanel() {
 
 
   const PlayerEatedPieces = ({ player }) => {
-    const eatedPieces = currentEated.filter(piece => {
+    const eatedPieces = currentBoard.filter(piece => {
       return piece?.name.startsWith(player)
     })
 
@@ -42,7 +42,7 @@ export default function EatedPiecesPanel() {
     const canRestore = hasEatedPieces && isContraryTurn && isPawnAtBorder
 
     return (
-      <div className={'flex flex-col items-center justify-center flex-wrap-reverse gap-px w-[calc(9rem+2px)] h-[calc(15rem+6px)] ' + (canRestore ? 'pointer-events-auto' : 'pointer-events-none')}>
+      <div className={`flex flex-col items-center justify-center flex-wrap-reverse gap-px w-[calc(9rem+2px)] h-[calc(15rem+6px)] ${canRestore ? 'pointer-events-auto' : 'pointer-events-none'}`}>
         {eatedPieces.map(piece => {
           return (
             <EatedPiece
