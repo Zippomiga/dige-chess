@@ -2,7 +2,11 @@ import './square.css'
 import { ChessContext } from '../../context/chessContext'
 import { useContext } from 'react'
 import { validCoord } from '../../Game Functions/auxiliar-functions'
+import blackCheckMate from '../../assets/chess-pieces/blackCheckMate.png'
 import Square from './Square'
+import whiteCheckMate from '../../assets/chess-pieces/whiteCheckMate.png'
+import blackTurn from '../../assets/chess-pieces/b-shift.png'
+import whiteTurn from '../../assets/chess-pieces/w-shift.png'
 
 
 export default function ChessBoard() {
@@ -147,13 +151,26 @@ export default function ChessBoard() {
 
 
   return (
-    <div className='relative'>
+    <div className='relative h-[calc(5rem*8+9px)] w-[calc(5rem*8+9px)]'>
       {isCheckMate() && (
-        <div className={'rounded-md grid items-center justify-center absolute h-[calc(5rem*8+9px)] w-[calc(5rem*8+9px)] bg-white bg-opacity-50'}>
-          <span className={'rounded-md bg-slate-950 text-white p-4'}>
-            Check Mate!
+        <section className={'w-full h-full rounded-md grid items-center justify-center absolute bg-white bg-opacity-70'}>
+          <span className={'rounded-md bg-slate-950 text-white p-4 text-center text-4xl'}>
+            👑 CHECK MATE 👑
           </span>
-        </div>
+          <img
+            className={'h-72 w-72 m-auto'}
+            src={playerTurn === 'W' ? blackCheckMate : whiteCheckMate}
+          />
+          <div className={'flex items-center rounded-md bg-slate-950 text-white p-4 text-center text-2xl'}>
+            <img
+              className={'rounded-full bg-gray-200 h-12 w-12 p-1'}
+              src={playerTurn === 'W' ? blackTurn : whiteTurn}
+            />
+            <span className='m-auto'>
+              {playerTurn === 'W' ? 'Black Team Wins' : 'White Team Wins'}
+            </span>
+          </div>
+        </section>
       )}
       <section className={'rounded-md bg-white grid grid-cols-8 gap-px p-px'}>
         {currentBoard.map((square, coord) => {

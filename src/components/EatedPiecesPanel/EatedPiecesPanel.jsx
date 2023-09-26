@@ -32,7 +32,7 @@ export default function EatedPiecesPanel() {
 
 
   const PlayerEatedPieces = ({ player }) => {
-    const eatedPieces = currentBoard.filter(piece => {
+    const eatedPieces = currentEated.filter(piece => {
       return piece?.name.startsWith(player)
     })
 
