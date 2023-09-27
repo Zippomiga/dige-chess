@@ -73,13 +73,13 @@ export default function PlayerTurnPanel() {
     <section className={'flex flex-col justify-between items-center gap-8'}>
       <PlayerTurn player='B' pic={blackTurn} />
       <Button
-        className={`rounded-md bg-gray-200 text-slate-950 h-12 w-24 transition duration-75 hover:bg-slate-400 active:scale-95 ${lastMovement ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20'}`}
+        className={`rounded-md bg-gray-200 text-slate-950 h-14 w-24 transition duration-75 hover:bg-slate-400 active:scale-95 ${lastMovement ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20'}`}
         onClick={handleLastMove}
       >
-        Last Move
+        Undo Movement
       </Button>
       <Button
-        className={'rounded-md bg-gray-200 text-slate-950 h-12 w-24 transition duration-75 hover:bg-red-300 active:scale-95'}
+        className={'rounded-md bg-gray-200 text-slate-950 h-14 w-24 transition duration-75 hover:bg-red-300 active:scale-95'}
         onClick={restartChess}
       >
         Restart Chess
