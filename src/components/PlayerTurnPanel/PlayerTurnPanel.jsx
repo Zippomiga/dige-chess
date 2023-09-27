@@ -46,27 +46,23 @@ export default function PlayerTurnPanel() {
   }
 
 
-  const PlayerTurn = ({ player, pic }) => {
-    return (
-      <img
-        src={pic}
-        className={`rounded-md bg-gray-200 w-24 h-24 p-2 ${playerTurn === player ? 'opacity-100' : 'opacity-20'}`}
-        alt={player + ' turn'}
-      />
-    )
-  }
+  const PlayerTurn = ({ player, pic }) => (
+    <img
+      src={pic}
+      className={`rounded-md bg-gray-200 w-24 h-24 p-2 ${playerTurn === player ? 'opacity-100' : 'opacity-20'}`}
+      alt={player + ' turn'}
+    />
+  )
 
 
-  const Button = ({ className, onClick, children }) => {
-    return (
-      <button
-        className={className}
-        onClick={onClick}
-      >
-        {children}
-      </button>
-    )
-  }
+  const Button = ({ className, onClick, children }) => (
+    <button
+      className={className}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  )
 
 
   return (
