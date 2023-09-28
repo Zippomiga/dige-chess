@@ -28,7 +28,7 @@ export default function CheckMateScreen() {
 
 
   return (
-    <section className={'w-full h-full rounded-md grid items-center justify-center absolute bg-gray-200 bg-opacity-90'}>
+    <section className={'w-full h-full rounded grid items-center justify-center absolute bg-gray-200 bg-opacity-90'}>
       <Span className={'rounded-md bg-teal-950 text-white p-4 text-center text-4xl'}>
         👑 CHECK MATE 👑
       </Span>

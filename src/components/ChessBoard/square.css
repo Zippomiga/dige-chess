@@ -30,7 +30,7 @@
 .square:nth-child(59),
 .square:nth-child(61),
 .square:nth-child(63) {
-  background-color: #e5e7eb; /* bg-gray-200 */
+  background-color: rgb(214 211 209); /* bg-stone-300 */
 }
 
 .square:nth-child(1),
@@ -65,5 +65,5 @@
 .square:nth-child(60),
 .square:nth-child(62),
 .square:nth-child(64) {
-  background-color: #fff;
+  background-color: rgb(255, 255, 255);
 }
