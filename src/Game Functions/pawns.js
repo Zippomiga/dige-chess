@@ -1,5 +1,5 @@
 import b_pawn from '../assets/chess-pieces/b-pawn2.png'
-import w_pawn from '../assets/chess-pieces/w-pawn2.png'
+import w_pawn from '../assets/chess-pieces/w-pawn22.png'
 import { COLUMNS } from './auxiliar-functions'
 
 

@@ -1,5 +1,5 @@
 import b_queen from '../assets/chess-pieces/b-queen2.png'
-import w_queen from '../assets/chess-pieces/w-queen2.png'
+import w_queen from '../assets/chess-pieces/w-queen22.png'
 import { updateCoords } from './auxiliar-functions'
 
 

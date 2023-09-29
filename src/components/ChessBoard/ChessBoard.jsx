@@ -150,7 +150,7 @@ export default function ChessBoard() {
   return (
     <div className='relative'>
       {isCheckMate() && <CheckMateScreen />}
-      <section className={'rounded bg-white grid grid-cols-8 gap-px p-px'}>
+      <section className={'bg-white grid grid-cols-8 gap-px p-px'}>
         {currentBoard.map((square, coord) => {
           return (
             <Square

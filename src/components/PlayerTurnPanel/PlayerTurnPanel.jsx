@@ -3,6 +3,8 @@ import { ChessContext } from '../../context/chessContext'
 import { useContext } from 'react'
 import blackTurn from '../../assets/chess-pieces/b-shift.png'
 import whiteTurn from '../../assets/chess-pieces/w-shift.png'
+import resetButton from '../../assets/chess-pieces/reset.png'
+import undoButton from '../../assets/chess-pieces/undo.png'
 
 
 export default function PlayerTurnPanel() {
@@ -69,16 +71,16 @@ export default function PlayerTurnPanel() {
     <section className={'flex flex-col justify-between items-center gap-8'}>
       <PlayerTurn player='B' pic={blackTurn} />
       <Button
-        className={`rounded-md bg-gray-200 text-slate-950 h-14 w-24 transition duration-75 hover:bg-slate-400 active:scale-95 ${lastMovement ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20'}`}
+        className={`rounded-full bg-gray-200 text-slate-950 h-20 w-20 px-4 transition duration-75 hover:bg-slate-400 active:scale-95 ${lastMovement ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20'}`}
         onClick={handleLastMove}
       >
-        Undo Movement
+        <img src={undoButton} alt="" />
       </Button>
       <Button
-        className={'rounded-md bg-gray-200 text-slate-950 h-14 w-24 transition duration-75 hover:bg-red-300 active:scale-95'}
+        className={'rounded-full bg-gray-200 text-slate-950 h-20 w-20 px-3 transition duration-75 hover:bg-red-300 active:scale-95'}
         onClick={restartChess}
       >
-        Restart Chess
+        <img src={resetButton} alt="" />
       </Button>
       <PlayerTurn player='W' pic={whiteTurn} />
     </section>
