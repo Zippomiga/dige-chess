@@ -42,7 +42,7 @@ export default function EatedPiecesPanel() {
     const canRestore = hasEatedPieces && isContraryTurn && isPawnAtBorder
 
     return (
-      <div className={`flex flex-col items-center justify-center flex-wrap-reverse gap-px w-[calc(7.5rem+2px)] h-[calc(12.5rem+6px)] ${canRestore ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+      <div className={`flex felx-col items-center justify-center flex-wrap-reverse gap-px w-[calc(7.5rem+4px)] h-[calc(4.5rem+2px)] xs:w-[calc(12rem+7px)] xs:h-[calc(3rem+1px)] ${canRestore ? 'pointer-events-auto' : 'pointer-events-none'}`}>
         {eatedPieces.map(piece => {
           return (
             <EatedPiece
@@ -59,7 +59,7 @@ export default function EatedPiecesPanel() {
 
 
   return (
-    <section className={'flex flex-col items-center justify-between gap-8'}>
+    <section className={'flex flex-row md:flex-col items-center justify-between gap-8 xs:gap-2'}>
       <PlayerEatedPieces player='B' />
       <PlayerEatedPieces player='W' />
     </section>

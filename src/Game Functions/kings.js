@@ -1,5 +1,5 @@
-import b_king from '../assets/chess-pieces/b-king.png'
-import w_king from '../assets/chess-pieces/w-king.png'
+import b_king from '../assets/chess-pieces/b-king2.png'
+import w_king from '../assets/chess-pieces/w-king2.png'
 import { updateCoords } from './auxiliar-functions'
 
 

@@ -1,5 +1,6 @@
 import blackCheckMate from '../../assets/chess-pieces/b_checkmate2.png'
 import whiteCheckMate from '../../assets/chess-pieces/w_checkmate2.png'
+import crown from '../../assets/chess-pieces/crown.png'
 import blackTurn from '../../assets/chess-pieces/b-shift.png'
 import whiteTurn from '../../assets/chess-pieces/w-shift.png'
 import { useContext } from 'react'
@@ -10,7 +11,7 @@ export default function CheckMateScreen() {
   const { playerTurn } = useContext(ChessContext)
 
   const isWhite = playerTurn === 'W'
-  const checkMateScreenPic = isWhite ? whiteCheckMate : blackCheckMate
+  // const checkMateScreenPic = isWhite ? whiteCheckMate : blackCheckMate
   const checkMatePlayerPic = isWhite ? blackTurn : whiteTurn
   const checkMateTeamWins = isWhite ? 'Black Team Wins' : 'White Team Wins'
 
@@ -34,7 +35,7 @@ export default function CheckMateScreen() {
       </Span>
       <Picture
         className={'h-72 w-72 m-auto'}
-        pic={checkMateScreenPic}
+        pic={crown}
       />
       <div className={'flex items-center rounded-md bg-teal-950 text-white p-4 text-center text-2xl'}>
         <Picture

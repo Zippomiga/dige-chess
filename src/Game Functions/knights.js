@@ -1,5 +1,5 @@
-import b_knight_png from '../assets/chess-pieces/b-knight.png'
-import w_knight_png from '../assets/chess-pieces/w-knight.png'
+import b_knight_png from '../assets/chess-pieces/b-knight2.png'
+import w_knight_png from '../assets/chess-pieces/w-knight2.png'
 import { COLUMNS } from './auxiliar-functions'
 
 
