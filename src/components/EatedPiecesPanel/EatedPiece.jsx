@@ -26,7 +26,7 @@ export default function EatedPiece({ pic, name, coordOfPawn }) {
 
   return (
     <img
-      className={'rounded-full bg-gray-200 h-6 w-6 p-px hover:bg-green-300 active:scale-90 transition duration-75'}
+      className={'rounded-sm  bg-gray-200 h-6 w-6 sm:w-8 sm:h-8 md:h-10 md:w-10 p-px hover:bg-green-300 active:scale-90 transition duration-75'}
       onClick={restorePiece}
       src={pic}
       alt={name}

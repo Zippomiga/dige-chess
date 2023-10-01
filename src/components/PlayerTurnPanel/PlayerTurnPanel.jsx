@@ -68,7 +68,7 @@ export default function PlayerTurnPanel() {
 
 
   return (
-    <section className={'flex flex-col justify-between items-center gap-8'}>
+    <section className={'rounded-br-md rounded-tr-md bg-teal-950 p-2 flex flex-col justify-between items-center gap-8'}>
       <PlayerTurn player='B' pic={blackTurn} />
       <Button
         className={`rounded-full bg-gray-200 text-slate-950 h-20 w-20 px-4 transition duration-75 hover:bg-slate-400 active:scale-95 ${lastMovement ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20'}`}
