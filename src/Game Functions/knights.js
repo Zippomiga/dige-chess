@@ -10,62 +10,53 @@ class Knight {
   }
 
   getMoves(currentCoord, board) {
-    return updateCoords(currentCoord)
+    return updateCoords(currentCoord, board)
   }
 }
 
 
-function updateCoords(currentCoord) {
-  const newCoord = (axis, diff) => currentCoord + axis + diff
-
-  const [left_X, above_X, right_X, below_X] = [-2, -8, 2, 8]
-  const [left_Y, above_Y, right_Y, below_Y] = [-1, -16, 1, 16]
-
-  const X = {
-    BL: newCoord(below_X, left_X),
-    AL: newCoord(above_X, left_X),
-    AR: newCoord(above_X, right_X),
-    BR: newCoord(below_X, right_X)
+function updateCoords(currentCoord, board) {
+  const LEFT = {
+    BOTTOM: 15,
+    BELOW: 6,
+    ABOVE: -10,
+    TOP: -17
   }
 
-  const Y = {
-    BL: newCoord(below_Y, left_Y),
-    AL: newCoord(above_Y, left_Y),
-    AR: newCoord(above_Y, right_Y),
-    BR: newCoord(below_Y, right_Y),
+  const RIGHT = {
+    TOP: -15,
+    ABOVE: -6,
+    BELOW: 10,
+    BOTTOM: 17
   }
 
+  const newCoords = directions => {
+    return directions.map(direction => {
+      const newCoord = currentCoord + direction
+      return board.findIndex((_, boardCoord) => newCoord === boardCoord)
+    })
+  }
 
   const COLUMN = COLUMNS
     .findIndex(column => column.includes(currentCoord))
 
 
   switch (COLUMN) {
-    case 0:  //knight at column A
-      return [
-        X.AR, X.BR,
-        Y.AR, Y.BR
-      ]
-    case 1:  //knight at column B
-      return [
-        X.AR, X.BR,
-        Y.BL, Y.AL, Y.AR, Y.BR
-      ]
-    case 6:  //knight at column G
-      return [
-        X.BL, X.AL,
-        Y.BL, Y.AL, Y.AR, Y.BR
-      ]
-    case 7:  //knight at column H
-      return [
-        X.BL, X.AL,
-        Y.BL, Y.AL
-      ]
-    default: //knight at column C || D || E || F
-      return [
-        ...Object.values(X),
-        ...Object.values(Y)
-      ]
+    case 0:
+      const COLUMN_A = [RIGHT.TOP, RIGHT.ABOVE, RIGHT.BELOW, RIGHT.BOTTOM]
+      return newCoords(COLUMN_A)
+    case 1:
+      const COLUMN_B = [LEFT.TOP, RIGHT.TOP, RIGHT.ABOVE, RIGHT.BELOW, RIGHT.BOTTOM, LEFT.BOTTOM]
+      return newCoords(COLUMN_B)
+    case 6:
+      const COLUMN_G = [RIGHT.TOP, LEFT.TOP, LEFT.ABOVE, LEFT.BELOW, LEFT.BOTTOM, RIGHT.BOTTOM]
+      return newCoords(COLUMN_G)
+    case 7:
+      const COLUMN_H = [LEFT.BOTTOM, LEFT.BELOW, LEFT.ABOVE, LEFT.TOP]
+      return newCoords(COLUMN_H)
+    default:
+      const REST_OF_COLUMNS = [...Object.values(LEFT), ...Object.values(RIGHT)]
+      return newCoords(REST_OF_COLUMNS)
   }
 }
 

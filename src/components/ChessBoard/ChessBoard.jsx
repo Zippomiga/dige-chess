@@ -108,6 +108,7 @@ export default function ChessBoard() {
         if (NOT_CHECK_MATE) { return false }
       }
     }
+
     return true
   }
 
@@ -150,7 +151,7 @@ export default function ChessBoard() {
   return (
     <div className='relative'>
       {isCheckMate() && <CheckMateScreen />}
-      <section className={'sm:rounded-md bg-teal-950 grid grid-cols-8 gap-px p-1 xs:px-4 sm:p-2'}>
+      <section className={'sm:rounded-md grid grid-cols-8 gap-px p-1 xs:px-4 sm:p-2'}>
         {currentBoard.map((square, coord) => {
           return (
             <Square

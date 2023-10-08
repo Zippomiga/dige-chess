@@ -32,8 +32,8 @@ export default function EatedPiecesPanel() {
 
 
   const PlayerEatedPieces = ({ player }) => {
-    const eatedPieces = currentBoard.filter(piece => {
-      return piece?.name.startsWith(player) && !piece?.name.includes("KING")
+    const eatedPieces = currentEated.filter(piece => {
+      return piece?.name.startsWith(player)
     })
 
     const hasEatedPieces = eatedPieces.length !== 0
@@ -59,7 +59,7 @@ export default function EatedPiecesPanel() {
 
 
   return (
-    <section className={'rounded-tr-md rounded-tl-md sm:rounded-bl-md sm:rounded-br-none sm:rounded-tr-none bg-teal-950 p-1 md:p-2 flex flex-row sm:flex-col items-center justify-between gap-4 xs:gap-4 sm:gap-3 md:gap-8'}>
+    <section className={'flex flex-row sm:flex-col items-center justify-between gap-6 xs:gap-4 sm:gap-3 md:gap-8'}>
       <PlayerEatedPieces player='B' />
       <PlayerEatedPieces player='W' />
     </section>
