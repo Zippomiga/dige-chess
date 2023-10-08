@@ -1,6 +1,6 @@
 import blackCheckMate from '../../assets/chess-pieces/b_checkmate2.png'
 import whiteCheckMate from '../../assets/chess-pieces/w_checkmate2.png'
-import crown from '../../assets/chess-pieces/crown.png'
+// import crown from '../../assets/chess-pieces/crown.png'
 import blackTurn from '../../assets/chess-pieces/b-shift.png'
 import whiteTurn from '../../assets/chess-pieces/w-shift.png'
 import { useContext } from 'react'
@@ -29,17 +29,17 @@ export default function CheckMateScreen() {
 
 
   return (
-    <section className={'w-full h-full rounded grid items-center justify-center absolute bg-gray-200 bg-opacity-90'}>
-      <Span className={'rounded-md bg-teal-950 text-white p-4 text-center text-4xl'}>
+    <section className={'w-full h-full grid items-center justify-center absolute bg-gray-200 bg-opacity-90'}>
+      <Span className={'rounded-md bg-teal-950 text-white p-2 text-center text-xl md:p-4 md:text-3xl'}>
         👑 CHECK MATE 👑
       </Span>
       <Picture
-        className={'h-72 w-72 m-auto'}
+        className={'m-auto h-40 w-40 sm:h-60 sm:w-60 md:h-72 md:w-72'}
         pic={checkMateScreenPic}
       />
-      <div className={'flex items-center rounded-md bg-teal-950 text-white p-4 text-center text-2xl'}>
+      <div className={'flex items-center rounded-md bg-teal-950 text-white p-2 text-center text-lg md:p-4 md:text-2xl'}>
         <Picture
-          className={'rounded-full bg-gray-200 h-12 w-12 p-1'}
+          className={'rounded-md bg-gray-200 h-8 w-8 p-px md:h-10 md:w-10'}
           pic={checkMatePlayerPic}
         />
         <Span className='m-auto'>

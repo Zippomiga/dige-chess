@@ -37,7 +37,7 @@ export const validCoord = coord => {
 }
 
 
-export function updateCoords(directions, currentCoord, board, isKing = false) {
+export function updateCoords(directions, currentCoord, board, mustIterateOnce = false) {
   const LIMITS = BOARD_LIMITS
     .filter(limit => !limit.includes(currentCoord))
     .flat()
@@ -57,7 +57,7 @@ export function updateCoords(directions, currentCoord, board, isKing = false) {
     )) {
       nextCoord += direction
       NEW_COORDS.push(nextCoord)
-      if (isKing) { break }
+      if (mustIterateOnce) { break }
     }
   })
 
