@@ -42,7 +42,7 @@ export default function Square({
 
   return (
     <div
-      className={`rounded grid place-items-center transition duration-200 hover:bg-slate-500 active:scale-95 h-10 w-10 xs:w-12 xs:h-12 sm:h-14 sm:w-14 md:w-16 md:h-16 lg:w-18 lg:h-18 xl:w-20 xl:h-20 ${kingInCheck ? 'bg-red-300 square' : isMoveValid ? 'bg-slate-400 square' : 'square'}`}
+      className={`square grid place-items-center rounded transition duration-200 hover:bg-slate-500 active:scale-95 w-[calc((100vw-23px)/8)] h-[calc((100vw-23px)/8)] sm:w-[calc((100vh-23px)/8)] sm:h-[calc((100vh-23px)/8)] ${kingInCheck ? 'bg-red-300' : isMoveValid ? 'bg-slate-400' : ''}`}
       id={coord}
       onClick={handleSquare}
     >
