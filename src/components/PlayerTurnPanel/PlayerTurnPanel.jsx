@@ -71,13 +71,13 @@ export default function PlayerTurnPanel() {
     <section className={'flex justify-center items-center gap-12 sm:flex-col sm:w-fit'}>
       <PlayerTurn player='B' pic={blackTurn} />
       <Button
-        className={`rounded-md bg-gray-200 text-slate-950 h-10 w-10 p-1 transition duration-75 hover:bg-slate-400 active:scale-95 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:p-2 ${lastMovement ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20'}`}
+        className={`rounded-md bg-gray-200 text-slate-950 h-10 w-10 p-1 transition duration-75 hover:bg-slate-400 active:scale-95 xs:w-14 xs:h-14 xs:p-2 sm:w-16 sm:h-16 md:p-2 ${lastMovement ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20'}`}
         onClick={handleLastMove}
       >
         <img src={undoButton} alt="" />
       </Button>
       <Button
-        className={'rounded-md bg-gray-200 text-slate-950 h-10 w-10 p-1 transition duration-75 hover:bg-red-300 active:scale-95 xs:w-14 xs:h-14 sm:w-16 sm:h-16 sm:p-2'}
+        className={'rounded-md bg-gray-200 text-slate-950 h-10 w-10 p-1 transition duration-75 hover:bg-red-300 active:scale-95 xs:w-14 xs:h-14 xs:p-2 sm:w-16 sm:h-16'}
         onClick={restartChess}
       >
         <img src={resetButton} alt="" />

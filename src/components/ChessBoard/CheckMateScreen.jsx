@@ -1,6 +1,5 @@
-import blackCheckMate from '../../assets/chess-pieces/b_checkmate2.png'
-import whiteCheckMate from '../../assets/chess-pieces/w_checkmate2.png'
-// import crown from '../../assets/chess-pieces/crown.png'
+import blackCheckMate from '../../assets/chess-pieces/b_checkmate.png'
+import whiteCheckMate from '../../assets/chess-pieces/w_checkmate.png'
 import blackTurn from '../../assets/chess-pieces/b-shift.png'
 import whiteTurn from '../../assets/chess-pieces/w-shift.png'
 import { useContext } from 'react'
@@ -29,7 +28,7 @@ export default function CheckMateScreen() {
 
 
   return (
-    <section className={'w-full h-full grid items-center justify-center absolute bg-gray-200 bg-opacity-90'}>
+    <section className={'w-full h-full grid items-center justify-center absolute bg-gray-300 bg-opacity-90'}>
       <Span className={'rounded-md bg-teal-950 text-white p-2 text-center text-xl md:p-4 md:text-3xl'}>
         👑 CHECK MATE 👑
       </Span>

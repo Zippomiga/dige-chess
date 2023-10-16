@@ -1,5 +1,5 @@
-import b_rook_png from '../assets/chess-pieces/b-rook2.png'
-import w_rook_png from '../assets/chess-pieces/w-rook22.png'
+import b_rook_png from '../assets/chess-pieces/b-rook.png'
+import w_rook_png from '../assets/chess-pieces/w-rook.png'
 import { updateCoords } from './auxiliar-functions'
 
 

@@ -1,5 +1,5 @@
-import b_bishop from '../assets/chess-pieces/b-bishop2.png'
-import w_bishop from '../assets/chess-pieces/w-bishop22.png'
+import b_bishop from '../assets/chess-pieces/b-bishop.png'
+import w_bishop from '../assets/chess-pieces/w-bishop.png'
 import { updateCoords } from './auxiliar-functions'
 
 

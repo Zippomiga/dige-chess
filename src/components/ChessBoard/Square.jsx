@@ -6,19 +6,14 @@ import { useContext } from 'react'
 export default function Square({
   square,
   coord,
-  currentMoves,
   isSamePlayer,
-  currentKing,
-  isCheck,
   updateCurrent,
-  updateChess
+  updateChess,
+  isMoveValid,
+  kingInCheck
 }) {
 
   const { setCurrentEated } = useContext(ChessContext)
-
-
-  const isMoveValid = currentMoves.includes(coord)
-  const kingInCheck = isCheck() && currentKing() === coord
 
 
   function handleSquare() {

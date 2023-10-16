@@ -158,12 +158,11 @@ export default function ChessBoard() {
               square={square}
               coord={coord}
               key={square?.name ?? coord}
-              currentMoves={currentMoves}
               isSamePlayer={isSamePlayer}
-              currentKing={currentKing}
-              isCheck={isCheck}
               updateCurrent={updateCurrent}
               updateChess={updateChess}
+              isMoveValid={currentMoves.includes(coord)}
+              kingInCheck={isCheck() && currentKing() === coord}
             />
           )
         })}
