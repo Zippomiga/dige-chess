@@ -85,6 +85,15 @@ export default function ChessBoard() {
   }
 
 
+  const stillInCheck = (oldCoord, newCoord, square) => {
+    const newBoard = updateBoard(oldCoord, newCoord, square)
+    const newCurrentKing = currentKing(newBoard)
+    const newContraryMoves = playerMoves(contrary, newBoard)
+
+    return isCheck(newCurrentKing, newContraryMoves)
+  }
+
+
   const isCheckMate = () => {
     const CURRENT_PIECES = playerPieces(current)
     const CURRENT_MOVES = playerMoves(current)
@@ -100,10 +109,7 @@ export default function ChessBoard() {
 
         if (isSamePlayer(newSquare)) { continue }
 
-        const newBoard = updateBoard(currentCoord, newCoord, currentPiece)
-        const newCurrentKing = currentKing(newBoard)
-        const newContraryMoves = playerMoves(contrary, newBoard)
-        const NOT_CHECK_MATE = !isCheck(newCurrentKing, newContraryMoves)
+        const NOT_CHECK_MATE = !stillInCheck(currentCoord, newCoord, currentPiece)
 
         if (NOT_CHECK_MATE) { return false }
       }
@@ -118,14 +124,10 @@ export default function ChessBoard() {
 
     const newMoves = allMoves.filter(move => {
       const newSquare = currentBoard[move]
-      const newBoard = updateBoard(coord, move, square)
-      const newCurrentKing = currentKing(newBoard)
-      const newContraryMoves = playerMoves(contrary, newBoard)
+      const notSamePlayer = !isSamePlayer(newSquare)
+      const notLeftInCheck = !stillInCheck(coord, move, square)
 
-      const samePlayer = isSamePlayer(newSquare)
-      const leftInCheck = isCheck(newCurrentKing, newContraryMoves)
-
-      return !samePlayer && !leftInCheck
+      return notSamePlayer && notLeftInCheck
     })
 
     const moves = newMoves.length === 0 ? [] : [...newMoves, coord]
