@@ -25,7 +25,7 @@ class King {
       this.directions,
       currentCoord,
       board,
-      true // it's the king, then it will only iterate once
+      true // it's the king, so it must only iterate once
     )
   }
 }
